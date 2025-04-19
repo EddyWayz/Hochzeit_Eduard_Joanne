@@ -40,60 +40,61 @@
   <div id="header"></div>
 
   <!-- RSVP-Sektion -->
-  <section class="rsvp-section">
-    <h2>Zur Zusage</h2>
-    <form class="rsvp-form" action="#" method="post">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
-      </div>
-      <div class="form-group">
-        <label for="email">E-Mail</label>
-        <input type="email" id="email" name="email" required>
-      </div>
-      <div class="form-group">
-        <label>Werden Sie teilnehmen?</label>
-        <div class="radio-group">
-          <label><input type="radio" name="attending" value="yes" required> Ja</label>
-          <label><input type="radio" name="attending" value="no"> Nein</label>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="guests">Begleitpersonen</label>
-        <input type="number" id="guests" name="guests" min="0" max="5" value="0">
-      </div>
-      <div class="form-group">
-        <label for="message">Nachricht</label>
-        <textarea id="message" name="message" rows="4"></textarea>
-      </div>
-      <button type="submit" class="btn">Absenden</button>
-    </form>
-  </section>
+<section class="rsvp-section">
+  <h2>Zur Zusage</h2>
+  <form class="rsvp-form" action="#" method="post">
+    <!-- Name, E‑Mail, Teilnahme, Gäste … wie gehabt -->
+
+    <div class="form-group">
+      <label for="guests">Begleitpersonen</label>
+      <input type="number" id="guests" name="guests" min="0" max="5" value="0">
+    </div>
+
+    <!-- NEU: Unverträglichkeiten -->
+    <div class="form-group">
+      <label for="intolerances">Unverträglichkeiten</label>
+      <textarea
+        id="intolerances"
+        name="intolerances"
+        rows="2"
+        placeholder="z. B. Gluten, Laktose, Nüsse…"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="message">Nachricht</label>
+      <textarea id="message" name="message" rows="4"></textarea>
+    </div>
+
+    <button type="submit" class="btn">Absenden</button>
+  </form>
+</section>
+
+<!-- Firebase‑Submit‑Handler -->
+<script>
+  document.querySelector('.rsvp-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = {
+      name:           e.target.name.value.trim(),
+      email:          e.target.email.value.trim(),
+      attending:      e.target.attending.value,
+      guests:         parseInt(e.target.guests.value) || 0,
+      intolerances:   e.target.intolerances.value.trim(),  
+      message:        e.target.message.value.trim(),
+      timestamp:      firebase.firestore.FieldValue.serverTimestamp()
+    };
+    try {
+      await db.collection('rsvps').add(data);
+      alert('Vielen Dank für deine Zusage!');
+      e.target.reset();
+    } catch(error) {
+      console.error('Fehler beim Absenden:', error);
+      alert('Beim Absenden ist leider ein Fehler aufgetreten. Bitte versuche es später erneut.');
+    }
+  });
+</script>
 
   <!-- Footer-Include -->
   <div id="footer"></div>
-
-  <!-- Firebase-Submit-Handler -->
-  <script>
-    document.querySelector('.rsvp-form').addEventListener('submit', async e => {
-      e.preventDefault();
-      const data = {
-        name:      e.target.name.value.trim(),
-        email:     e.target.email.value.trim(),
-        attending: e.target.attending.value,
-        guests:    parseInt(e.target.guests.value) || 0,
-        message:   e.target.message.value.trim(),
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      };
-      try {
-        await db.collection('rsvps').add(data);
-        alert('Vielen Dank für deine Zusage!');
-        e.target.reset();
-      } catch(error) {
-        console.error('Fehler beim Absenden:', error);
-        alert('Beim Absenden ist leider ein Fehler aufgetreten. Bitte versuche es später erneut.');
-      }
-    });
-  </script>
 </body>
 </html>

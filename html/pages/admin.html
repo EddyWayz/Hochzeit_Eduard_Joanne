@@ -47,7 +47,6 @@
   </style>
 </head>
 <body>
-
   <!-- Header (optional) -->
   <div id="header"></div>
 
@@ -60,13 +59,14 @@
   </div>
 
   <!-- RSVP‑Tabelle -->
-  <table id="rsvpTable" style="display:none;">
+  <table id="rsvpTable" style="display:none; width:100%; border-collapse: collapse;">
     <thead>
       <tr>
         <th>Name</th>
         <th>E‑Mail</th>
         <th>Teilnahme</th>
         <th>Gäste</th>
+        <th>Unverträglichkeiten</th>  <!-- neu -->
         <th>Nachricht</th>
         <th>Datum</th>
       </tr>
@@ -93,26 +93,53 @@
 
     // RSVPs laden und anzeigen
     async function loadRSVPs() {
-      const snapshot = await db.collection('rsvps')
-                               .orderBy('timestamp','desc')
-                               .get();
-      const tbody = document.querySelector('#rsvpTable tbody');
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        const date = d.timestamp?.toDate().toLocaleString('de-DE') || '';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${d.name}</td>
-          <td>${d.email}</td>
-          <td>${d.attending === 'yes' ? 'Ja' : 'Nein'}</td>
-          <td>${d.guests}</td>
-          <td>${d.message}</td>
-          <td>${date}</td>
-        `;
-        tbody.append(tr);
-      });
-      document.getElementById('rsvpTable').style.display = '';
-    }
+  const snapshot = await db.collection('rsvps')
+                           .orderBy('timestamp','desc')
+                           .get();
+
+  // Arrays zum Gruppieren
+  const yesList = [];
+  const noList  = [];
+
+  snapshot.forEach(doc => {
+    const d = doc.data();
+    const row = `
+      <tr>
+        <td>${d.name}</td>
+        <td>${d.email}</td>
+        <td>${d.attending === 'yes' ? 'Ja' : 'Nein'}</td>
+        <td>${d.guests}</td>
+        <td>${d.intolerances || ''}</td>
+        <td>${d.message}</td>
+        <td>${d.timestamp?.toDate().toLocaleString('de-DE') || ''}</td>
+      </tr>
+    `;
+    if (d.attending === 'yes') yesList.push(row);
+    else                          noList.push(row);
+  });
+
+  const tbody = document.querySelector('#rsvpTable tbody');
+  tbody.innerHTML = '';
+
+  // Abschnitt „Zugesagt“
+  tbody.insertAdjacentHTML('beforeend', `
+    <tr class="group-header">
+      <td colspan="7">Zugesagt (${yesList.length})</td>
+    </tr>
+  `);
+  yesList.forEach(row => tbody.insertAdjacentHTML('beforeend', row));
+
+  // Abschnitt „Abgesagt“
+  tbody.insertAdjacentHTML('beforeend', `
+    <tr class="group-header">
+      <td colspan="7">Abgesagt (${noList.length})</td>
+    </tr>
+  `);
+  noList.forEach(row => tbody.insertAdjacentHTML('beforeend', row));
+
+  document.getElementById('rsvpTable').style.display = '';
+}
+
   </script>
 
 </body>

@@ -5,7 +5,14 @@
     font-weight: normal;
     font-style: normal;
   }
-/* css/variables.css */
+
+  @font-face {
+    font-family: 'Kiona';
+    src: url('../fonts/Kiona.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
 :root {
   /* Farben */
     /* Primäre Farben */
@@ -26,7 +33,7 @@
 
   /* Schrift‑Familien */
   --font-primary:    'Hello August', cursive; /* für Fließtext */
-  --font-secondary:  'Great Vibes', cursive; /* für Logos/Überschriften */
+  --font-capital_letters:  'Kiona'; /* für Logos/Überschriften */
 
   /* Schrift‑Gewichte */
   --fw-light:        300;

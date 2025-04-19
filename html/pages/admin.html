@@ -1,0 +1,119 @@
+<!-- pages/admin.html -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSVP Admin – Unsere Hochzeit</title>
+  <!-- Stylesheets (optional, je nach Design) -->
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/basic.css">
+  <link rel="stylesheet" href="../css/index.css">
+
+  <!-- jQuery (für Template‑Includes, falls gewünscht) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/includeTemplate.js"></script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // TODO: Ersetze die Werte durch deine Firebase‑Konfiguration
+    const firebaseConfig = {
+  apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
+  authDomain: "hochzeiteduardjoanne.firebaseapp.com",
+  projectId: "hochzeiteduardjoanne",
+  storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
+  messagingSenderId: "209565556740",
+  appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
+};
+    // Firebase initialisieren
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db   = firebase.firestore();
+  </script>
+
+  <style>
+    /* Einfache Styles für Login & Tabelle */
+    body { font-family: sans-serif; padding: 2rem; background: var(--color-bg); }
+    #login, #rsvpTable { max-width: 800px; margin: auto; }
+    #login input { width: 100%; padding: 0.5rem; margin-bottom: 1rem; }
+    #login button { padding: 0.5rem 1rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+    th, td { border: 1px solid var(--color-border); padding: 0.5rem; text-align: left; }
+    th { background: var(--color-surface); }
+  </style>
+</head>
+<body>
+
+  <!-- Header (optional) -->
+  <div id="header"></div>
+
+  <!-- Login-Bereich -->
+  <div id="login">
+    <h2>Admin Login</h2>
+    <input id="email"    type="email"    placeholder="E‑Mail">
+    <input id="password" type="password" placeholder="Passwort">
+    <button id="btnLogin">Einloggen</button>
+  </div>
+
+  <!-- RSVP‑Tabelle -->
+  <table id="rsvpTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>E‑Mail</th>
+        <th>Teilnahme</th>
+        <th>Gäste</th>
+        <th>Nachricht</th>
+        <th>Datum</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Footer (optional) -->
+  <div id="footer"></div>
+
+  <script>
+    // Login-Handling
+    document.getElementById('btnLogin').addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const pw    = document.getElementById('password').value;
+      try {
+        await auth.signInWithEmailAndPassword(email, pw);
+        document.getElementById('login').style.display = 'none';
+        loadRSVPs();
+      } catch (err) {
+        alert('Login fehlgeschlagen: ' + err.message);
+      }
+    });
+
+    // RSVPs laden und anzeigen
+    async function loadRSVPs() {
+      const snapshot = await db.collection('rsvps')
+                               .orderBy('timestamp','desc')
+                               .get();
+      const tbody = document.querySelector('#rsvpTable tbody');
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        const date = d.timestamp?.toDate().toLocaleString('de-DE') || '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${d.name}</td>
+          <td>${d.email}</td>
+          <td>${d.attending === 'yes' ? 'Ja' : 'Nein'}</td>
+          <td>${d.guests}</td>
+          <td>${d.message}</td>
+          <td>${date}</td>
+        `;
+        tbody.append(tr);
+      });
+      document.getElementById('rsvpTable').style.display = '';
+    }
+  </script>
+
+</body>
+</html>

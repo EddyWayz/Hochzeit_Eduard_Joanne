@@ -9,8 +9,13 @@
   <link rel="stylesheet" href="css/index.css">  
   <!-- jQuery einbinden -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="/js/includeTemplate.js"></script>
-
+  <script>
+  $(function() {
+    // Header und Footer in alle Seiten einfügen
+    $('#header').load('/html/templates/header.html');
+    $('#footer').load('/html/templates/footer.html');
+  });
+    </script>
 </head>
 <body>
   <!-- Header-Include -->

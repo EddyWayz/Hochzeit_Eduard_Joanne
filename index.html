@@ -9,11 +9,28 @@
   <link rel="stylesheet" href="css/index.css">  
   <!-- jQuery einbinden -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="js/includeTemplate.js"></script>
+  <script>
+    $(function() {
+      // Header und Footer in alle Seiten einfügen
+      $('#header').load('html/templates/header.html');
+      $('#footer').load('html/templates/footer.html');
+    });
+  </script>
 </head>
 <body>
   <!-- Header-Include -->
-  <div id="header"></div>
+  <div id="header">
+    <nav class="navbar">
+      <a href="index.html" class="logo">Wayz, Eduard & Joanne</a>
+      <ul class="nav-links">
+        <li><a class="font-kiona" href="index.html">Start</a></li>
+        <li><a class="font-kiona" href="html/pages/infos.html">Infos</a></li>
+        <li><a class="font-kiona" href="html/pages/rsvp.html">Save your spot</a></li>
+        <li><a class="font-kiona" href="html/pages/contact.html">Kontakt</a></li>
+      </ul>
+    </nav>
+  
+  </div>
 
   <!-- Hero-Sektion -->
   <section class="hero">

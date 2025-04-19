@@ -1,140 +1,61 @@
-/* Grund-Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #fdfdfd;
-  }
-  
-  .site-header {
-    background: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: auto;
-    padding: 1rem;
-  }
-  
-  .nav-links {
-    list-style: none;
-    display: flex;
-  }
-  
-  .nav-links li {
-    margin-left: 1.5rem;
-  }
-  
-  .nav-links a {
-    text-decoration: none;
-    color: #555;
-  }
-  
-  .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
+/* index.css */
+/* 1. Hero‑Sektion */
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero .btn {
+  background-color: var(--color-primary);
+  color: black;
+  border: none;
+}
+
+.hero .btn:hover {
+  background-color: #c87f6f;
+}
+
+/* 2. Unsere Story */
+.story {
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.story h2 {
+  margin-bottom: 1rem;
+}
+
+/* 3. Event‑Details */
+.details h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.details ul {
+  max-width: 600px;
+  margin: auto;
+}
+
+.details li {
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+/* 4. Responsive Anpassungen */
+@media (max-width: 768px) {
   .hero {
-    background: url('../images/hero-bg.jpg') center/cover no-repeat;
-    height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #fff;
+    padding: 6rem 1rem;
   }
-  
-  .hero-content h1 {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
+  .hero h1 {
+    font-size: 2.5rem;
   }
-  
-  .hero-content p {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-  }
-  
-  .btn, .btn-outline {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    border-radius: 2rem;
-    text-decoration: none;
-    font-weight: 600;
-  }
-  
-  .btn {
-    background: #e0917a;
-    color: #fff;
-  }
-  
-  .btn-outline {
-    border: 2px solid #e0917a;
-    color: #e0917a;
-  }
-  
   section {
-    padding: 4rem 1rem;
-    max-width: 800px;
-    margin: auto;
+    padding: 3rem 1rem;
   }
-  
-  h2 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  
-  .schedule ul {
-    list-style: none;
-  }
-  
-  .schedule li {
-    margin-bottom: 0.5rem;
-  }
-  
-  .contact form {
-    display: grid;
-    grid-gap: 1rem;
-  }
-  
-  .contact input,
-  .contact textarea {
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-  }
-  
-  .site-footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    background: #fff;
-    border-top: 1px solid #eee;
-  }
-  
-  @media (max-width: 768px) {
-    .navbar {
-      flex-direction: column;
-    }
-    .nav-links {
-      flex-direction: column;
-      margin-top: 1rem;
-    }
-    .nav-links li {
-      margin: 0.5rem 0;
-    }
-  }
+}

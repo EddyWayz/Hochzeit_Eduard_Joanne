@@ -1,0 +1,45 @@
+
+@font-face {
+    font-family: 'Hello August';
+    src: url('../fonts/Hello August.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+/* css/variables.css */
+:root {
+  /* Farben */
+    /* Primäre Farben */
+    --color-primary:   #d26b58;
+    --color-secondary: red;
+    --color-accent:    blue;
+  
+    /* Hintergrund & Text */
+    --color-bg:        #ffffff;
+    --color-surface:   #ffffff;
+    --color-text:      #ffffff;
+    --color-heading:   #ffffff;
+  
+    /* Sonstige */
+    --color-border:    #ffffff;
+    --color-link:      var(--color-primary);
+
+
+  /* Schrift‑Familien */
+  --font-primary:    'Hello August', cursive; /* für Fließtext */
+  --font-secondary:  'Great Vibes', cursive; /* für Logos/Überschriften */
+
+  /* Schrift‑Gewichte */
+  --fw-light:        300;
+  --fw-normal:       400;
+  --fw-semibold:     600;
+  --fw-bold:         700;
+
+  /* Schrift‑Größen (Typo‑Skala) */
+  --fs-xs:           0.75rem;  /* z. B. kleine Notizen */
+  --fs-sm:           0.875rem; /* Fließtext mobil */
+  --fs-md:           1rem;     /* Fließtext desktop */
+  --fs-lg:           1.25rem;  /* Unterüberschriften */
+  --fs-xl:           2rem;     /* große Überschriften */
+  --fs-xxl:          3rem;     /* Hero‑Headline */
+  }
+  

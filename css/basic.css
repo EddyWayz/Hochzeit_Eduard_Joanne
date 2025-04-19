@@ -1,0 +1,106 @@
+/* Navbar-Grundlayout */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  /* Logo-Stil */
+  .logo {
+    font-family: var(--font-primary); 
+    font-size: var(--fs-xxl);
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  
+  /* Link-Liste */
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+  }
+  
+  /* Einzelne Links */
+  .nav-links a {
+    text-decoration: none;
+    font-family: var(--font-primary);
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    color: #555555;
+    position: relative;
+    padding: 0.25rem 0;
+    transition: color 0.3s ease;
+  }
+  
+  /* Hover‑Effekt: Unterstreichung wächst von der Mitte */
+  .nav-links a::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background-color: #e89cae;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+  }
+  
+  .nav-links a:hover {
+    color: #e89cae;
+  }
+  
+  .nav-links a:hover::before {
+    width: 100%;
+  }
+  
+  /* Mobile Menü‑Icon (für späteren Einsatz) */
+  .menu-toggle {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #555555;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none; /* später mit JS togglen */
+      flex-direction: column;
+      background: #ffffff;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      padding: 1rem 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .nav-links li {
+      margin: 0.5rem 0;
+      text-align: center;
+    }
+    .menu-toggle {
+      display: block;
+    }
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    /* Bild + heller Overlay in einem Schritt */
+    background: 
+      linear-gradient(
+        rgba(255,255,255,0.6),  /* Weißer Overlay‑Verlauf oben (60% Deckkraft) */
+        rgba(255,255,255,0.6)   /* …unten ebenfalls 60% */
+      ), 
+      url('../img/backgroundImage.png') center/cover no-repeat;
+    color: var(--color-text);
+    padding: 8rem 1rem;
+    text-align: center;
+  }
+  

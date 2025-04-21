@@ -7,31 +7,26 @@
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/basic.css">
   <link rel="stylesheet" href="css/index.css">
-  <!-- jQuery (optional, nur wenn du es wirklich brauchst) -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <a href="index.html" class="logo">Wayz, Eduard &amp; Joanne</a>
-      <!-- Toggle-Button für Mobile -->
-      <button class="menu-toggle" aria-label="Menü öffnen" aria-expanded="false">☰</button>
-      <ul class="nav-links">
-        <li><a class="font-kiona" href="index.html">Start</a></li>
-        <li><a class="font-kiona" href="html/pages/infos.html">Infos</a></li>
-        <li><a class="font-kiona" href="html/pages/rsvp.html">Save your spot</a></li>
-        <li><a class="font-kiona" href="html/pages/contact.html">Kontakt</a></li>
-      </ul>
-    </nav>
+  <header class="navbar">
+    <a href="index.html" class="logo">Wayz, Eduard &amp; Joanne</a>
+    <button class="menu-toggle" aria-label="Menü öffnen" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a class="font-kiona" href="index.html">Start</a></li>
+      <li><a class="font-kiona" href="html/pages/infos.html">Infos</a></li>
+      <li><a class="font-kiona" href="html/pages/rsvp.html">Save your spot</a></li>
+      <li><a class="font-kiona" href="html/pages/contact.html">Kontakt</a></li>
+    </ul>
   </header>
 
   <main>
     <!-- Hero-Sektion -->
     <section class="hero">
       <h1>Wir sagen „Ja“</h1>
-      <h2>Version 1.10</h2>
-      <p>15. Juni 2025 in Berlin</p>
-      <a href="html/pages/rsvp.html" class="btn">Zur Zusage</a>
+      <h2>Version 1.11</h2>
+      <p>15. Juni 2025 in Berlin</p>
+      <a href="html/pages/rsvp.html" class="btn">Zur Zusage</a>
     </section>
 
     <!-- Story -->
@@ -44,31 +39,26 @@
     <section class="details">
       <h2>Event-Details</h2>
       <ul>
-        <li>14:00 – Trauung, Schlosskirche</li>
-        <li>15:30 – Sektempfang, Schlossgarten</li>
-        <li>18:00 – Dinner &amp; Party, Festsaal</li>
+        <li>14:00 – Trauung, Schlosskirche</li>
+        <li>15:30 – Sektempfang, Schlossgarten</li>
+        <li>18:00 – Dinner &amp; Party, Festsaal</li>
       </ul>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2025 Wayz, Eduard &amp; Joanne</p>
+    <p>&copy; 2025 Wayz, Eduard &amp; Joanne</p>
   </footer>
 
-  <!-- Vanilla-JS für das Mobile-Menu -->
+  <!-- Vanilla‑JS für das Mobile‑Menu -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var menuToggle = document.querySelector('.menu-toggle');
       var navLinks   = document.querySelector('.nav-links');
 
       menuToggle.addEventListener('click', function() {
-        // .active toggeln → CSS zeigt/versteckt das Menü
         var isOpen = navLinks.classList.toggle('active');
-
-        // ARIA-Attribut für Screenreader updaten
         menuToggle.setAttribute('aria-expanded', isOpen);
-
-        // Icon wechseln (☰ ↔ ✕)
         menuToggle.textContent = isOpen ? '✕' : '☰';
       });
     });

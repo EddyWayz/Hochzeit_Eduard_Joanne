@@ -116,17 +116,19 @@ html, body {
 }
 
 /* Responsive unter 768px */
+/* …Safe‑Area‑Variablen, Grundreset, Navbar‑Styling… */
+
 @media (max-width: 768px) {
   .nav-links {
-    display: none; /* später via JS togglen */
+    display: none;
     flex-direction: column;
-    background: #ffffff;
+    background: #fff;
     position: absolute;
-    top: calc(100% + var(--safe-top)); /* berücksichtigt Notch-Höhe */
+    top: calc(100% + var(--safe-top));
     left: 0;
     width: 100%;
     padding: 1rem 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
   .nav-links li {
     margin: 0.5rem 0;
@@ -134,5 +136,11 @@ html, body {
   }
   .menu-toggle {
     display: block;
+  }
+
+  /* **Neu**: Menu bei aktiver Klasse einblenden */
+  .nav-links.active {
+    display: flex;
+    flex-direction: column;
   }
 }

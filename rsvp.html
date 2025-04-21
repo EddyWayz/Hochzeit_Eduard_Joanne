@@ -21,80 +21,136 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // Deine Firebase‑Konfiguration (aus Firebase‑Console kopieren)
     const firebaseConfig = {
-  apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
-  authDomain: "hochzeiteduardjoanne.firebaseapp.com",
-  projectId: "hochzeiteduardjoanne",
-  storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
-  messagingSenderId: "209565556740",
-  appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
-};
-    // Firebase initialisieren
+      apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
+      authDomain: "hochzeiteduardjoanne.firebaseapp.com",
+      projectId: "hochzeiteduardjoanne",
+      storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
+      messagingSenderId: "209565556740",
+      appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
+    };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
   </script>
 </head>
 <body>
-  <!-- Header-Include -->
   <div id="header"></div>
 
-  <!-- RSVP-Sektion -->
-<section class="rsvp-section">
-  <h2>Zur Zusage</h2>
-  <form class="rsvp-form" action="#" method="post">
-    <!-- Name, E‑Mail, Teilnahme, Gäste … wie gehabt -->
+  <section class="rsvp-section">
+    <h2>Zur Zusage</h2>
+    <form class="rsvp-form" action="#" method="post">
+      <!-- Familienname -->
+      <div class="form-group">
+        <label for="familyName">Familienname</label>
+        <input type="text" id="familyName" name="familyName" placeholder="Dein Familienname" required>
+      </div>
 
-    <div class="form-group">
-      <label for="guests">Begleitpersonen</label>
-      <input type="number" id="guests" name="guests" min="0" max="5" value="0">
-    </div>
+      <!-- E‑Mail -->
+      <div class="form-group">
+        <label for="email">E‑Mail</label>
+        <input type="email" id="email" name="email" placeholder="deine@mail.de" required>
+      </div>
 
-    <!-- NEU: Unverträglichkeiten -->
-    <div class="form-group">
-      <label for="intolerances">Unverträglichkeiten</label>
-      <textarea
-        id="intolerances"
-        name="intolerances"
-        rows="2"
-        placeholder="z. B. Gluten, Laktose, Nüsse…"
-      ></textarea>
-    </div>
+      <!-- Teilnahme -->
+      <div class="form-group">
+        <label>Teilnahme</label>
+        <label><input type="radio" name="attending" value="yes" required> Ja</label>
+        <label><input type="radio" name="attending" value="no" required> Nein</label>
+      </div>
 
-    <div class="form-group">
-      <label for="message">Nachricht</label>
-      <textarea id="message" name="message" rows="4"></textarea>
-    </div>
+      <!-- Begleitpersonen (mindestens 1) -->
+      <div class="form-group">
+        <label for="guests">Gäste insgesamt</label>
+        <input type="number" id="guests" name="guests" min="1" max="5" value="1">
+      </div>
 
-    <button type="submit" class="btn">Absenden</button>
-  </form>
-</section>
+      <!-- Container für dynamische Gast-Felder -->
+      <div id="guest-details"></div>
 
-<!-- Firebase‑Submit‑Handler -->
-<script>
-  document.querySelector('.rsvp-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const data = {
-      name:           e.target.name.value.trim(),
-      email:          e.target.email.value.trim(),
-      attending:      e.target.attending.value,
-      guests:         parseInt(e.target.guests.value) || 0,
-      intolerances:   e.target.intolerances.value.trim(),  
-      message:        e.target.message.value.trim(),
-      timestamp:      firebase.firestore.FieldValue.serverTimestamp()
-    };
-    try {
-      await db.collection('rsvps').add(data);
-      alert('Vielen Dank für deine Zusage!');
-      e.target.reset();
-    } catch(error) {
-      console.error('Fehler beim Absenden:', error);
-      alert('Beim Absenden ist leider ein Fehler aufgetreten. Bitte versuche es später erneut.');
+      <!-- Unverträglichkeiten -->
+      <div class="form-group">
+        <label for="intolerances">Unverträglichkeiten</label>
+        <textarea id="intolerances" name="intolerances" rows="2" placeholder="z. B. Gluten, Laktose, Nüsse…"></textarea>
+      </div>
+
+      <!-- Nachricht -->
+      <div class="form-group">
+        <label for="message">Nachricht</label>
+        <textarea id="message" name="message" rows="4"></textarea>
+      </div>
+
+      <button type="submit" class="btn">Absenden</button>
+    </form>
+  </section>
+
+  <script>
+    const guestsInput = document.getElementById('guests');
+    const detailsContainer = document.getElementById('guest-details');
+
+    function renderGuestFields(count) {
+      detailsContainer.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('form-group');
+        wrapper.innerHTML = `
+          <label>Gast ${i} (Vorname)</label>
+          <input type="text" name="guestName_${i}" placeholder="Vorname Gast ${i}" required>
+          <div class="radio-group">
+            <label><input type="radio" name="guestType_${i}" value="Erwachsener" checked> Erwachsener</label>
+            <label><input type="radio" name="guestType_${i}" value="Kind"> Kind</label>
+            <label><input type="radio" name="guestType_${i}" value="Kleinkind"> Kleinkind</label>
+          </div>
+        `;
+        detailsContainer.appendChild(wrapper);
+      }
     }
-  });
-</script>
 
-  <!-- Footer-Include -->
+    // Initial render mit 1 Gast
+    renderGuestFields(parseInt(guestsInput.value));
+
+    guestsInput.addEventListener('input', () => {
+      const count = Math.max(1, parseInt(guestsInput.value) || 1);
+      guestsInput.value = count;
+      renderGuestFields(count);
+    });
+
+    document.querySelector('.rsvp-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const guestCount = parseInt(e.target.guests.value) || 1;
+      const guestDetails = [];
+      for (let i = 1; i <= guestCount; i++) {
+        const nameField = e.target[`guestName_${i}`];
+        const typeField = e.target[`guestType_${i}`];
+        guestDetails.push({
+          name: nameField.value.trim(),
+          type: typeField.value
+        });
+      }
+
+      const data = {
+        familyName:   e.target.familyName.value.trim(),
+        email:        e.target.email.value.trim(),
+        attending:    e.target.attending.value,
+        guests:       guestCount,
+        guestDetails: guestDetails,
+        intolerances: e.target.intolerances.value.trim(),
+        message:      e.target.message.value.trim(),
+        timestamp:    firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      try {
+        await db.collection('rsvps').add(data);
+        alert('Vielen Dank für deine Zusage!');
+        e.target.reset();
+        guestsInput.value = 1;
+        renderGuestFields(1);
+      } catch (error) {
+        console.error('Fehler beim Absenden:', error);
+        alert('Beim Absenden ist leider ein Fehler aufgetreten. Bitte versuche es später erneut.');
+      }
+    });
+  </script>
+
   <div id="footer"></div>
 </body>
 </html>

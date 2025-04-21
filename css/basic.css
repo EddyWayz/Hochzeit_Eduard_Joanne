@@ -1,109 +1,138 @@
-/* Navbar-Grundlayout */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-  
-  /* Logo-Stil */
-  .logo {
-    font-family: var(--font-primary); 
-    font-size: var(--fs-xxl);
-    color: var(--color-primary);
-    text-decoration: none;
-  }
-  
-  /* Link-Liste */
-  .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 2rem;
-  }
-  
-  /* Einzelne Links */
-  .nav-links a {
-    text-decoration: none;
-    font-size: var(--fs-lg);
-    font-weight: 800;
-    color: #555555;
-    position: relative;
-    padding: 0.25rem 0;
-    transition: color 0.3s ease;
-  }
-  
-  /* Hover‑Effekt: Unterstreichung wächst von der Mitte */
-  .nav-links a::before {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    background-color: var(--color-primary);
-    bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: width 0.3s ease;
-  }
-  
-  .nav-links a:hover {
-    color: var(--color-primary);
-  }
-  
-  .nav-links a:hover::before {
-    width: 100%;
-  }
-  
-  /* Mobile Menü‑Icon (für späteren Einsatz) */
-  .menu-toggle {
-    display: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #555555;
-  }
-  
-  /* Responsive */
-  @media (max-width: 768px) {
-    .nav-links {
-      display: none; /* später mit JS togglen */
-      flex-direction: column;
-      background: #ffffff;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 100%;
-      padding: 1rem 0;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .nav-links li {
-      margin: 0.5rem 0;
-      text-align: center;
-    }
-    .menu-toggle {
-      display: block;
-    }
-  }
+/* Safe Area Variablen für iOS */
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-left: env(safe-area-inset-left);
+  --safe-right: env(safe-area-inset-right);
+}
 
-  .hero {
-    position: relative;
-    overflow: hidden;
-    /* Bild + heller Overlay in einem Schritt */
-    background: 
-      linear-gradient(
-        rgba(255,255,255,0.6),  /* Weißer Overlay‑Verlauf oben (60% Deckkraft) */
-        rgba(255,255,255,0.6)   /* …unten ebenfalls 60% */
-      ), 
-      url('../img/backgroundImage.png') center/cover no-repeat;
-    color: var(--color-text);
-    padding: 8rem 1rem;
+/* Grundreset */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar-Grundlayout inkl. Safe Area & Sticky Prefix */
+.navbar {
+  position: -webkit-sticky; /* iOS Safari */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Basis‑Padding plus Safe Area oben */
+  padding: 1rem 2rem;
+  padding-top: calc(1rem + var(--safe-top));
+
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo-Stil */
+.logo {
+  font-family: var(--font-primary);
+  font-size: var(--fs-xxl);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+/* Link-Liste */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+
+  /* Momentum‑Scroll unter iOS */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Einzelne Links – Touch‑Friendly */
+.nav-links a {
+  text-decoration: none;
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  color: #555555;
+  position: relative;
+  padding: 0.5rem 0;     /* etwas größere Touch‑Fläche */
+  transition: color 0.3s ease;
+  touch-action: manipulation;
+}
+
+/* Hover‑Effekt: Unterstreichung wächst von der Mitte */
+.nav-links a::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--color-primary);
+}
+
+.nav-links a:hover::before {
+  width: 100%;
+}
+
+/* Mobile Menü‑Icon */
+.menu-toggle {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #555555;
+  padding: 0.5rem;       /* Touch‑Friendly */
+}
+
+/* Hero-Bereich mit Safe Area unten */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      rgba(255,255,255,0.6),
+      rgba(255,255,255,0.6)
+    ),
+    url('../img/backgroundImage.png') center/cover no-repeat;
+
+  color: var(--color-text);
+  text-align: center;
+
+  /* Basis‑Padding plus Safe Areas */
+  padding: 8rem 1rem;
+  padding-top: calc(8rem + var(--safe-top));
+  padding-bottom: calc(4rem + var(--safe-bottom));
+}
+
+.font-kiona {
+  font-family: var(--font-capital_letters);
+  text-transform: uppercase;
+}
+
+/* Responsive unter 768px */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none; /* später via JS togglen */
+    flex-direction: column;
+    background: #ffffff;
+    position: absolute;
+    top: calc(100% + var(--safe-top)); /* berücksichtigt Notch-Höhe */
+    left: 0;
+    width: 100%;
+    padding: 1rem 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .nav-links li {
+    margin: 0.5rem 0;
     text-align: center;
   }
-  
-  .font-kiona {
-    font-family: var(--font-capital_letters);
-    text-transform: uppercase;
+  .menu-toggle {
+    display: block;
   }
+}

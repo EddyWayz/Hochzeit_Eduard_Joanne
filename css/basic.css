@@ -31,10 +31,17 @@ html, body {
 
 /* Logo-Stil */
 .logo {
+  display: block;
+  width: 100%;
+  text-align: center;
   font-family: var(--font-primary);
   font-size: var(--fs-xxl);
   color: var(--color-primary);
   text-decoration: none;
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 /* Link-Liste */
@@ -96,6 +103,7 @@ html, body {
     align-items: center;
     justify-content: flex-start;
     width: 100%;
+    padding: 1rem env(safe-area-inset-left) 1rem env(safe-area-inset-right);
   }
   .navbar .logo {
     margin-bottom: 0.5rem;
@@ -126,7 +134,7 @@ html, body {
   /* Links im Panel untereinander */
   .nav-links {
     flex-direction: column;
-    gap: 0;
+    gap: 1rem;
   }
   .nav-links a {
     padding: 1rem;

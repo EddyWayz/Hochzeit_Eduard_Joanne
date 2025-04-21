@@ -137,7 +137,9 @@ html, body {
   }
   .nav-links a {
     padding: 1rem;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: none;
+    /* optional: add more spacing instead of lines */
+    /* margin-bottom: 0.5rem; */
   }
 
   /* Disable hover underline animation on touch devices */

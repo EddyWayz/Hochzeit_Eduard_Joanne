@@ -1,0 +1,100 @@
+
+
+/* Infos-Seite spezifisches Styling */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+section {
+  margin-bottom: 2rem;
+}
+
+/* Einheitliches Karten-Layout für jeden Abschnitt */
+.details,
+.schedule,
+.accommodation,
+.travel,
+.dress-code,
+.registry,
+.contact {
+  background-color: var(--color-surface);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Überschriften innerhalb der Abschnitte */
+.details h2,
+.schedule h2,
+.accommodation h2,
+.travel h2,
+.dress-code h2,
+.registry h2,
+.contact h2 {
+  font-size: var(--fs-xl);
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+  font-family: var(--font-capital_letters);
+  text-transform: uppercase;
+}
+
+/* Fließtext in Absätzen */
+.details p,
+.travel p,
+.dress-code p,
+.contact p {
+  font-family: var(--font-primary);
+  font-size: var(--fs-md);
+  color: #555555;
+  line-height: 1.6;
+}
+
+/* Listen in Ablauf und Unterkunft */
+.schedule ul,
+.accommodation ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.schedule li,
+.accommodation li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-primary);
+  font-size: var(--fs-md);
+  color: #555555;
+}
+
+.schedule li::before,
+.accommodation li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+}
+
+/* Geschenkeliste als Button-Link */
+.registry p:last-of-type,
+.registry a {
+  font-family: var(--font-primary);
+  font-size: var(--fs-md);
+  color: #555555;
+}
+
+.registry a {
+  display: inline-block;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+}
+
+.registry a:hover {
+  background-color: var(--color-secondary);
+}

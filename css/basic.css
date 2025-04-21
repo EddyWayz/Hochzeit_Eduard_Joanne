@@ -119,12 +119,29 @@ html, body {
 /* …Safe‑Area‑Variablen, Grundreset, Navbar‑Styling… */
 
 @media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 1rem 2rem;
+    padding-top: calc(1rem + var(--safe-area-inset-top));
+  }
+
+  .menu-toggle {
+    display: block;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #555555;
+    padding: 0.5rem;
+    margin-top: 1rem;
+  }
+
   .nav-links {
     display: none;
     flex-direction: column;
-    background: #fff;
+    background: #ffffff;
     position: absolute;
-    top: calc(100% + var(--safe-top));
+    top: calc(100% + var(--safe-area-inset-top));
     left: 0;
     width: 100%;
     padding: 1rem 0;
@@ -134,13 +151,7 @@ html, body {
     margin: 0.5rem 0;
     text-align: center;
   }
-  .menu-toggle {
-    display: block;
-  }
-
-  /* **Neu**: Menu bei aktiver Klasse einblenden */
   .nav-links.active {
     display: flex;
-    flex-direction: column;
   }
 }

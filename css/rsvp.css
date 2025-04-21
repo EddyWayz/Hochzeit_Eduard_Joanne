@@ -1,10 +1,18 @@
+/* Override theme variables for RSVP section */
+:root {
+  --color-bg-light: #f9f9f9;
+  --color-border: #dddddd;
+  --color-text: #333333;
+  --color-primary-dark: #b2594e;
+}
+
 /* RSVP-specific Styles for a modern, clean look */
 
 .rsvp-section {
     max-width: 600px;
     margin: 2rem auto;
     padding: 2rem;
-    background-color: var(--color-bg-light, #f9f9f9);
+    background-color: var(--color-bg-light);
     border-radius: 1rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
@@ -14,7 +22,7 @@
     font-weight: 600;
     margin-bottom: 1.5rem;
     text-align: center;
-    color: var(--color-primary, #2c3e50);
+    color: var(--color-primary);
   }
   
   .rsvp-form {
@@ -32,7 +40,7 @@
     font-size: 1rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
-    color: var(--color-text, #333);
+    color: var(--color-text);
   }
   
   .form-group input[type="text"],
@@ -40,7 +48,7 @@
   .form-group input[type="number"],
   .form-group textarea {
     padding: 0.75rem;
-    border: 1px solid var(--color-border, #ccc);
+    border: 1px solid var(--color-border);
     border-radius: 0.5rem;
     font-size: 1rem;
     transition: border-color 0.2s;
@@ -72,7 +80,7 @@
     background-color: var(--color-bg-white, #fff);
     padding: 1rem;
     border-radius: 0.5rem;
-    border: 1px solid var(--color-border, #ddd);
+    border: 1px solid var(--color-border);
   }
   
   .btn {
@@ -81,7 +89,7 @@
     font-size: 1.125rem;
     font-weight: 600;
     color: #fff;
-    background-color: var(--color-primary, #2c3e50);
+    background-color: var(--color-primary);
     border: none;
     border-radius: 0.75rem;
     cursor: pointer;
@@ -89,7 +97,7 @@
   }
   
   .btn:hover {
-    background-color: var(--color-primary-dark, #1a242f);
+    background-color: var(--color-primary-dark);
     transform: translateY(-1px);
   }
   

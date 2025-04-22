@@ -1,6 +1,9 @@
 /* geschenke.css */
 
 /* Safe Area + Modal Overlay */
+* { 
+  background-color: red;
+}
 
 .modal {
   position: fixed;

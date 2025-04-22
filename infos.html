@@ -3,54 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infos – Hochezeit Eduard & Joanne</title>
-
+  <title>Infos – Hochzeit Eduard & Joanne</title>
   <!-- Farbvariablen und Basis‑Styles -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/basic.css">
-  <!-- Spezifisches Styling für RSVP -->
+  <!-- Spezifisches Styling für Infos -->
   <link rel="stylesheet" href="css/infos.css">
-
   <!-- jQuery (für Header/Footer‑Include) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="js/includeTemplate.js"></script>
-
 </head>
 <body>
   <!-- Header-Include -->
   <div id="header"></div>
+
   <main>
+    <!-- Hero-Sektion -->
     <section class="hero">
       <h1>Infos</h1>
       <p>Hier findest du alle wichtigen Informationen für unseren großen Tag.</p>
     </section>
-    <section class="details">
-      <h2>Datum & Ort</h2>
-      <p><strong>15. Juni 2025</strong> in der <strong>Schlosskirche Berlin</strong></p>
+
+    <!-- Datum & Ort -->
+    <section class="details card">
+      <h2>Datum &amp; Ort</h2>
+      <p><strong>15. Juni 2025</strong> in der <strong>Schlosskirche Berlin</strong></p>
     </section>
-    <section class="schedule">
+
+    <!-- Ablauf -->
+    <section class="schedule card">
       <h2>Ablauf</h2>
       <ul>
-        <li>14:00 – Trauung in der Schlosskirche</li>
-        <li>15:30 – Sektempfang im Schlossgarten</li>
-        <li>18:00 – Dinner &amp; Party im Festsaal</li>
+        <li>14:00 – Trauung in der Schlosskirche</li>
+        <li>15:30 – Sektempfang im Schlossgarten</li>
+        <li>18:00 – Dinner &amp; Party im Festsaal</li>
       </ul>
     </section>
-    <section class="color-code">
+
+    <!-- Farbcodex -->
+    <section class="color-code card">
       <h2>Farbcodex</h2>
-      <p>Wir haben folgenden Farbcodex:</p>
-      <!-- Todo -->
+      <ul class="color-code-list">
+        <li><span class="swatch swatch-primary"></span></li>
+        <li><span class="swatch swatch-secondary"></span></li>
+        <li><span class="swatch swatch-accent"></span></li>
+        <li><span class="swatch swatch-bg"></span></li>
+      </ul>
     </section>
-    <section class="registry">
+
+    <!-- Geschenkeliste -->
+    <section class="registry card">
       <h2>Geschenke</h2>
       <p>Wir freuen uns über eure Anwesenheit! Wenn ihr uns unterstützen möchtet, findet ihr unsere Geschenkeliste hier:</p>
       <p><a href="https://example.com" target="_blank" rel="noopener">Zur Geschenkeliste</a></p>
     </section>
-    <section class="contact">
+
+    <!-- Kontakt -->
+    <section class="contact card">
       <h2>Kontakt</h2>
       <p>Bei Fragen schreibt uns an <a href="mailto:hochzeit@example.com">hochzeit@example.com</a>.</p>
     </section>
   </main>
+
   <!-- Footer-Include -->
   <div id="footer"></div>
 </body>

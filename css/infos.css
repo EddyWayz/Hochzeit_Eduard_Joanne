@@ -1,5 +1,3 @@
-
-
 /* Infos-Seite spezifisches Styling */
 main {
   max-width: 900px;
@@ -11,28 +9,30 @@ section {
   margin-bottom: 2rem;
 }
 
-/* Einheitliches Karten-Layout für jeden Abschnitt */
+/* Einheitliches Karten-Layout */
 .details,
 .schedule,
 .accommodation,
 .travel,
 .dress-code,
 .registry,
-.contact {
+.contact,
+.color-code {
   background-color: var(--color-surface);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-soft);
 }
 
-/* Überschriften innerhalb der Abschnitte */
+/* Überschriften in den Karten */
 .details h2,
 .schedule h2,
 .accommodation h2,
 .travel h2,
 .dress-code h2,
 .registry h2,
-.contact h2 {
+.contact h2,
+.color-code h2 {
   font-size: var(--fs-xl);
   margin-bottom: 1rem;
   color: var(--color-primary);
@@ -40,61 +40,83 @@ section {
   text-transform: uppercase;
 }
 
-/* Fließtext in Absätzen */
+/* Fließtext in Karten */
 .details p,
 .travel p,
 .dress-code p,
-.contact p {
+.contact p,
+.registry p {
   font-family: var(--font-primary);
   font-size: var(--fs-md);
-  color: #555555;
+  color: var(--color-text);
   line-height: 1.6;
 }
 
-/* Listen in Ablauf und Unterkunft */
-.schedule ul,
-.accommodation ul {
+/* Ablauf-Listen */
+.schedule ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
-.schedule li,
-.accommodation li {
+.schedule li {
   position: relative;
   padding-left: 1.5rem;
   margin-bottom: 0.75rem;
   font-family: var(--font-primary);
   font-size: var(--fs-md);
-  color: #555555;
+  color: var(--color-text);
 }
-
-.schedule li::before,
-.accommodation li::before {
+.schedule li::before {
   content: "•";
   position: absolute;
   left: 0;
   color: var(--color-primary);
 }
 
-/* Geschenkeliste als Button-Link */
-.registry p:last-of-type,
-.registry a {
-  font-family: var(--font-primary);
-  font-size: var(--fs-md);
-  color: #555555;
-}
-
+/* Geschenkeliste-Link */
 .registry a {
   display: inline-block;
   background-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-primary);
   text-decoration: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   transition: background-color 0.3s ease;
 }
-
 .registry a:hover {
   background-color: var(--color-secondary);
 }
+
+/* Kontakt-Link */
+.contact a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+.contact a:hover {
+  opacity: 0.8;
+}
+
+/* Farbcodex-Styling */
+.color-code-list {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+.color-code-list li {
+  width: 4rem;      /* feste Breite für schmale Kästchen */
+  flex: none;
+}
+.color-code-list .swatch {
+  display: block;
+  width: 100%;
+  height: 4rem;    /* quadratisch */
+  border-radius: var(--radius-sm);
+}
+/* Farben über Modifier-Klassen */
+.swatch-primary { background-color: var(--color-primary); }
+.swatch-secondary { background-color: var(--color-secondary); }
+.swatch-accent { background-color: var(--color-accent); }
+.swatch-bg { background-color: var(--color-bg); border: 1px solid var(--color-border); }

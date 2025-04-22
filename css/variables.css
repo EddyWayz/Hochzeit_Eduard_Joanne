@@ -1,4 +1,3 @@
-
 @font-face {
     font-family: 'Hello August';
     src: url('../fonts/Hello August.ttf') format('truetype');
@@ -8,7 +7,7 @@
 
   @font-face {
     font-family: 'Kiona';
-    src: url('../fonts/Kiona.ttf') format('truetype');
+    src: url('../fonts/Kiona-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
   }

@@ -1,0 +1,34 @@
+/* css/geschenke.css */
+.gift-list {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  .gift-list h2 {
+    font-size: var(--fs-xl);
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .gift-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  .gift-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .gift-list input[type="checkbox"] {
+    flex-shrink: 0;
+  }
+  .gift-list label {
+    margin-left: 0.5rem;
+    font-size: var(--fs-md);
+    color: #333333;
+  }
+  .gift-list a {
+    margin-left: 0.25rem;
+    font-size: var(--fs-sm);
+    text-decoration: underline;
+  }

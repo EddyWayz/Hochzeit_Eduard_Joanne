@@ -3,26 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact – Hochezeit Eduard & Joanne</title>
-
+  <title>Kontakt – Hochzeit Eduard & Joanne</title>
   <!-- Farbvariablen und Basis‑Styles -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/basic.css">
-  <!-- Spezifisches Styling für RSVP -->
+  <!-- Spezifisches Styling für Kontakt-Seite -->
   <link rel="stylesheet" href="css/contact.css">
-
   <!-- jQuery (für Header/Footer‑Include) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="js/includeTemplate.js"></script>
-
 </head>
 <body>
   <!-- Header-Include -->
   <div id="header"></div>
-  
-  <!-- Hero-Sektion -->
-  <section class="hero">
-    <H1>Contact.html</H1>
+
+  <main>
+    <!-- Hero-Sektion -->
+    <section class="hero">
+      <h1>Kontakt</h1>
+      <p>Habt ihr Fragen oder möchtet uns etwas mitteilen? Wir freuen uns auf eure Nachricht!</p>
+    </section>
+
+    <!-- Kontakt-Inhalte -->
+    <section class="content contact-section">
+      <!-- Kontaktinformationen -->
+      <div class="contact-details">
+        <h2>Kontaktinformationen</h2>
+        <p><strong>E‑Mail:</strong> <a href="mailto:email@example.com">email@example.com</a></p>
+        <p><strong>Telefon:</strong> +49 [Telefonnummer]</p>
+      </div>
+
+      <!-- Kontaktformular -->
+      <div class="contact-form">
+        <h2>Kontaktformular</h2>
+        <form class="form" action="mailto:email@example.com" method="post" enctype="text/plain">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="Name" placeholder="Dein Name" required>
+          </div>
+          <div class="form-group">
+            <label for="emailInput">E‑Mail</label>
+            <input type="email" id="emailInput" name="E‑Mail" placeholder="deine@mail.de" required>
+          </div>
+          <div class="form-group">
+            <label for="message">Nachricht</label>
+            <textarea id="message" name="Nachricht" rows="5" placeholder="Deine Nachricht..." required></textarea>
+          </div>
+          <button type="submit" class="btn">Absenden</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
   <!-- Footer-Include -->
   <div id="footer"></div>
 </body>

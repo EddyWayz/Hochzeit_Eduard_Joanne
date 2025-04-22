@@ -1,0 +1,89 @@
+/* File: css/contact.css */
+
+/* Hero-Sektion */
+.hero {
+    background-color: var(--color-accent-light);
+    color: var(--color-headline);
+    text-align: center;
+    padding: 4rem 1rem;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero p {
+    font-size: 1.125rem;
+  }
+  
+  /* Kontakt-Sektion */
+  .contact-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 3rem 1rem;
+  }
+  
+  .contact-details,
+  .contact-form {
+    flex: 1 1 300px;
+    background-color: var(--color-bg-light);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+  }
+  
+  /* Details-Box */
+  .contact-details h2 {
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+  }
+  
+  .contact-details p {
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+  
+  /* Formular */
+  .contact-form h2 {
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  
+  .btn {
+    display: inline-block;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn:hover {
+    background-color: var(--color-primary-dark);
+  }
+  

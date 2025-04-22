@@ -16,18 +16,17 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="js/includeTemplate.js"></script>
 
-  <!-- Firebase‑SDKs (wie in rsvp.html) -->
+  <!-- Firebase‑SDKs (compat mode) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script>
-    // Kopiere deinen firebaseConfig aus rsvp.html
     const firebaseConfig = {
-        apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
-        authDomain: "hochzeiteduardjoanne.firebaseapp.com",
-        projectId: "hochzeiteduardjoanne",
-        storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
-        messagingSenderId: "209565556740",
-        appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
+      apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
+      authDomain: "hochzeiteduardjoanne.firebaseapp.com",
+      projectId: "hochzeiteduardjoanne",
+      storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
+      messagingSenderId: "209565556740",
+      appId: "1:209565556740:web:1a227bfce08bfce08bf5dca2d551"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
@@ -40,6 +39,20 @@
     <h2>Unsere Geschenkeliste</h2>
     <ul id="gifts"></ul>
   </section>
+
+  <!-- Modal für Reservierung -->
+  <div id="reservation-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h3>Reservieren</h3>
+      <form id="reservation-form">
+        <input type="email" id="reserver-email" placeholder="Deine E‑Mail" required />
+        <div class="buttons">
+          <button type="submit">Bestätigen</button>
+          <button type="button" id="cancel-btn">Abbrechen</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div id="footer"></div>
 

@@ -1,78 +1,97 @@
-const giftsUl     = document.getElementById('gifts');
-const STORAGE_KEY = 'reservedGifts';
-let myReserved    = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-
-/**
- * Zeichnet die Liste neu, basierend auf Firestore‑Docs und lokalem State.
- * @param {firebase.firestore.QueryDocumentSnapshot[]} docs
- */
-function renderList(docs) {
-  giftsUl.innerHTML = '';
-
-  docs.forEach(doc => {
-    const data = doc.data();
-    const id   = doc.id;
-
-    const li       = document.createElement('li');
-    const checkbox = document.createElement('input');
-    checkbox.type  = 'checkbox';
-
-    // Checkbox disabled, wenn bereits von anderem reserviert ist
-    checkbox.disabled = data.reserved && !myReserved.includes(id);
-    // Checkbox checked, wenn ich es in meinem lokalen Array habe
-    checkbox.checked  = myReserved.includes(id);
-
-    // Change‑Handler mit optimistischem Update
-    checkbox.addEventListener('change', async () => {
-      const willReserve = checkbox.checked;
-
-      // 1. Optimistisches UI‑Update: re-enable checkbox (lokal)
-      checkbox.disabled = false;
-
-      // 2. Lokaler State aktualisieren und speichern
-      if (willReserve) {
-        if (!myReserved.includes(id)) myReserved.push(id);
-      } else {
-        myReserved = myReserved.filter(x => x !== id);
+// js/geschenke.js
+$(document).ready(() => {
+    const giftsUl   = document.getElementById('gifts');
+    const modal     = document.getElementById('reservation-modal');
+    const form      = document.getElementById('reservation-form');
+    const emailIn   = document.getElementById('reserver-email');
+    const cancelBtn = document.getElementById('cancel-btn');
+    let   currentId = null;
+    let   lastDocs  = [];
+  
+    // 1) Liste rendern
+    function renderList(docs) {
+        lastDocs = docs;
+        giftsUl.innerHTML = '';
+      
+        docs.forEach(doc => {
+          const data = doc.data();
+          const id   = doc.id;
+      
+          // <li> mit Name, Beschreibung, optional Link und Button
+          const li = document.createElement('li');
+      
+          // 1) Name + Beschreibung
+          const info = document.createElement('div');
+          info.innerHTML = `
+            <strong>${data.name}</strong> – ${data.description}
+            ${data.link
+              ? `<a href="${data.link}" target="_blank" rel="noopener">(kaufen)</a>`
+              : ''}
+          `;
+          li.appendChild(info);
+      
+          // 2) Reservieren‑Button
+          const btn = document.createElement('button');
+          btn.textContent = data.reserved
+            ? `Reserviert von ${data.reserverEmail || 'jemandem'}`
+            : 'Jetzt reservieren';
+          btn.disabled   = data.reserved;
+          btn.dataset.id = id;
+          li.appendChild(btn);
+      
+          giftsUl.appendChild(li);
+        });
       }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(myReserved));
-
-      // 3. Firestore‑Update
-      try {
-        await db.collection('gifts').doc(id).update({ reserved: willReserve });
-        // Kein manuelles Re-Render nötig – Firestore liefert neuen Snapshot
-      } catch (err) {
-        console.error(err);
-        alert('Fehler beim Reservieren. Bitte versuche es später noch einmal.');
-        // optional: lokalen State rollbacken und neu rendern
-        willReserve
-          ? myReserved = myReserved.filter(x => x !== id)
-          : myReserved.push(id);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(myReserved));
-        renderList(docs);
+  
+    // 2) Realtime-Listener
+    db.collection('gifts')
+      .onSnapshot(snapshot => {
+        renderList(snapshot.docs);
+      }, err => {
+        console.error('Fehler beim Laden der Geschenke:', err);
+      });
+  
+    // 3) Button-Klick öffnet Modal
+    giftsUl.addEventListener('click', e => {
+      if (e.target.tagName === 'BUTTON' && !e.target.disabled) {
+        currentId = e.target.dataset.id;
+        modal.style.display = 'flex';
       }
     });
-
-    // Label mit Name, Beschreibung und ggf. Link
-    const label = document.createElement('label');
-    label.textContent = `${data.name} – ${data.description}`;
-    if (data.link) {
-      const a = document.createElement('a');
-      a.href        = data.link;
-      a.textContent = ' (kaufen)';
-      a.target      = '_blank';
-      label.appendChild(a);
-    }
-
-    li.appendChild(checkbox);
-    li.appendChild(label);
-    giftsUl.appendChild(li);
-  });
-}
-
-// Live‑Updates von Firestore mit Metadata‑Änderungen
-db.collection('gifts')
-  .onSnapshot({ includeMetadataChanges: true }, snapshot => {
-    // snapshot.docs ist ein Array von QueryDocumentSnapshots
-    renderList(snapshot.docs);
+  
+    // 4) Modal Abbrechen
+    cancelBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      emailIn.value = '';
+      currentId = null;
+    });
+  
+    // 5) Formular abschicken
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = emailIn.value.trim();
+      if (!currentId || !email) return;
+  
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Reservieren…';
+  
+      try {
+        await db.collection('gifts').doc(currentId).update({
+          reserved: true,
+          reserverEmail: email,
+          reservedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        // UI wird automatisch durch onSnapshot aktualisiert
+        modal.style.display = 'none';
+        emailIn.value = '';
+        currentId = null;
+      } catch (err) {
+        console.error('Reservierung fehlgeschlagen:', err);
+        alert('Reservierung fehlgeschlagen. Bitte versuche es erneut.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Bestätigen';
+      }
+    });
   });

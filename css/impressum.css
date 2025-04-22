@@ -1,0 +1,65 @@
+/* File: css/impressum.css */
+
+/* Hero-Sektion (identisch mit contact.css) */
+.hero {
+    background-color: var(--color-accent-light);
+    color: var(--color-headline);
+    text-align: center;
+    padding: 4rem 1rem;
+  }
+  
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Impressum-Inhalt (unter .content) */
+  .content .impressum-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    background-color: var(--color-bg-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    line-height: 1.6;
+  }
+  
+  /* Überschriften */
+  .impressum-section h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: clamp(1.5rem, 4vw, 1.75rem);
+    color: var(--color-headline);
+  }
+  
+  /* Fließtext, Adressen und Listen */
+  .impressum-section p,
+  .impressum-section address,
+  .impressum-section ul {
+    margin-bottom: 1.25rem;
+    font-size: clamp(1rem, 2.5vw, 1.125rem);
+    color: var(--color-text);
+  }
+  
+  /* Ungeordnete Liste mit individuellen Bullets */
+  .impressum-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .impressum-section ul li {
+    position: relative;
+    padding-left: 1.5em;
+  }
+  
+  .impressum-section ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.5em;
+    height: 0.5em;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+  }
+  

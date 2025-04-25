@@ -1,4 +1,4 @@
-// js/geschenke.js
+// js/gifts.js
 $(document).ready(() => {
     const giftsUl   = document.getElementById('gifts');
     const modal     = document.getElementById('reservation-modal');

@@ -183,3 +183,48 @@ html, body {
   font-family: var(--font-capital_letters);
   text-transform: uppercase;
 }
+
+/* Global Responsive Enhancements */
+@media (max-width: 1024px) {
+  .hero h1 {
+    font-size: clamp(2.5rem, 5vw, 3rem);
+  }
+  .story h2, .details h2, .schedule h2, .rsvp-section h2, .gift-list h2, .contact-section h2, .impressum-section h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 2.5rem);
+  }
+  section, .rsvp-section, .gift-list, .contact-section, .impressum-section {
+    padding: 2rem 1rem;
+  }
+  .story p, .details li, .schedule li, .registry p, .contact p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: clamp(1.5rem, 8vw, 2rem);
+  }
+  .hero h2, .story h2, .details h2, .schedule h2, .rsvp-section h2, .gift-list h2, .contact-section h2, .impressum-section h2 {
+    font-size: 1.5rem;
+  }
+  .nav-links {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .btn, .hero .btn {
+    width: 100%;
+  }
+  #gifts {
+    grid-template-columns: 1fr;
+  }
+  .contact-details, .contact-form {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}

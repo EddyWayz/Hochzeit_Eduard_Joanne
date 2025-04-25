@@ -33,6 +33,7 @@
   /* Schrift‑Familien */
   --font-primary:    'Hello August', cursive; /* für Fließtext */
   --font-capital_letters:  'Kiona'; /* für Logos/Überschriften */
+    --font-text:    'Arial Hebrew';
 
   /* Schrift‑Gewichte */
   --fw-light:        300;

@@ -1,15 +1,17 @@
 /* Infos-Seite spezifisches Styling */
+/* Hauptbereich: zentriert mit Maximalbreite und Innenabstand */
 main {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
+/* Abschnitt: Abstand nach unten */
 section {
   margin-bottom: 2rem;
 }
 
-/* Einheitliches Karten-Layout */
+/* Karten-Layout: Einheitliches Styling für alle Infokarten */
 .details,
 .schedule,
 .accommodation,
@@ -24,7 +26,7 @@ section {
   box-shadow: var(--shadow-soft);
 }
 
-/* Überschriften in den Karten */
+/* Überschriften in Karten: Stil und Formatierung der Titel */
 .details h2,
 .schedule h2,
 .accommodation h2,
@@ -40,13 +42,13 @@ section {
   text-transform: uppercase;
 }
 
-/* Fließtext in Karten */
+/* Fließtext in Karten: Schriftart, Größe, Farbe und Zeilenhöhe */
 .details p,
 .travel p,
 .dress-code p,
 .contact p,
 .registry p {
-  font-family: var(--font-primary);
+  font-family: var(--font-text);
   font-size: var(--fs-md);
   color: var(--color-text);
   line-height: 1.6;
@@ -58,14 +60,16 @@ section {
   padding: 0;
   margin: 0;
 }
+/* Ablauf-Punkt: Listenpunkt mit Abstand und eigener Schrift */
 .schedule li {
   position: relative;
   padding-left: 1.5rem;
   margin-bottom: 0.75rem;
-  font-family: var(--font-primary);
+  font-family: var(--font-text);
   font-size: var(--fs-md);
   color: var(--color-text);
 }
+/* Ablaufsymbol: Aufzählungszeichen vor jedem Listenpunkt */
 .schedule li::before {
   content: "•";
   position: absolute;
@@ -83,6 +87,7 @@ section {
   border-radius: var(--radius-sm);
   transition: background-color 0.3s ease;
 }
+/* Geschenkeliste-Link Hover: Farbänderung bei Mausberührung */
 .registry a:hover {
   background-color: var(--color-secondary);
 }
@@ -93,11 +98,12 @@ section {
   text-decoration: underline;
   transition: opacity 0.2s;
 }
+/* Kontakt-Link Hover: Leichte Transparenz bei Hover */
 .contact a:hover {
   opacity: 0.8;
 }
 
-/* Farbcodex-Styling */
+/* Farbcodex-Liste: Flexbox-Layout für Farbfelder */
 .color-code-list {
   display: flex;
   gap: 1rem;
@@ -105,17 +111,18 @@ section {
   padding: 0;
   margin: 1rem 0 0;
 }
+/* Farbcodex-Eintrag: Größe und Abstand der Farbkästchen */
 .color-code-list li {
   width: 4rem;      /* feste Breite für schmale Kästchen */
   flex: none;
 }
+/* Farbkästchen: Darstellung der Farbe mit abgerundeten Ecken */
 .color-code-list .swatch {
   display: block;
   width: 100%;
   height: 4rem;    /* quadratisch */
   border-radius: var(--radius-sm);
 }
-/* Farben über Modifier-Klassen */
 .swatch-primary { background-color: var(--color-primary); }
 .swatch-secondary { background-color: var(--color-secondary); }
 .swatch-accent { background-color: var(--color-accent); }

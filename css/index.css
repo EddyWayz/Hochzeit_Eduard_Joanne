@@ -50,4 +50,9 @@
   section {
     padding: 3rem 1rem;
   }
+  /* Center hero button on tablet/mobile */
+  .hero .btn {
+    display: inline-block;
+    margin: 0 auto;
+  }
 }

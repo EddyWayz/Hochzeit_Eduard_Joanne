@@ -1,4 +1,4 @@
-/* Infos-Seite spezifisches Styling */
+/* Infos Stylesheet: Layout und Karten für Veranstaltungsinformationen */
 /* Hauptbereich: zentriert mit Maximalbreite und Innenabstand */
 main {
   max-width: 900px;
@@ -84,7 +84,7 @@ section {
   color: var(--color-on-primary);
   text-decoration: none;
   padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-lg);
   transition: background-color 0.3s ease;
 }
 /* Geschenkeliste-Link Hover: Farbänderung bei Mausberührung */

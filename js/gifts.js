@@ -1,3 +1,4 @@
+// js/gifts.js: Verwaltung der Geschenkeliste mit Firebase-Realtime-Listener
 // js/gifts.js
 $(document).ready(() => {
     const giftsUl   = document.getElementById('gifts');

@@ -1,3 +1,4 @@
+/* Design-System Variablen: Farben, Typografie, Spacing, Schatten, Transitions, Breakpoints, Z-Index */
 @font-face {
     font-family: 'Hello August';
     src: url('../fonts/Hello August.ttf') format('truetype');
@@ -13,40 +14,82 @@
   }
 
 :root {
-  /* Farben */
+  /* Farben: Primär, Sekundär, Akzent und Neutral */
     /* Primäre Farben */
     --color-primary:   #d26b58;
     --color-secondary: red;
     --color-accent:    blue;
-  
+
     /* Hintergrund & Text */
     --color-bg:        #ffffff;
     --color-surface:   #ffffff;
     --color-text:      black;
     --color-heading:   #ffffff;
-  
+
     /* Sonstige */
     --color-border:    #ffffff;
     --color-link:      var(--color-primary);
 
+    /* Textfarben auf Farbflächen */
+    --color-on-primary:    #ffffff;                /* Text auf primärer Farbe */
+    --color-on-secondary:  #ffffff;                /* Text auf sekundärer Farbe */
+    --color-on-accent:     #ffffff;                /* Text auf Akzentfarbe */
+    --color-on-surface:    var(--color-text);      /* Text auf Oberflächen-Hintergrund */
 
-  /* Schrift‑Familien */
+
+  /* Typografie: Schrift-Familien Definitionen */
   --font-primary:    'Hello August', cursive; /* für Fließtext */
   --font-capital_letters:  'Kiona'; /* für Logos/Überschriften */
     --font-text:    'Arial Hebrew';
 
-  /* Schrift‑Gewichte */
+  /* Typografie: Schriftgewicht-Stufen */
   --fw-light:        300;
   --fw-normal:       400;
   --fw-semibold:     600;
   --fw-bold:         700;
 
-  /* Schrift‑Größen (Typo‑Skala) */
+  /* Typografie: Schriftgrößen-Skala für Responsive Design */
   --fs-xs:           0.75rem;  /* z. B. kleine Notizen */
   --fs-sm:           0.875rem; /* Fließtext mobil */
   --fs-md:           1rem;     /* Fließtext desktop */
   --fs-lg:           1.25rem;  /* Unterüberschriften */
   --fs-xl:           2rem;     /* große Überschriften */
   --fs-xxl:          3rem;     /* Hero‑Headline */
+  /* Radien: Standardwerte für abgerundete Ecken */
+  --radius-sm: 0.125rem;  /* kleine Abrundung */
+  --radius-md: 0.25rem;   /* mittlere Abrundung */
+  --radius-lg: 0.5rem;    /* große Abrundung */
+  --radius-xl: 1rem;      /* extra große Abrundung */
+
+  /* Spacing: Einheitliche Abstände für Layout und Komponenten */
+  --space-xxs: 0.25rem; /* winziger Abstand */
+  --space-xs: 0.5rem;   /* sehr kleiner Abstand */
+  --space-sm: 0.75rem;  /* kleiner Abstand */
+  --space-md: 1rem;     /* mittlerer Abstand */
+  --space-lg: 1.5rem;   /* großer Abstand */
+  --space-xl: 2rem;     /* sehr großer Abstand */
+  --space-xxl: 3rem;    /* extragroßer Abstand */
+
+  /* Schatten (Box-Shadow) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+
+  /* Übergänge (Transitions) */
+  --transition-fast: 150ms;
+  --transition-medium: 300ms;
+  --transition-slow: 500ms;
+  --transition-timing: ease-in-out;
+
+  /* Breakpoints für Responsive Design */
+  --bp-sm: 576px;
+  --bp-md: 768px;
+  --bp-lg: 992px;
+  --bp-xl: 1200px;
+
+  /* Z-Index Ebenen */
+  --z-index-dropdown: 1000;
+  --z-index-modal: 1100;
+  --z-index-tooltip: 1200;
   }
   

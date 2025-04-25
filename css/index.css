@@ -1,3 +1,4 @@
+/* Index Stylesheet: Hero-Sektion und Event-Details */
 /* index.css */
 /* 1. Hero‑Sektion */
 
@@ -11,15 +12,6 @@
   margin-bottom: 1.5rem;
 }
 
-.hero .btn {
-  background-color: var(--color-primary);
-  color: black;
-  border: none;
-}
-
-.hero .btn:hover {
-  background-color: #c87f6f;
-}
 
 /* 2. Unsere Story */
 .story {

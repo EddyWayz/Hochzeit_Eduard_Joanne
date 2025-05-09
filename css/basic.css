@@ -8,25 +8,25 @@
 
 /* Global Reset: Entfernt Standard-Margin und Padding */
 html, body {
-  margin: 0;
-  padding: 0;
+  margin: var(--space-none);
+  padding: var(--space-none);
 }
 
 /* Navbar: Sticky Header mit Flex-Layout und Safe Area Padding */
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: var(--z-index-dropdown);
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   /* Basis‑Padding plus Safe Area oben */
-  padding: 1rem 2rem;
-  padding-top: calc(1rem + var(--safe-top));
+  padding: var(--space-md) var(--space-xl);
+  padding-top: calc(var(--space-md) + var(--safe-top));
 
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md);
 }
 
 /* Logo: Schriftart und Formatierung des Markenzeichens */
@@ -34,7 +34,7 @@ html, body {
   display: inline-block;
   /* text-align will follow the .navbar justify-content setting */
   font-family: var(--font-primary);
-  font-size: var(--fs-xxl);
+  font-size: var(--fs-xxxl-desktop);
   color: var(--color-primary);
   text-decoration: none;
   white-space: normal;
@@ -47,7 +47,7 @@ html, body {
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 2rem;
+  gap: var(--space-xl);
 
   /* Momentum‑Scroll unter iOS */
   -webkit-overflow-scrolling: touch;
@@ -56,12 +56,12 @@ html, body {
 /* Navigation Links: Touch-optimierte Link-Stile */
 .nav-links a {
   text-decoration: none;
-  font-size: var(--fs-lg);
+  font-size: var(--fs-lg-desktop);
   font-weight: 800;
-  color: #555555;
+  color: var(--color-nav-text);
   position: relative;
-  padding: 0.5rem 0;     /* etwas größere Touch‑Fläche */
-  transition: color 0.3s ease;
+  padding: var(--space-xs) 0;     /* etwas größere Touch‑Fläche */
+  transition: color var(--transition-medium) var(--transition-timing);
   touch-action: manipulation;
 }
 
@@ -70,12 +70,12 @@ html, body {
   content: '';
   position: absolute;
   width: 0;
-  height: 2px;
+  height: var(--underline-height);
   background-color: var(--color-primary);
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: width 0.3s ease;
+  bottom: var(--underline-offset-bottom);
+  left: var(--percent-center);
+  transform: translateX(var(--translate-center-neg));
+  transition: width var(--transition-medium) var(--transition-timing);
 }
 
 .nav-links a:hover {
@@ -83,16 +83,16 @@ html, body {
 }
 
 .nav-links a:hover::before {
-  width: 100%;
+  width: var(--underline-width-full);
 }
 
 /* Mobile Menü‑Icon */
 .menu-toggle {
   display: none;
-  font-size: 1.5rem;
+  font-size: var(--fs-nav-icon);
   cursor: pointer;
-  color: #555555;
-  padding: 0.5rem;       /* Touch‑Friendly */
+  color: var(--color-nav-text);
+  padding: var(--space-xs);       /* Touch‑Friendly */
 }
 
 /* Responsives Design: Mobile Layout bis 768px */
@@ -102,41 +102,44 @@ html, body {
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    padding: 1rem env(safe-area-inset-left) 1rem env(safe-area-inset-right);
+    padding: var(--space-md) env(safe-area-inset-left) var(--space-md) env(safe-area-inset-right);
   }
   .navbar .logo {
     display: block;
     width: 100%;
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-xs);
   }
   .menu-toggle {
-    margin: 0.5rem auto;
+    margin: var(--space-xs) auto;
     display: block;
   }
 
   /* Ausgeblendetes Dropdown-Panel */
   .nav-menu {
-    display: none;
+    display: block;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height var(--transition-medium) var(--transition-timing);
     position: absolute;
-    top: 100%;          /* direkt unter der Navbar */
+    top: var(--percent-full);          /* direkt unter der Navbar */
     left: 0;
-    width: 100%;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: var(--percent-full);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-md);
   }
   /* Wenn geöffnet */
   .nav-menu.open {
-    display: block;
+    max-height: 500px; /* oder ein Wert, der alle Links komplett anzeigt */
   }
 
   /* Links im Panel untereinander */
   .nav-links {
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--space-md);
   }
   .nav-links a {
-    padding: 1rem;
+    padding: var(--space-md);
     border-bottom: none;
     /* optional: add more spacing instead of lines */
     /* margin-bottom: 0.5rem; */
@@ -157,6 +160,20 @@ html, body {
   html, body {
     overflow-x: hidden;
   }
+
+  /* Mobile-Schriftgrößen */
+  .logo {
+    font-size: var(--fs-xxxl-mobile);
+  }
+  .nav-links a {
+    font-size: var(--fs-lg-mobile);
+  }
+  .btn {
+    font-size: var(--fs-lg-mobile);
+  }
+  .site-footer {
+    font-size: var(--fs-sm-mobile);
+  }
 }
 
 /* Hero-Bereich mit Safe Area unten */
@@ -165,18 +182,18 @@ html, body {
   overflow: hidden;
   background:
     linear-gradient(
-      rgba(255,255,255,0.6),
-      rgba(255,255,255,0.6)
+      var(--overlay-color),
+      var(--overlay-color)
     ),
-    url('../img/backgroundImage.png') center/cover no-repeat;
+    var(--hero-bg-image) center/cover no-repeat;
 
   color: var(--color-text);
   text-align: center;
 
   /* Basis‑Padding plus Safe Areas */
-  padding: 8rem 1rem;
-  padding-top: calc(8rem + var(--safe-top));
-  padding-bottom: calc(4rem + var(--safe-bottom));
+  padding: var(--space-hero-vertical) var(--space-hero-horizontal);
+  padding-top: calc(var(--space-hero-vertical) + var(--safe-top));
+  padding-bottom: calc(var(--space-hero-bottom) + var(--safe-bottom));
 }
 
 .font-kiona {
@@ -187,7 +204,11 @@ html, body {
 /* Global Responsive Enhancements */
 @media (max-width: 1024px) {
   .hero h1 {
-    font-size: clamp(2.5rem, 5vw, 3rem);
+    font-size: clamp(
+      var(--fs-hero-h1-md-min),
+      var(--fs-hero-h1-md-pref-vw),
+      var(--fs-hero-h1-md-max)
+    );
   }
   .story h2, .details h2, .schedule h2, .rsvp-section h2, .gift-list h2, .contact-section h2, .impressum-section h2 {
     font-size: 1.75rem;
@@ -195,36 +216,44 @@ html, body {
 }
 
 /* Responsives Design: Mobile Layout bis 768px */
-@media (max-width: 768px) {
+@media (max-width: var(--bp-md)) {
   .hero h1 {
-    font-size: clamp(2rem, 6vw, 2.5rem);
+    font-size: clamp(
+      var(--fs-hero-h1-min),
+      var(--fs-hero-h1-pref-vw),
+      var(--fs-hero-h1-max)
+    );
   }
   section, .rsvp-section, .gift-list, .contact-section, .impressum-section {
-    padding: 2rem 1rem;
+    padding: var(--space-xl) var(--space-md);
   }
   .story p, .details li, .schedule li, .registry p, .contact p {
-    font-size: 1rem;
+    font-size: var(--fs-md);
   }
 }
 
 /* Responsives Design: Kleinste Bildschirme bis 480px */
-@media (max-width: 480px) {
+@media (max-width: var(--bp-sm)) {
   .hero h1 {
-    font-size: clamp(1.5rem, 8vw, 2rem);
+    font-size: clamp(
+      var(--fs-hero-h1-sm-min),
+      var(--fs-hero-h1-sm-pref-vw),
+      var(--fs-hero-h1-sm-max)
+    );
   }
   .hero h2, .story h2, .details h2, .schedule h2, .rsvp-section h2, .gift-list h2, .contact-section h2, .impressum-section h2 {
-    font-size: 1.5rem;
+    font-size: var(--fs-xs-mobile);
   }
   .nav-links {
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--space-md);
   }
   #gifts {
     grid-template-columns: 1fr;
   }
   .contact-details, .contact-form {
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-md);
   }
 }
 
@@ -240,13 +269,13 @@ html, body {
   display: inline-block;
   background-color: var(--color-primary);
   color: var(--color-on-primary);
-  padding: 0.75rem 1.5rem;
+  padding: var(--space-sm) var(--space-lg);
   border: none;
   border-radius: var(--radius-md);
-  font-size: var(--fs-lg);
+  font-size: var(--fs-lg-desktop);
   text-align: center;
   cursor: pointer;
-  transition: background-color var(--transition-medium) ease-in-out;
+  transition: background-color var(--transition-medium) var(--transition-timing);
   text-decoration: none;
 }
 
@@ -264,7 +293,7 @@ html, body {
   background-color: var(--color-surface);
   padding: var(--space-md);
   text-align: center;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-sm-desktop);
   color: var(--color-text);
 }
 

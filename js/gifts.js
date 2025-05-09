@@ -23,7 +23,7 @@ $(document).ready(() => {
           // Bild anzeigen, sofern vorhanden
           const imgEl = document.createElement('img');
           // Default-Platzhalter
-          imgEl.src = 'https://via.placeholder.com/300x200';
+          imgEl.src = '';
           if (data.imgUrl) {
             const urlStr = data.imgUrl;
             if (urlStr.startsWith('gs://')) {

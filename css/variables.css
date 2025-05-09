@@ -19,6 +19,7 @@
     --color-primary:   #d26b58;
     --color-secondary: red;
     --color-accent:    blue;
+    --color-primary-dark: #b25b4b;
 
     /* Hintergrund & Text */
     --color-bg:        #ffffff;
@@ -48,13 +49,35 @@
   --fw-semibold:     600;
   --fw-bold:         700;
 
-  /* Typografie: Schriftgrößen-Skala für Responsive Design */
-  --fs-xs:           0.75rem;  /* z. B. kleine Notizen */
-  --fs-sm:           0.875rem; /* Fließtext mobil */
-  --fs-md:           1rem;     /* Fließtext desktop */
-  --fs-lg:           1.25rem;  /* Unterüberschriften */
-  --fs-xl:           2rem;     /* große Überschriften */
-  --fs-xxl:          3rem;     /* Hero‑Headline */
+  /* Responsive Schriftgrößen */
+  /* Kleine Notizen: mobil/desktop */
+  --fs-xs-mobile:   0.625rem;  /* XS Mobile */
+  --fs-xs-desktop:  0.75rem;   /* XS Desktop */
+
+  /* Fließtext klein: mobil/desktop */
+  --fs-sm-mobile:   0.75rem;   /* SM Mobile */
+  --fs-sm-desktop:  0.875rem;  /* SM Desktop */
+
+  /* Fließtext: mobil/desktop */
+  --fs-md-mobile:   0.875rem;  /* MD Mobile */
+  --fs-md-desktop:  1rem;      /* MD Desktop */
+
+  /* Unterüberschrift: mobil/desktop */
+  --fs-lg-mobile:   1rem;      /* LG Mobile */
+  --fs-lg-desktop:  1.25rem;   /* LG Desktop */
+
+  /* Große Überschrift: mobil/desktop */
+  --fs-xl-mobile:   1.25rem;   /* XL Mobile */
+  --fs-xl-desktop:  2rem;      /* XL Desktop */
+
+  /* Hero-Headline: mobil/desktop */
+  --fs-xxl-mobile:  2rem;      /* XXL Mobile */
+  --fs-xxl-desktop: 3rem;      /* XXL Desktop */
+
+  /* Extra Hero-Headline: mobil/desktop */
+  --fs-xxxl-mobile: 3rem;      /* XXXL Mobile */
+  --fs-xxxl-desktop:4rem;      /* XXXL Desktop */
+  
   /* Radien: Standardwerte für abgerundete Ecken */
   --radius-sm: 0.125rem;  /* kleine Abrundung */
   --radius-md: 0.25rem;   /* mittlere Abrundung */
@@ -74,6 +97,7 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+  --shadow-soft: 0 2px 4px rgba(0, 0, 0, 0.08);
 
   /* Übergänge (Transitions) */
   --transition-fast: 150ms;
@@ -92,8 +116,51 @@
   --z-index-modal: 1100;
   --z-index-tooltip: 1200;
 
-  /* RSVP-specific Sizing & Breakpoints */
+  /* Sizing & Breakpoints */
   --max-container-width: 600px;
-  --bp-xs: 480px;
   --border-width: 1px;
+
+  /* Zusätzliche Abstände */
+  --space-none: 0;
+  --space-hero-vertical: 8rem;
+  --space-hero-horizontal: var(--space-md);
+  --space-hero-bottom: 4rem;
+
+  /* Farbwerte */
+  --color-nav-text: #555555;
+
+  /* Schriftgrößen */
+  --fs-nav-icon: 1.5rem;
+
+  /* Underline-Indikatoren */
+  --underline-height: 2px;
+  --underline-offset-bottom: -4px;
+  --underline-width-full: 100%;
+
+  /* Prozentwerte */
+  --percent-full: 100%;
+  --percent-center: 50%;
+
+  /* Translate-Werte */
+  --translate-center-neg: -50%;
+
+  /* Overlay-Farbe */
+  --overlay-color: rgba(255,255,255,0.6);
+
+  /* Hero-Hintergrund */
+  --hero-bg-image: url('../img/backgroundImage.png');
+
+  /* Hero Font-Size-Clamp-Werte */
+  --fs-hero-h1-min: 2rem;
+  --fs-hero-h1-pref-vw: 6vw;
+  --fs-hero-h1-max: 2.5rem;
+  --fs-hero-h2-min: 2rem;
+  --fs-hero-h2-pref-vw: 6vw;
+  --fs-hero-h2-max: 2.5rem;
+  --fs-hero-h1-md-min: 2.5rem;
+  --fs-hero-h1-md-pref-vw: 5vw;
+  --fs-hero-h1-md-max: 3rem;
+  --fs-hero-h1-sm-min: 1.5rem;
+  --fs-hero-h1-sm-pref-vw: 8vw;
+  --fs-hero-h1-sm-max: 2rem;
   }

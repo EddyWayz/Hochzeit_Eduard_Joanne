@@ -20,6 +20,26 @@ $(document).ready(() => {
       
           // <li> mit Name, Beschreibung, optional Link und Button
           const li = document.createElement('li');
+          // Bild anzeigen, sofern vorhanden
+          const imgEl = document.createElement('img');
+          // Default-Platzhalter
+          imgEl.src = 'https://via.placeholder.com/300x200';
+          if (data.imgUrl) {
+            const urlStr = data.imgUrl;
+            if (urlStr.startsWith('gs://')) {
+              // Die Storage-URI in eine HTTP-Download-URL umwandeln
+              storage.refFromURL(urlStr)
+                .getDownloadURL()
+                .then(downloadUrl => { imgEl.src = downloadUrl; })
+                .catch(err => console.error('Fehler beim Laden des Bildes:', err));
+            } else {
+              // Bereits eine HTTP-URL
+              imgEl.src = urlStr;
+            }
+          }
+          imgEl.alt = data.name;
+          imgEl.classList.add('gift-img');
+          li.appendChild(imgEl);
       
           // 1) Name + Beschreibung
           const info = document.createElement('div');

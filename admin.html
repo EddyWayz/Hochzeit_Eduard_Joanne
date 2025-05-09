@@ -118,9 +118,14 @@
             <tr class="family-header"><td colspan="3">Familie ${fam} (${famGuestCount} Gäste)</td></tr>
           `);
           // E-Mail, Unverträglichkeiten & Nachricht
+          // Timestamp aus Firebase in deutsches Datumsformat umwandeln
           const info = entries[0];
+          const dateStr = info.timestamp
+            ? info.timestamp.toDate().toLocaleString('de-DE')
+            : '-';
           tbody.insertAdjacentHTML('beforeend', `
             <tr class="info-row"><td colspan="3">
+              <strong>Zeitstempel:</strong> ${dateStr}<br>
               <strong>E‑Mail:</strong> ${info.email}<br>
               <strong>Unverträglichkeiten:</strong> ${info.intolerances || '-'}<br>
               <strong>Nachricht:</strong> ${info.message || '-'}

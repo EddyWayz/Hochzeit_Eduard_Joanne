@@ -109,8 +109,8 @@
     // Initial render mit 1 Gast
     renderGuestFields(parseInt(guestsInput.value));
 
-    guestsInput.addEventListener('input', () => {
-      const count = Math.max(1, parseInt(guestsInput.value) || 1);
+    guestsInput.addEventListener('change', () => {
+      const count = Math.min(Math.max(1, parseInt(guestsInput.value) || 1), 5);
       guestsInput.value = count;
       renderGuestFields(count);
     });

@@ -121,6 +121,17 @@
   align-self: flex-start;
 }
 
+
+/* Einheitliches Vorschaubild-Layout für Geschenk-Karten */
+#gifts li .gift-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  object-position: center;
+  background-color: var(--color-bg-light);
+  margin-bottom: var(--space-sm);
+  border-radius: var(--radius-sm);
+}
 @media (max-width: 480px) {
   /* Single‐column layout on small screens */
   #gifts {

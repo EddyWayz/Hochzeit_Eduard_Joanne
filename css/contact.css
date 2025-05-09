@@ -10,12 +10,12 @@
   }
   
   .hero h1 {
-    font-size: 2.5rem;
+    font-size: var(--fs-hero-h1-max);
     margin-bottom: 0.5rem;
   }
   
   .hero p {
-    font-size: 1.125rem;
+    font-size: var(--fs-md-desktop);
   }
   
   /* Kontakt-Sektion */
@@ -38,7 +38,7 @@
   /* Details-Box */
   .contact-details h2 {
     margin-bottom: 1rem;
-    font-size: 1.75rem;
+    font-size: var(--fs-xl-desktop);
   }
   
   .contact-details p {
@@ -49,7 +49,7 @@
   /* Formular */
   .contact-form h2 {
     margin-bottom: 1rem;
-    font-size: 1.75rem;
+    font-size: var(--fs-xl-desktop);
   }
   
   .form-group {
@@ -68,7 +68,7 @@
     padding: 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    font-size: 1rem;
+    font-size: var(--fs-md-desktop);
     font-family: inherit;
   }
   
@@ -79,7 +79,7 @@
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: var(--radius-md);
-    font-size: 1rem;
+    font-size: var(--fs-md-desktop);
     cursor: pointer;
     transition: background-color 0.2s;
   }
@@ -87,3 +87,32 @@
   .btn:hover {
     background-color: var(--color-primary-dark);
   }
+
+ 
+@media (max-width: 768px) {
+  /* Tablet View: Stack contact details and form vertically */
+  .contact-section {
+    flex-direction: column;
+    padding: 2rem 1rem;
+  }
+  .contact-details,
+  .contact-form {
+    width: 100%;
+    margin-bottom: var(--space-md);
+  }
+}
+
+@media (max-width: 576px) {
+  .hero p {
+    font-size: var(--fs-md-mobile);
+  }
+  .contact-details h2,
+  .contact-form h2 {
+    font-size: var(--fs-xl-mobile);
+  }
+  .form-group input,
+  .form-group textarea,
+  .btn {
+    font-size: var(--fs-md-mobile);
+  }
+}

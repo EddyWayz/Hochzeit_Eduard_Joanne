@@ -1,8 +1,16 @@
-/* Geschenkeliste Stylesheet: Modal-Overlay und Geschenk-Grid Layout */
-/* gifts.css */
+/* ============================================
+   Geschenkeliste Stylesheet: Modal-Overlay und Geschenk-Grid Layout
+   Datei: gifts.css
+   Basis-Variablen kommen aus variables.css:
+     – Farben, Typografie, Spacing, Breakpoints, etc.
+   ============================================ */
 
-/* Safe Area + Modal Overlay */
 
+/* --------------------------------------------
+   Safe Area + Modal Overlay
+   – Das Overlay füllt den sicheren Bereich aus
+   – Zentriert den Modal-Content
+   -------------------------------------------- */
 .modal {
   position: fixed;
   top: var(--safe-top);
@@ -11,78 +19,107 @@
   height: calc(100% - var(--safe-top) - var(--safe-bottom));
   background: rgba(0,0,0,0.5);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center;       /* vertikal zentrieren */
+  justify-content: center;   /* horizontal zentrieren */
   z-index: 1000;
 }
 
-/* Modal Content */
+/* --------------------------------------------
+   Modal Content
+   – Weißer Kasten mit Schatten und abgerundeten Ecken
+   – Maximale Breite 350px, responsiv 90%
+   -------------------------------------------- */
 .modal-content {
-  background-color: var(--color-bg-white, #fff);
-  color: black; /* Muss angepasst werden */
-  padding: 1.5rem;
-  border-radius: var(--radius-lg, 1rem);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
   max-width: 350px;
   width: 90%;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Button‑Container im Modal */
+/* --------------------------------------------
+   Button-Container im Modal
+   – Buttons rechtsbündig mit kleinem Abstand
+   -------------------------------------------- */
 .buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
 }
 
-/* Modal‑Buttons */
+/* --------------------------------------------
+   Modal-Buttons
+   – Konsistente Button-Größen und Hover/Active-Effekte
+   -------------------------------------------- */
 .buttons button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--fs-md-desktop);
   font-weight: var(--fw-semibold);
   color: #fff;
   background-color: var(--color-primary, #2c3e50);
   border: none;
   border-radius: var(--radius-md, 0.5rem);
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition:
+    background-color var(--transition-medium) var(--transition-timing),
+    transform var(--transition-fast) var(--transition-timing);
 }
-
 .buttons button:hover {
   background-color: var(--color-primary-dark, #b2594e);
   transform: translateY(-1px);
 }
-
 .buttons button:active {
   transform: translateY(1px);
 }
 
-/* Responsive Anpassungen */
-@media (max-width: 480px) {
-  .modal-content {
-    padding: 1rem;
-  }
+/* ============================================
+   Responsive Anpassungen für Mobile & Tablet
+   ============================================ */
 
+/* Mobile Layout bis 576px:
+   – Reduziertes Padding, volle Breite Buttons
+   – Spalten werden zu einer Spalte
+*/
+@media (max-width: 576px) {
+  .gift-list {
+    padding: var(--space-sm);
+  }
+  #gifts {
+    gap: var(--space-lg);
+  }
+  #gifts li {
+    padding: var(--space-xs);
+  }
   .buttons {
+    gap: var(--space-xs);
+    margin-top: var(--space-xs);
     flex-direction: column;
-    gap: 0.75rem;
   }
-
+  .modal-content {
+    padding: var(--space-md);
+  }
   .buttons button {
     width: 100%;
   }
 }
 
-/* Geschenkeliste Styles */
+/* ============================================
+   Geschenkeliste Styles
+   – Übersichtlicher Grid-Look für Geschenk-Karten
+   ============================================ */
 .gift-list {
-  padding: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
+  padding: var(--space-md);
+  width: 100%;
+  max-width: var(--bp-xl);
+  margin: 0 auto;  /* zentriert die Liste */
 }
 .gift-list h2 {
-  font-size: 2rem;
+  font-size: var(--fs-xl-desktop);
   font-weight: var(--fw-semibold);
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
   text-align: center;
   color: var(--color-primary);
 }
@@ -91,50 +128,91 @@
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  justify-content: center;
+  gap: var(--space-lg);
 }
 #gifts li {
-  background-color: var(--color-bg-white, #fff);
-  border: 1px solid var(--color-border, #dddddd);
-  border-radius: var(--radius-md, 0.5rem);
-  padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 #gifts li div {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-md);
 }
 #gifts li a {
   color: var(--color-primary);
   text-decoration: none;
   font-weight: var(--fw-normal);
-  transition: color 0.2s;
+  transition: color var(--transition-medium) var(--transition-timing);
 }
 #gifts li a:hover {
   color: var(--color-primary-dark);
 }
 #gifts li button {
-  margin-top: auto;
+  margin-top: auto;   /* Button immer unten im Card-Layout */
   align-self: flex-start;
 }
 
-
-/* Einheitliches Vorschaubild-Layout für Geschenk-Karten */
+/* --------------------------------------------
+   Einheitliches Vorschaubild-Layout
+   – 4:3-Ratio, zentriert, abgerundete Ecken
+   -------------------------------------------- */
 #gifts li .gift-img {
   width: 100%;
+  display: block;
+  margin: 0 auto;
   aspect-ratio: 4 / 3;
   object-fit: contain;
   object-position: center;
-  background-color: var(--color-bg-light);
+  background-color: var(--color-surface);
   margin-bottom: var(--space-sm);
   border-radius: var(--radius-sm);
 }
-@media (max-width: 480px) {
-  /* Single‐column layout on small screens */
+
+/* Tablet Layout bis 768px:
+   – Zwei Spalten statt auto-fit
+   – Angepasstes Padding und Font-Size in Buttons & Überschriften
+*/
+@media (max-width: 768px) {
+  #gifts {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+  .gift-list {
+    padding: var(--space-md);
+  }
+  #gifts li {
+    padding: var(--space-sm);
+  }
+  .buttons {
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+  .buttons button {
+    font-size: var(--fs-md-mobile);
+  }
+  .gift-list h2 {
+    font-size: var(--fs-xl-mobile);
+  }
+}
+
+/* Mobile Layout bis 576px:
+   – Eine Spalte, mobile Font-Größen
+*/
+@media (max-width: 576px) {
   #gifts {
     grid-template-columns: 1fr;
+  }
+  .buttons button {
+    font-size: var(--fs-md-mobile);
+  }
+  .gift-list h2 {
+    font-size: var(--fs-xl-mobile);
   }
 }

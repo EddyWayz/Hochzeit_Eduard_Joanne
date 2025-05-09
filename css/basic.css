@@ -8,8 +8,14 @@
 
 /* Global Reset: Entfernt Standard-Margin und Padding */
 html, body {
-  margin: var(--space-none);
   padding: var(--space-none);
+  margin: var(--space-none);
+}
+
+body {
+  /* Horizontalen Abstand an allen Seiten garantieren */
+  padding-left: var(--space-sm);
+  padding-right: var(--space-sm);
 }
 
 /* Navbar: Sticky Header mit Flex-Layout und Safe Area Padding */
@@ -34,7 +40,7 @@ html, body {
   display: inline-block;
   /* text-align will follow the .navbar justify-content setting */
   font-family: var(--font-primary);
-  font-size: var(--fs-xxxl-desktop);
+  font-size: var(--fs-logo);
   color: var(--color-primary);
   text-decoration: none;
   white-space: normal;
@@ -56,7 +62,7 @@ html, body {
 /* Navigation Links: Touch-optimierte Link-Stile */
 .nav-links a {
   text-decoration: none;
-  font-size: var(--fs-lg-desktop);
+  font-size: var(--fs-nav-link);
   font-weight: 800;
   color: var(--color-nav-text);
   position: relative;
@@ -86,6 +92,13 @@ html, body {
   width: var(--underline-width-full);
 }
 
+/* Section Headings (h2) Default: Desktop */
+.story h2, .details h2, .schedule h2,
+.rsvp-section h2, .gift-list h2,
+.contact-section h2, .impressum-section h2 {
+  font-size: var(--fs-xl-desktop);
+}
+
 /* Mobile Menü‑Icon */
 .menu-toggle {
   display: none;
@@ -95,8 +108,9 @@ html, body {
   padding: var(--space-xs);       /* Touch‑Friendly */
 }
 
-/* Responsives Design: Mobile Layout bis 768px */
+/* Responsives Design: Tablet Layout bis 768px */
 @media (max-width: 768px) {
+
   .navbar {
     flex-direction: column;
     align-items: center;
@@ -160,19 +174,34 @@ html, body {
   html, body {
     overflow-x: hidden;
   }
+}
 
-  /* Mobile-Schriftgrößen */
-  .logo {
-    font-size: var(--fs-xxxl-mobile);
+/* Responsives Design: Mobile Layout bis 576px */
+@media (max-width: 576px) {
+  /* Section Headings (h2) Mobile */
+  .story h2, .details h2, .schedule h2,
+  .rsvp-section h2, .gift-list h2,
+  .contact-section h2, .impressum-section h2 {
+    font-size: var(--fs-xl-mobile);
   }
-  .nav-links a {
+
+  h1 {
+    font-size: var(--fs-xl-mobile);
+  }
+
+  h2 {
     font-size: var(--fs-lg-mobile);
   }
-  .btn {
-    font-size: var(--fs-lg-mobile);
+  .nav-links {
+    flex-direction: column;
+    gap: var(--space-md);
   }
-  .site-footer {
-    font-size: var(--fs-sm-mobile);
+  #gifts {
+    grid-template-columns: 1fr;
+  }
+  .contact-details, .contact-form {
+    width: 100%;
+    margin-bottom: var(--space-md);
   }
 }
 
@@ -201,62 +230,6 @@ html, body {
   text-transform: uppercase;
 }
 
-/* Global Responsive Enhancements */
-@media (max-width: 1024px) {
-  .hero h1 {
-    font-size: clamp(
-      var(--fs-hero-h1-md-min),
-      var(--fs-hero-h1-md-pref-vw),
-      var(--fs-hero-h1-md-max)
-    );
-  }
-  .story h2, .details h2, .schedule h2, .rsvp-section h2, .gift-list h2, .contact-section h2, .impressum-section h2 {
-    font-size: 1.75rem;
-  }
-}
-
-/* Responsives Design: Mobile Layout bis 768px */
-@media (max-width: var(--bp-md)) {
-  .hero h1 {
-    font-size: clamp(
-      var(--fs-hero-h1-min),
-      var(--fs-hero-h1-pref-vw),
-      var(--fs-hero-h1-max)
-    );
-  }
-  section, .rsvp-section, .gift-list, .contact-section, .impressum-section {
-    padding: var(--space-xl) var(--space-md);
-  }
-  .story p, .details li, .schedule li, .registry p, .contact p {
-    font-size: var(--fs-md);
-  }
-}
-
-/* Responsives Design: Kleinste Bildschirme bis 480px */
-@media (max-width: var(--bp-sm)) {
-  .hero h1 {
-    font-size: clamp(
-      var(--fs-hero-h1-sm-min),
-      var(--fs-hero-h1-sm-pref-vw),
-      var(--fs-hero-h1-sm-max)
-    );
-  }
-  .hero h2, .story h2, .details h2, .schedule h2, .rsvp-section h2, .gift-list h2, .contact-section h2, .impressum-section h2 {
-    font-size: var(--fs-xs-mobile);
-  }
-  .nav-links {
-    flex-direction: column;
-    gap: var(--space-md);
-  }
-  #gifts {
-    grid-template-columns: 1fr;
-  }
-  .contact-details, .contact-form {
-    width: 100%;
-    margin-bottom: var(--space-md);
-  }
-}
-
 /* Komponenten: Karten, Buttons und Footer */
 .card {
   background-color: var(--color-surface);
@@ -272,7 +245,7 @@ html, body {
   padding: var(--space-sm) var(--space-lg);
   border: none;
   border-radius: var(--radius-md);
-  font-size: var(--fs-lg-desktop);
+  font-size: var(--fs-btn);
   text-align: center;
   cursor: pointer;
   transition: background-color var(--transition-medium) var(--transition-timing);
@@ -293,8 +266,29 @@ html, body {
   background-color: var(--color-surface);
   padding: var(--space-md);
   text-align: center;
-  font-size: var(--fs-sm-desktop);
+  font-size: var(--fs-footer);
   color: var(--color-text);
+}
+
+/* Index Stylesheet: Hero-Sektion und Event-Details (moved from index.css) */
+.story {
+  background-color: var(--color-surface);
+  text-align: center;
+}
+h2 {
+  margin-bottom: var(--space-md);
+}
+.details h2 {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+.details ul {
+  max-width: var(--max-container-width);
+  margin: auto;
+}
+.details li {
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
 }
 
 /* Sticky Footer ohne Flexbox */

@@ -163,4 +163,30 @@
   --fs-hero-h1-sm-min: 1.5rem;
   --fs-hero-h1-sm-pref-vw: 8vw;
   --fs-hero-h1-sm-max: 2rem;
+
+  /* Role-based Font Sizes */
+  --fs-logo-mobile: var(--fs-xxxl-mobile);
+  --fs-logo-desktop: var(--fs-xxxl-desktop);
+  --fs-nav-link-mobile: var(--fs-lg-mobile);
+  --fs-nav-link-desktop: var(--fs-lg-desktop);
+  --fs-btn-mobile: var(--fs-lg-mobile);
+  --fs-btn-desktop: var(--fs-lg-desktop);
+  --fs-footer-mobile: var(--fs-sm-mobile);
+  --fs-footer-desktop: var(--fs-sm-desktop);
+
+  /* Active Font Size Variables */
+  --fs-logo: var(--fs-logo-mobile);
+  --fs-nav-link: var(--fs-nav-link-mobile);
+  --fs-btn: var(--fs-btn-mobile);
+  --fs-footer: var(--fs-footer-mobile);
+  }
+
+  /* Override font variables on desktop */
+  @media (min-width: 769px) {
+    :root {
+      --fs-logo: var(--fs-logo-desktop);
+      --fs-nav-link: var(--fs-nav-link-desktop);
+      --fs-btn: var(--fs-btn-desktop);
+      --fs-footer: var(--fs-footer-desktop);
+    }
   }

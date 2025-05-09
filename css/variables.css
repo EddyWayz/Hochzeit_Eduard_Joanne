@@ -91,5 +91,9 @@
   --z-index-dropdown: 1000;
   --z-index-modal: 1100;
   --z-index-tooltip: 1200;
+
+  /* RSVP-specific Sizing & Breakpoints */
+  --max-container-width: 600px;
+  --bp-xs: 480px;
+  --border-width: 1px;
   }
-  

@@ -65,6 +65,15 @@
         <input type="number" id="guests" name="guests" min="1" max="5" value="1">
       </div>
 
+      <!-- Beschreibung der Alterskategorien -->
+      <div class="form-group age-description">
+        <p><strong>Alterskategorien:</strong></p>
+        <div class="age-list">
+          <p>Erwachsener ab 16 Jahren</p>
+          <p>Kind 6 bis 15 Jahre</p>
+          <p>Kleinkind bis 5 Jahre</p>
+        </div>
+      </div>
       <!-- Container für dynamische Gast-Felder -->
       <div id="guest-details"></div>
 
@@ -110,7 +119,7 @@
     renderGuestFields(parseInt(guestsInput.value));
 
     guestsInput.addEventListener('change', () => {
-      const count = Math.min(Math.max(1, parseInt(guestsInput.value) || 1), 5);
+      const count = Math.min(Math.max(1, parseInt(guestsInput.value) || 1), 10);
       guestsInput.value = count;
       renderGuestFields(count);
     });

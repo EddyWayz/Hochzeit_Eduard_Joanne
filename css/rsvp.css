@@ -1,5 +1,12 @@
-/* RSVP Stylesheet: Zusageformular und dynamische Gast-Felder */
-/* Override theme variables for RSVP section */
+/****
+ * rsvp.css
+ * Stylesheet für das RSVP-Formular auf der Hochzeitsseite.
+ * Enthält Variablenanpassungen, Layout- und Typografie-Regeln
+ * sowie spezielle Styles für dynamische Gast-Felder.
+ */
+/* ------------------------------------------------------------------
+   Override globaler Theme-Variablen speziell für den RSVP-Bereich
+   ------------------------------------------------------------------ */
 :root {
   --color-bg-light: #f9f9f9;
   --color-border: #dddddd;
@@ -7,109 +14,147 @@
   --color-primary-dark: #b2594e;
 }
 
-/* RSVP-specific Styles for a modern, clean look */
-
+/* ------------------------------------------------------------------
+   Layout und Container für die RSVP-Sektion
+   ------------------------------------------------------------------ */
 .rsvp-section {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
+    max-width: var(--max-container-width);
+    margin: var(--space-xl) auto;
+    padding: var(--space-xl);
     background-color: var(--color-bg-light);
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
   }
   
+  /* Titel der RSVP-Sektion: zentriert, große Schriftgröße */
   .rsvp-section h2 {
-    font-size: 2rem;
+    font-size: var(--fs-xl);
     font-weight: 600;
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-lg);
     text-align: center;
     color: var(--color-primary);
   }
   
+  /* Formular-Layout: Flexbox mit vertikalem Abstand */
   .rsvp-form {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: var(--space-lg);
   }
   
+  /* Gemeinsames Basis-Layout für Formular-Felder */
   .form-group {
     display: flex;
     flex-direction: column;
   }
   
+  /* Styling der Labels: Typografie und Abstand */
   .form-group label {
-    font-size: 1rem;
+    font-size: var(--fs-md);
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-xs);
     color: var(--color-text);
   }
   
+  /* Basiseingabefelder: Padding, Rahmen und Schriftgröße */
   .form-group input[type="text"],
   .form-group input[type="email"],
   .form-group input[type="number"],
   .form-group textarea {
-    padding: 0.75rem;
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+    padding: var(--space-sm);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-lg);
+    font-size: var(--fs-md);
+    transition: border-color var(--transition-fast) var(--transition-timing);
   }
   
+  /* Fokus-Indikator für Eingaben */
   .form-group input:focus,
   .form-group textarea:focus {
     outline: none;
-    border-color: var(--color-primary, #2c3e50);
+    border-color: var(--color-primary);
   }
   
-  .radio-group {
+  /* Gruppierung und Abstand für Radio-Buttons */
+.radio-group {
     display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
+    flex-wrap: wrap;
+    column-gap: var(--space-lg);
+    row-gap: var(--space-xs);
+    margin-top: var(--space-md);
   }
   
   .radio-group label {
     display: flex;
     align-items: center;
-    font-weight: 400;
+    font-weight: var(--fw-normal);
   }
   
   .radio-group input {
-    margin-right: 0.25rem;
+    margin-right: var(--space-xxs);
   }
   
+  /* Styles für dynamisch hinzugefügte Gast-Felder */
   #guest-details .form-group {
-    background-color: var(--color-bg-white, #fff);
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    border-radius: var(--radius-lg);
+    border: var(--border-width) solid var(--color-border);
   }
   
+  /* Button-Styling: Typografie, Farben und Interaktionen */
   .btn {
     align-self: center;
-    padding: 0.75rem 2rem;
-    font-size: 1.125rem;
+    padding: var(--space-sm) var(--space-xl);
+    font-size: var(--fs-lg);
     font-weight: 600;
-    color: #fff;
+    color: var(--color-on-primary);
     background-color: var(--color-primary);
     border: none;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+    transition: background-color var(--transition-medium) var(--transition-timing), transform var(--transition-fast) var(--transition-timing);
   }
   
+  /* Hover-Effekt für Button */
   .btn:hover {
     background-color: var(--color-primary-dark);
     transform: translateY(-1px);
   }
   
+  /* Aktiver Zustand (Klick) für Button */
   .btn:active {
     transform: translateY(1px);
   }
-  
-  @media (max-width: 480px) {
+
+/* Bereich für Alterskategorien: Hintergrund, Ränder und Padding */
+.form-group.age-description {
+  background-color: var(--color-surface);
+  padding: var(--space-md);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+/* Überschrift innerhalb Altersbeschreibung */
+.form-group.age-description > p {
+  margin: 0;
+  font-weight: var(--fw-semibold);
+  color: var(--color-primary);
+}
+/* Auflistung der einzelnen Alterskategorien */
+.form-group.age-description .age-list p {
+  margin: var(--space-xs) 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text);
+}
+
+  /* ------------------------------------------------------------------
+     Responsive Anpassungen für kleine Bildschirme
+     ------------------------------------------------------------------ */
+  @media (max-width: var(--bp-xs)) {
     .rsvp-section {
-      margin: 1rem;
-      padding: 1.5rem;
+      margin: var(--space-md);
+      padding: var(--space-lg);
     }
   
     .btn {
@@ -117,4 +162,3 @@
       text-align: center;
     }
   }
-  

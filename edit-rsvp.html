@@ -3,39 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RSVP bearbeiten</title>
-</head>
-<body>
-  <h1>RSVP bearbeiten</h1>
-  <form id="edit-form">
-    <div>
-      <label for="familyName">Familienname</label>
-      <input type="text" id="familyName" name="familyName" required>
-    </div>
-    <div>
-      <label for="attending">Teilnahme</label>
-      <select id="attending" name="attending">
-        <option value="yes">Ja</option>
-        <option value="no">Nein</option>
-      </select>
-    </div>
-    <div>
-      <label for="guests">Gäste</label>
-      <input type="number" id="guests" name="guests" min="1" max="10">
-    </div>
-    <div id="guest-details"></div>
-    <div>
-      <label for="intolerances">Unverträglichkeiten</label>
-      <textarea id="intolerances" name="intolerances"></textarea>
-    </div>
-    <div>
-      <label for="message">Nachricht</label>
-      <textarea id="message" name="message"></textarea>
-    </div>
-    <button type="submit">Speichern</button>
-  </form>
+  <title>RSVP – Bearbeiten</title>
 
+  <!-- Farbvariablen und Basis-Styles -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/basic.css">
+  <!-- Spezifisches Styling für RSVP/Edit -->
+  <link rel="stylesheet" href="css/edit-rsvp.css">
+
+  <!-- jQuery (für Header/Footer-Include) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="js/includeTemplate.js"></script>
+
+  <!-- Firebase-SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script>
     const firebaseConfig = {
@@ -44,18 +26,103 @@
       projectId: "hochzeiteduardjoanne",
       storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
       messagingSenderId: "209565556740",
-      appId: "1:209565556740:web:1a227bfce08bfce08bf5dca2d551"
+      appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+  </script>
+</head>
+<body>
+  <div id="header"></div>
 
+  <section class="rsvp-section">
+    <h2>RSVP bearbeiten</h2>
+    <form class="rsvp-form" id="edit-form">
+      <div class="form-group">
+        <label for="familyName">Familienname</label>
+        <input type="text" id="familyName" name="familyName" placeholder="Dein Familienname" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-Mail</label>
+        <input type="email" id="email" name="email" placeholder="deine@mail.de" required>
+      </div>
+
+      <div class="form-group">
+        <label>Teilnahme</label>
+        <label><input type="radio" name="attending" value="yes" required> Ja</label>
+        <label><input type="radio" name="attending" value="no" required> Nein</label>
+      </div>
+
+      <div class="form-group">
+        <label for="guests">Gäste insgesamt</label>
+        <input type="number" id="guests" name="guests" min="1" max="10" value="1">
+      </div>
+
+      <div class="form-group age-description">
+        <p><strong>Alterskategorien:</strong></p>
+        <div class="age-list">
+          <p>Erwachsener ab 16 Jahren</p>
+          <p>Kind 6 bis 15 Jahre</p>
+          <p>Kleinkind bis 5 Jahre</p>
+        </div>
+      </div>
+
+      <div id="guest-details"></div>
+
+      <div class="form-group">
+        <label for="intolerances">Unverträglichkeiten</label>
+        <textarea id="intolerances" name="intolerances" rows="2" placeholder="z. B. Gluten, Laktose, Nüsse…"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Nachricht</label>
+        <textarea id="message" name="message" rows="4"></textarea>
+      </div>
+
+      <button type="submit" class="btn">Änderungen speichern</button>
+    </form>
+  </section>
+
+  <script>
+    // Helfer: Query-Parameter aus URL
     function getParam(name) {
       return new URLSearchParams(window.location.search).get(name);
     }
 
     const rsvpId = getParam('id');
-    const form   = document.getElementById('edit-form');
+    const form = document.getElementById('edit-form');
+    const guestsInput = document.getElementById('guests');
+    const detailsContainer = document.getElementById('guest-details');
 
+    // Rendert die Gast-Felder, optional mit Werten
+    function renderGuestFields(count, guestDetails = []) {
+      detailsContainer.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        const data = guestDetails[i-1] || { name: '', type: 'Erwachsener' };
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('form-group');
+        wrapper.innerHTML = `
+          <label>Gast ${i} (Vorname)</label>
+          <input type="text" name="guestName_${i}" placeholder="Vorname Gast ${i}" value="${data.name}" required>
+          <div class="radio-group">
+            <label><input type="radio" name="guestType_${i}" value="Erwachsener" ${data.type==='Erwachsener'? 'checked':''}> Erwachsener</label>
+            <label><input type="radio" name="guestType_${i}" value="Kind" ${data.type==='Kind'? 'checked':''}> Kind</label>
+            <label><input type="radio" name="guestType_${i}" value="Kleinkind" ${data.type==='Kleinkind'? 'checked':''}> Kleinkind</label>
+          </div>
+        `;
+        detailsContainer.appendChild(wrapper);
+      }
+    }
+
+    // Beim Ändern der Gäste-Anzahl neu rendern
+    guestsInput.addEventListener('change', () => {
+      const count = Math.min(Math.max(1, parseInt(guestsInput.value) || 1), 10);
+      guestsInput.value = count;
+      renderGuestFields(count);
+    });
+
+    // Daten laden und Formular befüllen
     db.collection('rsvps').doc(rsvpId).get().then(doc => {
       if (!doc.exists) {
         alert('RSVP nicht gefunden.');
@@ -63,54 +130,48 @@
       }
       const data = doc.data();
       form.familyName.value   = data.familyName;
+      form.email.value        = data.email;
       form.attending.value    = data.attending;
-      form.guests.value       = data.guests;
+      guestsInput.value       = data.guests;
       form.intolerances.value = data.intolerances || '';
       form.message.value      = data.message || '';
-
-      const detailsContainer = document.getElementById('guest-details');
-      data.guestDetails.forEach((gd, i) => {
-        const div = document.createElement('div');
-        div.innerHTML = `
-          <label>Gast ${i+1} Name</label>
-          <input type="text" name="guestName_${i}" value="${gd.name}" required>
-          <label>Typ</label>
-          <select name="guestType_${i}">
-            <option value="Erwachsener" ${gd.type==='Erwachsener'? 'selected':''}>Erwachsener</option>
-            <option value="Kind" ${gd.type==='Kind'? 'selected':''}>Kind</option>
-            <option value="Kleinkind" ${gd.type==='Kleinkind'? 'selected':''}>Kleinkind</option>
-          </select>
-        `;
-        detailsContainer.appendChild(div);
-      });
+      renderGuestFields(data.guests, data.guestDetails);
     }).catch(err => {
       console.error(err);
-      alert('Fehler beim Laden.');
+      alert('Fehler beim Laden der Daten.');
     });
 
+    // Submit: in Firestore updaten
     form.addEventListener('submit', async e => {
       e.preventDefault();
+      const guestCount = parseInt(guestsInput.value, 10) || 1;
+      const guestDetails = [];
+      for (let i = 1; i <= guestCount; i++) {
+        const name = form[`guestName_${i}`].value.trim();
+        const type = form[`guestType_${i}`].value;
+        guestDetails.push({ name, type });
+      }
+
       const updated = {
-        familyName: form.familyName.value.trim(),
-        attending:  form.attending.value,
-        guests:     parseInt(form.guests.value, 10),
+        familyName:   form.familyName.value.trim(),
+        email:        form.email.value.trim(),
+        attending:    form.attending.value,
+        guests:       guestCount,
+        guestDetails: guestDetails,
         intolerances: form.intolerances.value.trim(),
-        message:      form.message.value.trim(),
-        guestDetails: []
+        message:      form.message.value.trim()
       };
-      const detailsContainer = document.getElementById('guest-details');
-      updated.guestDetails = Array.from(detailsContainer.children).map((div, i) => ({
-        name: div.querySelector(`[name="guestName_${i}"]`).value.trim(),
-        type: div.querySelector(`[name="guestType_${i}"]`).value
-      }));
+
       try {
         await db.collection('rsvps').doc(rsvpId).update(updated);
-        alert('Deine RSVP wurde aktualisiert!');
-      } catch (err) {
-        console.error(err);
-        alert('Fehler beim Speichern.');
+        alert('Deine RSVP wurde erfolgreich aktualisiert!');
+      } catch (error) {
+        console.error('Fehler beim Speichern:', error);
+        alert('Fehler beim Speichern. Bitte versuche es später erneut.');
       }
     });
   </script>
+
+  <div id="footer"></div>
 </body>
 </html>

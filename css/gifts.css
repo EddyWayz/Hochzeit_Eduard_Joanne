@@ -111,11 +111,13 @@
    – Übersichtlicher Grid-Look für Geschenk-Karten
    ============================================ */
 .gift-list {
-  padding: var(--space-md);
-  width: 100%;
+  /* width: 100%; */       /* entfernen */
   max-width: var(--bp-xl);
-  margin: 0 auto;  /* zentriert die Liste */
+  margin: 0 auto;         /* zentriert den Container */
+  padding: var(--space-md);
+  box-sizing: border-box; /* wichtig, damit Padding nicht nach außen schiebt */
 }
+
 .gift-list h2 {
   font-size: var(--fs-xl-desktop);
   font-weight: var(--fw-semibold);

@@ -149,9 +149,9 @@ body {
 }
 
   /* Links im Panel untereinander */
-  .nav-links {
-    flex-direction: column;
-    gap: var(--space-md);
+  .nav-links a {
+    display: block;
+    width: 100%;
   }
   .nav-links a {
     padding: var(--space-md);

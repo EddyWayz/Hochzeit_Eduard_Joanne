@@ -129,23 +129,24 @@ body {
     display: block;
   }
 
-  /* Ausgeblendetes Dropdown-Panel */
-  .nav-menu {
-    display: block;
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height var(--transition-medium) var(--transition-timing);
-    position: absolute;
-    top: var(--percent-full);          /* direkt unter der Navbar */
-    left: 0;
-    width: var(--percent-full);
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-md);
-  }
-  /* Wenn geöffnet */
-  .nav-menu.open {
-    max-height: 500px; /* oder ein Wert, der alle Links komplett anzeigt */
-  }
+.nav-menu {
+  position: absolute;
+  top: var(--percent-full);
+  left: 0;
+  width: var(--percent-full);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-medium) var(--transition-timing);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md);
+
+  /* Für flüssiges Scrollen und Touch-Events in iOS Safari */
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
+}
+.nav-menu.open {
+  max-height: 500px;
+}
 
   /* Links im Panel untereinander */
   .nav-links {

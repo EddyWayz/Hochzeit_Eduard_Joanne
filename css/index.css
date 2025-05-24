@@ -1,9 +1,4 @@
 h1 {
-  font-size: var(--fs-xxl-desktop);
+  font-size: var(--fs-hero-h1);
 }
 
-@media (max-width: 576px) {
-    h1 {
-        font-size: var(--fs-xxl-mobile);
-    }
-}

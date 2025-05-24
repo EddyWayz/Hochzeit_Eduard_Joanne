@@ -17,11 +17,12 @@
   left: var(--safe-left);
   width: calc(100% - var(--safe-left) - var(--safe-right));
   height: calc(100% - var(--safe-top) - var(--safe-bottom));
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;       /* vertikal zentrieren */
   justify-content: center;   /* horizontal zentrieren */
-  z-index: 1000;
+  z-index: var(--z-index-modal);
+  backdrop-filter: blur(4px);
 }
 
 /* --------------------------------------------
@@ -37,6 +38,12 @@
   max-width: 350px;
   width: 90%;
   box-shadow: var(--shadow-lg);
+  transform: translateY(0);
+  transition: transform var(--transition-medium) var(--transition-timing);
+}
+
+.modal-content:hover {
+  transform: translateY(-2px);
 }
 
 /* --------------------------------------------
@@ -56,16 +63,14 @@
    -------------------------------------------- */
 .buttons button {
   padding: var(--space-sm) var(--space-lg);
-  font-size: var(--fs-md-desktop);
+  font-size: var(--fs-btn);
   font-weight: var(--fw-semibold);
-  color: #fff;
+  color: var(--color-on-primary);
   background-color: var(--color-primary);
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition:
-    background-color var(--transition-medium) var(--transition-timing),
-    transform var(--transition-fast) var(--transition-timing);
+  transition: all var(--transition-medium) var(--transition-timing);
 }
 .buttons button:hover {
   background-color: var(--color-primary-dark);
@@ -76,54 +81,23 @@
 }
 
 /* ============================================
-   Responsive Anpassungen für Mobile & Tablet
-   ============================================ */
-
-/* Mobile Layout bis 576px:
-   – Reduziertes Padding, volle Breite Buttons
-   – Spalten werden zu einer Spalte
-*/
-@media (max-width: 576px) {
-  .gift-list {
-    padding: var(--space-sm);
-  }
-  #gifts {
-    gap: var(--space-lg);
-  }
-  #gifts li {
-    padding: var(--space-xs);
-  }
-  .buttons {
-    gap: var(--space-xs);
-    margin-top: var(--space-xs);
-    flex-direction: column;
-  }
-  .modal-content {
-    padding: var(--space-md);
-  }
-  .buttons button {
-    width: 100%;
-  }
-}
-
-/* ============================================
    Geschenkeliste Styles
    – Übersichtlicher Grid-Look für Geschenk-Karten
    ============================================ */
 .gift-list {
-  /* width: 100%; */       /* entfernen */
-  max-width: var(--bp-xl);
+  max-width: var(--max-container-width);
   margin: 0 auto;         /* zentriert den Container */
   padding: var(--space-md);
   box-sizing: border-box; /* wichtig, damit Padding nicht nach außen schiebt */
 }
 
 .gift-list h2 {
-  font-size: var(--fs-xl-desktop);
+  font-size: var(--fs-xl);
   font-weight: var(--fw-semibold);
   margin-bottom: var(--space-md);
   text-align: center;
   color: var(--color-primary);
+  font-family: var(--font-capital_letters);
 }
 #gifts {
   list-style: none;
@@ -136,16 +110,24 @@
 }
 #gifts li {
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-md);
   padding: var(--space-md);
   box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: transform var(--transition-medium) var(--transition-timing);
+}
+#gifts li:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 #gifts li div {
   margin-bottom: var(--space-md);
+  font-family: var(--font-text);
+  font-size: var(--fs-md);
+  color: var(--color-text);
 }
 #gifts li a {
   color: var(--color-primary);
@@ -159,6 +141,7 @@
 #gifts li button {
   margin-top: auto;   /* Button immer unten im Card-Layout */
   align-self: flex-start;
+  font-family: var(--font-text);
 }
 
 /* --------------------------------------------
@@ -170,9 +153,9 @@
   width: 100%;
   margin-bottom: var(--space-sm);
   aspect-ratio: 4 / 3;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: var(--radius-sm);
-  border: 1px solid #f0f0f0;
+  border: var(--border-width) solid var(--color-border);
   overflow: hidden;
 }
 
@@ -181,8 +164,8 @@
   height: 100%;
   object-fit: contain;
   object-position: center;
-  background-color: #ffffff;
-  transition: opacity 0.2s ease-in-out;
+  background-color: var(--color-surface);
+  transition: opacity var(--transition-fast) var(--transition-timing);
 }
 
 /* Fallback für ältere Browser ohne aspect-ratio */
@@ -199,53 +182,5 @@
     left: 0;
     width: 100%;
     height: 100%;
-  }
-}
-
-/* ============================================
-   Responsive Anpassungen
-   ============================================ */
-
-/* Tablet Layout bis 768px */
-@media (max-width: 768px) {
-  #gifts {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-md);
-  }
-  
-  .gift-list {
-    padding: var(--space-md);
-  }
-  
-  #gifts li {
-    padding: var(--space-sm);
-  }
-  
-  .buttons {
-    gap: var(--space-sm);
-    margin-top: var(--space-sm);
-  }
-  
-  .buttons button {
-    font-size: var(--fs-md-mobile);
-  }
-  
-  .gift-list h2 {
-    font-size: var(--fs-xl-mobile);
-  }
-}
-
-/* Mobile Layout bis 576px */
-@media (max-width: 576px) {
-  #gifts {
-    grid-template-columns: 1fr;
-  }
-  
-  .buttons button {
-    font-size: var(--fs-md-mobile);
-  }
-  
-  .gift-list h2 {
-    font-size: var(--fs-xl-mobile);
   }
 }

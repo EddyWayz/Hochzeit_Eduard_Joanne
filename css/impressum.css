@@ -1,10 +1,35 @@
+/* ============================================
+   Impressum Stylesheet
+   ============================================ */
 
-/* Tablet Layout: bis 768px */
-@media (max-width: 768px) {
-
+.impressum-section {
+  max-width: var(--max-container-width);
+  margin: var(--space-xl) auto;
+  padding: var(--space-xl);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition-medium) var(--transition-timing);
 }
 
-/* Mobile Layout: bis 576px */
-@media (max-width: 576px) {
-  
+.impressum-section:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.impressum-section h2 {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+  color: var(--color-primary);
+  font-family: var(--font-capital_letters);
+}
+
+.impressum-section p {
+  margin-bottom: var(--space-md);
+  line-height: var(--lh-normal);
+  font-family: var(--font-text);
+  font-size: var(--fs-md);
+  color: var(--color-text);
 }

@@ -54,6 +54,8 @@ $(document).ready(() => {
             if (priority) {
                 tempImg.fetchPriority = 'high';
                 tempImg.loading = 'eager';
+                // Höchste Priorität für die ersten Bilder
+                tempImg.decoding = 'sync';
             }
             
             tempImg.onload = function() {
@@ -142,19 +144,44 @@ $(document).ready(() => {
             return { li, imgEl, data };
         });
 
-        // Lade Bilder in Batches mit Priorität für sichtbare Bilder
-        const loadBatch = async (items, startIndex) => {
-            const batch = items.slice(startIndex, startIndex + BATCH_SIZE);
-            const promises = batch.map(({ imgEl, data }, index) => {
+        // Lade zuerst die sichtbaren Bilder
+        const visibleItems = listItems.slice(0, VISIBLE_BATCH_SIZE);
+        const visiblePromises = visibleItems.map(({ imgEl, data }, index) => {
+            if (data.imgUrl) {
+                const urlStr = data.imgUrl;
+                return (async () => {
+                    try {
+                        const downloadUrl = urlStr.startsWith('gs://')
+                            ? await storage.refFromURL(urlStr).getDownloadURL()
+                            : urlStr;
+                        await loadImage(imgEl, downloadUrl, true);
+                    } catch (err) {
+                        console.error('Fehler beim Laden des Bildes:', err);
+                        setPlaceholderImage(imgEl, data.name);
+                    }
+                })();
+            } else {
+                setPlaceholderImage(imgEl, data.name);
+                return Promise.resolve();
+            }
+        });
+
+        // Warte auf das Laden der sichtbaren Bilder
+        await Promise.all(visiblePromises);
+
+        // Lade dann den Rest in Batches
+        const remainingItems = listItems.slice(VISIBLE_BATCH_SIZE);
+        for (let i = 0; i < remainingItems.length; i += BATCH_SIZE) {
+            const batch = remainingItems.slice(i, i + BATCH_SIZE);
+            const promises = batch.map(({ imgEl, data }) => {
                 if (data.imgUrl) {
                     const urlStr = data.imgUrl;
-                    const isPriority = startIndex + index < VISIBLE_BATCH_SIZE;
                     return (async () => {
                         try {
                             const downloadUrl = urlStr.startsWith('gs://')
                                 ? await storage.refFromURL(urlStr).getDownloadURL()
                                 : urlStr;
-                            await loadImage(imgEl, downloadUrl, isPriority);
+                            await loadImage(imgEl, downloadUrl, false);
                         } catch (err) {
                             console.error('Fehler beim Laden des Bildes:', err);
                             setPlaceholderImage(imgEl, data.name);
@@ -166,11 +193,6 @@ $(document).ready(() => {
                 }
             });
             await Promise.all(promises);
-        };
-
-        // Lade alle Batches nacheinander
-        for (let i = 0; i < listItems.length; i += BATCH_SIZE) {
-            await loadBatch(listItems, i);
         }
     }
   

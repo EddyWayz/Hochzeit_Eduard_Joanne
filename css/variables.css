@@ -1,192 +1,213 @@
-/* Design-System Variablen: Farben, Typografie, Spacing, Schatten, Transitions, Breakpoints, Z-Index */
+/* ============================================
+   Design System Variablen
+   ============================================ */
+
+/* ------------------------------------------------------------------
+   Font-Face Definitionen
+   ------------------------------------------------------------------ */
 @font-face {
     font-family: 'Hello August';
     src: url('../fonts/Hello August.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-  }
+}
 
-  @font-face {
+@font-face {
     font-family: 'Kiona';
     src: url('../fonts/Kiona-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-  }
+}
 
 :root {
-  /* Farben: Primär, Sekundär, Akzent und Neutral */
-    /* Primäre Farben */
-    --color-primary:   #d26b58;
-    --color-secondary: red;
-    --color-accent:    blue;
-    --color-primary-dark: #b25b4b;
+  /* ------------------------------------------------------------------
+     Farbpalette
+     ------------------------------------------------------------------ */
+  /* Primärfarben: Hauptfarbe der Website, für Buttons, Links, etc. */
+  --color-primary: #d26b58;          /* Hauptfarbe */
+  --color-primary-light: #d4a59a;    /* Hover-Effekte, Hintergründe */
+  --color-primary-dark: #a85a4d;     /* Aktive Zustände, Hover */
+  --color-on-primary: #ffffff;       /* Text auf primärer Farbe */
 
-    /* Hintergrund & Text */
-    --color-bg:        #ffffff;
-    --color-surface:   #ffffff;
-    --color-text:      black;
-    --color-heading:   #ffffff;
+  /* Sekundärfarben: Akzente, sekundäre Elemente */
+  --color-secondary: #7d9d9c;        /* Sekundäre Elemente */
+  --color-secondary-light: #a8c4c3;  /* Hover-Effekte */
+  --color-secondary-dark: #5d7a79;   /* Aktive Zustände */
+  --color-on-secondary: #ffffff;     /* Text auf sekundärer Farbe */
 
-    /* Sonstige */
-    --color-border:    #ffffff;
-    --color-link:      var(--color-primary);
+  /* Akzentfarben: Highlights, spezielle Elemente */
+  --color-accent: #e6b89c;           /* Akzente, Highlights */
+  --color-accent-light: #f5d5c2;     /* Hover-Effekte */
+  --color-accent-dark: #d4a78a;      /* Aktive Zustände */
+  --color-on-accent: #333333;        /* Text auf Akzentfarbe */
 
-    /* Textfarben auf Farbflächen */
-    --color-on-primary:    #ffffff;                /* Text auf primärer Farbe */
-    --color-on-secondary:  #ffffff;                /* Text auf sekundärer Farbe */
-    --color-on-accent:     #ffffff;                /* Text auf Akzentfarbe */
-    --color-on-surface:    var(--color-text);      /* Text auf Oberflächen-Hintergrund */
+  /* Neutrale Farben: UI-Elemente, Text, Hintergründe */
+  --color-surface: #ffffff;          /* Karten, Modals, Formulare */
+  --color-background: #f5f5f5;       /* Seitenhintergrund */
+  --color-border: #e0e0e0;           /* Rahmen, Trennlinien */
+  --color-text: #333333;             /* Haupttext */
+  --color-text-light: #666666;       /* Sekundärer Text */
+  --color-heading: #222222;          /* Überschriften */
 
+  /* Statusfarben: Feedback, Warnungen, etc. */
+  --color-error: #dc3545;            /* Fehlermeldungen */
+  --color-success: #28a745;          /* Erfolgsmeldungen */
+  --color-warning: #ffc107;          /* Warnungen */
+  --color-info: #17a2b8;             /* Informationen */
 
-  /* Typografie: Schrift-Familien Definitionen */
-  --font-primary:    'Hello August', cursive; /* für Fließtext */
-  --font-capital_letters:  'Kiona'; /* für Logos/Überschriften */
-    --font-text:    'Arial Hebrew';
+  /* Spezielle Farben */
+  --color-link: var(--color-primary);        /* Links */
+  --color-on-surface: var(--color-text);     /* Text auf Oberflächen */
+  --color-nav-text: #555555;                 /* Navigationstext */
 
-  /* Typografie: Schriftgewicht-Stufen */
-  --fw-light:        300;
-  --fw-normal:       400;
-  --fw-semibold:     600;
-  --fw-bold:         700;
+  /* ------------------------------------------------------------------
+     Typografie
+     ------------------------------------------------------------------ */
+  /* Schriftfamilien */
+  --font-primary: 'Hello August', cursive;   /* Dekorative Texte */
+  --font-capital_letters: 'Kiona';           /* Überschriften, Logos */
+  --font-text: 'Montserrat', sans-serif;     /* Fließtext, Buttons */
+  --font-heading: 'Playfair Display', serif; /* Große Überschriften */
+  --font-btn: 'Montserrat', sans-serif;      /* Button-Text */
 
-  /* Responsive Schriftgrößen */
-  /* Kleine Notizen: mobil/desktop */
-  --fs-xs-mobile:   0.625rem;  /* XS Mobile */
-  --fs-xs-desktop:  0.75rem;   /* XS Desktop */
+  /* Schriftgewichte */
+  --fw-normal: 400;    /* Standardtext */
+  --fw-medium: 500;    /* Hervorgehobener Text */
+  --fw-semibold: 600;  /* Überschriften, Buttons */
+  --fw-bold: 700;      /* Wichtige Überschriften */
 
-  /* Fließtext klein: mobil/desktop */
-  --fs-sm-mobile:   0.75rem;   /* SM Mobile */
-  --fs-sm-desktop:  0.875rem;  /* SM Desktop */
+  /* Zeilenhöhen */
+  --lh-tight: 1.2;     /* Überschriften */
+  --lh-normal: 1.5;    /* Fließtext */
+  --lh-loose: 1.8;     /* Große Textblöcke */
 
-  /* Fließtext: mobil/desktop */
-  --fs-md-mobile:   0.875rem;  /* MD Mobile */
-  --fs-md-desktop:  1rem;      /* MD Desktop */
+  /* Basis-Schriftgrößen - Responsive mit clamp() */
+  --fs-xs: clamp(0.75rem, 1.5vw, 0.875rem);    /* 12-14px - Kleine Notizen, Labels */
+  --fs-sm: clamp(0.875rem, 1.75vw, 1rem);      /* 14-16px - Sekundärer Text */
+  --fs-md: clamp(1rem, 2vw, 1.125rem);         /* 16-18px - Haupttext */
+  --fs-lg: clamp(1.125rem, 2.25vw, 1.25rem);   /* 18-20px - Unterüberschriften */
+  --fs-xl: clamp(1.5rem, 3vw, 1.75rem);        /* 24-28px - Überschriften */
+  --fs-2xl: clamp(2rem, 4vw, 2.25rem);         /* 32-36px - Große Überschriften */
+  --fs-3xl: clamp(2.5rem, 5vw, 3rem);          /* 40-48px - Hero-Überschriften */
+  --fs-4xl: clamp(3rem, 6vw, 3.5rem);          /* 48-56px - Extra große Überschriften */
+  --fs-xxl: clamp(2.5rem, 5vw, 3.5rem);        /* 40-56px - Hero-Überschriften */
+  --fs-xxxl: clamp(3rem, 6vw, 4.5rem);         /* 48-72px - Extra große Überschriften */
 
-  /* Unterüberschrift: mobil/desktop */
-  --fs-lg-mobile:   1rem;      /* LG Mobile */
-  --fs-lg-desktop:  1.25rem;   /* LG Desktop */
+  /* ------------------------------------------------------------------
+     Layout & Spacing
+     ------------------------------------------------------------------ */
+  /* Container & Breakpoints */
+  --max-container-width: min(90vw, 1200px);     /* Maximale Seitenbreite */
+  --container-padding: clamp(1rem, 2vw, 1.5rem); /* Seitenabstand */
+  --border-width: clamp(1px, 0.1vw, 2px);       /* Standard-Rahmenbreite */
 
-  /* Große Überschrift: mobil/desktop */
-  --fs-xl-mobile:   1.25rem;   /* XL Mobile */
-  --fs-xl-desktop:  2rem;      /* XL Desktop */
+  /* Basis-Spacing */
+  --space-xxs: clamp(0.25rem, 0.5vw, 0.375rem);  /* 4-6px  - Minimale Abstände */
+  --space-xs: clamp(0.5rem, 1vw, 0.625rem);      /* 8-10px - Sehr kleine Abstände */
+  --space-sm: clamp(0.75rem, 1.5vw, 0.875rem);   /* 12-14px - Kleine Abstände */
+  --space-md: clamp(1rem, 2vw, 1.25rem);         /* 16-20px - Standardabstände */
+  --space-lg: clamp(1.5rem, 3vw, 1.75rem);       /* 24-28px - Große Abstände */
+  --space-xl: clamp(2rem, 4vw, 2.5rem);          /* 32-40px - Sehr große Abstände */
+  --space-2xl: clamp(3rem, 6vw, 3.5rem);         /* 48-56px - Extra große Abstände */
+  --space-3xl: clamp(4rem, 8vw, 5rem);           /* 64-80px - Maximale Abstände */
 
-  /* Hero-Headline: mobil/desktop */
-  --fs-xxl-mobile:  2rem;      /* XXL Mobile */
-  --fs-xxl-desktop: 3rem;      /* XXL Desktop */
+  /* Spezielle Spacing */
+  --space-hero-vertical: clamp(4rem, 8vw, 6rem);    /* 64-96px - Hero-Bereich vertikal */
+  --space-hero-horizontal: clamp(1.5rem, 3vw, 2rem); /* 24-32px - Hero-Bereich horizontal */
+  --space-section: clamp(3rem, 6vw, 4rem);          /* 48-64px - Abschnittsabstände */
+  --space-none: 0;                                   /* 0px  - Kein Abstand */
+  --space-hero-bottom: clamp(3rem, 6vw, 4rem);      /* 48-64px - Abstand unter Hero */
 
-  /* Extra Hero-Headline: mobil/desktop */
-  --fs-xxxl-mobile: 3rem;      /* XXXL Mobile */
-  --fs-xxxl-desktop:4rem;      /* XXXL Desktop */
-  
-  /* Radien: Standardwerte für abgerundete Ecken */
-  --radius-sm: 0.125rem;  /* kleine Abrundung */
-  --radius-md: 0.25rem;   /* mittlere Abrundung */
-  --radius-lg: 0.5rem;    /* große Abrundung */
-  --radius-xl: 1rem;      /* extra große Abrundung */
+  /* ------------------------------------------------------------------
+     Design-Elemente
+     ------------------------------------------------------------------ */
+  /* Border Radius */
+  --radius-sm: clamp(0.25rem, 0.5vw, 0.375rem);   /* 4-6px  - Kleine Elemente */
+  --radius-md: clamp(0.5rem, 1vw, 0.625rem);      /* 8-10px - Standard-Elemente */
+  --radius-lg: clamp(1rem, 2vw, 1.25rem);         /* 16-20px - Große Elemente */
+  --radius-xl: clamp(1.5rem, 3vw, 1.75rem);       /* 24-28px - Extra große Elemente */
+  --radius-full: 9999px;                          /* Kreise, vollständig rund */
 
-  /* Spacing: Einheitliche Abstände für Layout und Komponenten */
-  --space-xxs: 0.25rem; /* winziger Abstand */
-  --space-xs: 0.5rem;   /* sehr kleiner Abstand */
-  --space-sm: 0.75rem;  /* kleiner Abstand */
-  --space-md: 1rem;     /* mittlerer Abstand */
-  --space-lg: 1.5rem;   /* großer Abstand */
-  --space-xl: 2rem;     /* sehr großer Abstand */
-  --space-xxl: 3rem;    /* extragroßer Abstand */
+  /* Schatten */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);    /* Subtile Erhebung */
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);     /* Standard-Erhebung */
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);   /* Große Erhebung */
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);  /* Extra große Erhebung */
+  --shadow-soft: 0 2px 4px rgba(0, 0, 0, 0.05);  /* Weicher Schatten */
 
-  /* Schatten (Box-Shadow) */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
-  --shadow-soft: 0 2px 4px rgba(0, 0, 0, 0.08);
+  /* ------------------------------------------------------------------
+     Animation & Transition
+     ------------------------------------------------------------------ */
+  --transition-fast: 150ms;    /* Schnelle Übergänge */
+  --transition-medium: 300ms;  /* Standard-Übergänge */
+  --transition-slow: 500ms;    /* Langsame Übergänge */
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1); /* Timing-Funktion */
 
-  /* Übergänge (Transitions) */
-  --transition-fast: 150ms;
-  --transition-medium: 300ms;
-  --transition-slow: 500ms;
-  --transition-timing: ease-in-out;
+  /* ------------------------------------------------------------------
+     Z-Index Hierarchie
+     ------------------------------------------------------------------ */
+  --z-index-base: 0;              /* Basis-Ebene */
+  --z-index-dropdown: 1000;       /* Dropdown-Menüs */
+  --z-index-sticky: 1020;         /* Sticky-Elemente */
+  --z-index-fixed: 1030;          /* Fixed-Elemente */
+  --z-index-modal-backdrop: 1040; /* Modal-Hintergrund */
+  --z-index-modal: 1050;          /* Modals */
+  --z-index-popover: 1060;        /* Popover */
+  --z-index-tooltip: 1070;        /* Tooltips */
 
-  /* Breakpoints für Responsive Design */
-  --bp-sm: 576px;
-  --bp-md: 768px;
-  --bp-lg: 992px;
-  --bp-xl: 1200px;
+  /* ------------------------------------------------------------------
+     UI-Elemente
+     ------------------------------------------------------------------ */
+  /* Navigation */
+  --fs-nav-icon: clamp(1.5rem, 3vw, 1.75rem);  /* 24-28px - Navigations-Icons */
+  --fs-nav-link: var(--fs-lg);                 /* Nav-Links */
+  --nav-height: clamp(4rem, 8vw, 5rem);        /* Navigation-Höhe */
+  --nav-padding: clamp(1rem, 2vw, 1.5rem);     /* Navigation-Padding */
 
-  /* Z-Index Ebenen */
-  --z-index-dropdown: 1000;
-  --z-index-modal: 1100;
-  --z-index-tooltip: 1200;
+  /* Logo */
+  --fs-logo: clamp(3rem, 6vw, 3.5rem);         /* 48-56px - Logo */
 
-  /* Sizing & Breakpoints */
-  --max-container-width: 600px;
-  --border-width: 1px;
+  /* Buttons */
+  --fs-btn: var(--fs-lg);                      /* Button-Text */
 
-  /* Zusätzliche Abstände */
-  --space-none: 0;
-  --space-hero-vertical: 8rem;
-  --space-hero-horizontal: var(--space-md);
-  --space-hero-bottom: 4rem;
+  /* Footer */
+  --fs-footer: var(--fs-sm);                   /* Footer-Text */
 
-  /* Farbwerte */
-  --color-nav-text: #555555;
-
-  /* Schriftgrößen */
-  --fs-nav-icon: 1.5rem;
-
+  /* ------------------------------------------------------------------
+     Spezielle UI-Elemente
+     ------------------------------------------------------------------ */
   /* Underline-Indikatoren */
-  --underline-height: 2px;
-  --underline-offset-bottom: -4px;
-  --underline-width-full: 100%;
+  --underline-height: 2px;           /* Unterstrich-Höhe */
+  --underline-offset-bottom: -4px;   /* Unterstrich-Abstand */
+  --underline-width-full: 100%;      /* Volle Breite */
 
   /* Prozentwerte */
-  --percent-full: 100%;
-  --percent-center: 50%;
+  --percent-full: 100%;              /* Volle Breite/Höhe */
+  --percent-center: 50%;             /* Zentrierung */
 
   /* Translate-Werte */
-  --translate-center-neg: -50%;
+  --translate-center-neg: -50%;      /* Negative Zentrierung */
 
-  /* Overlay-Farbe */
-  --overlay-color: rgba(255,255,255,0.6);
+  /* Overlay */
+  --overlay-color: rgba(255,255,255,0.6);  /* Overlay-Farbe */
 
-  /* Hero-Hintergrund */
-  --hero-bg-image: url('../img/backgroundImage.png');
+  /* ------------------------------------------------------------------
+     Hero-Bereich
+     ------------------------------------------------------------------ */
+  --hero-bg-image: url('../img/backgroundImage.png');  /* Hero-Hintergrund */
 
-  /* Hero Font-Size-Clamp-Werte */
-  --fs-hero-h1-min: 2rem;
-  --fs-hero-h1-pref-vw: 6vw;
-  --fs-hero-h1-max: 2.5rem;
-  --fs-hero-h2-min: 2rem;
-  --fs-hero-h2-pref-vw: 6vw;
-  --fs-hero-h2-max: 2.5rem;
-  --fs-hero-h1-md-min: 2.5rem;
-  --fs-hero-h1-md-pref-vw: 5vw;
-  --fs-hero-h1-md-max: 3rem;
-  --fs-hero-h1-sm-min: 1.5rem;
-  --fs-hero-h1-sm-pref-vw: 8vw;
-  --fs-hero-h1-sm-max: 2rem;
+  /* Hero Schriftgrößen - Clamp-Werte */
+  --fs-hero-h1: clamp(2.5rem, 5vw, 3.5rem);          /* 40-56px - Hero H1 */
+  --fs-hero-h2: clamp(2rem, 4vw, 2.5rem);            /* 32-40px - Hero H2 */
+}
 
-  /* Role-based Font Sizes */
-  --fs-logo-mobile: var(--fs-xxxl-mobile);
-  --fs-logo-desktop: var(--fs-xxxl-desktop);
-  --fs-nav-link-mobile: var(--fs-lg-mobile);
-  --fs-nav-link-desktop: var(--fs-lg-desktop);
-  --fs-btn-mobile: var(--fs-lg-mobile);
-  --fs-btn-desktop: var(--fs-lg-desktop);
-  --fs-footer-mobile: var(--fs-sm-mobile);
-  --fs-footer-desktop: var(--fs-sm-desktop);
-
-  /* Active Font Size Variables */
-  --fs-logo: var(--fs-logo-mobile);
-  --fs-nav-link: var(--fs-nav-link-mobile);
-  --fs-btn: var(--fs-btn-mobile);
-  --fs-footer: var(--fs-footer-mobile);
+/* Nur noch Media Query für die Navigation, da sie sich grundlegend anders verhält */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: var(--space-md) env(safe-area-inset-left) var(--space-md) env(safe-area-inset-right);
   }
-
-  /* Override font variables on desktop */
-  @media (min-width: 769px) {
-    :root {
-      --fs-logo: var(--fs-logo-desktop);
-      --fs-nav-link: var(--fs-nav-link-desktop);
-      --fs-btn: var(--fs-btn-desktop);
-      --fs-footer: var(--fs-footer-desktop);
-    }
-  }
+}

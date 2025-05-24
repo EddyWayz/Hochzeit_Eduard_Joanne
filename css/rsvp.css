@@ -21,28 +21,28 @@
   /* RSVP Section */
   .rsvp-section {
     max-width: var(--max-container-width);
-    margin: var(--space-xl) auto;
-    padding: var(--space-xl) var(--container-padding);
+    margin: var(--space-lg) auto;
+    padding: var(--space-lg) var(--container-padding);
   }
   
   .rsvp-container {
     background-color: var(--color-surface);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    padding: var(--space-xl);
+    padding: var(--space-lg);
     max-width: 800px;
     margin: 0 auto;
   }
   
   .rsvp-section h2 {
     text-align: center;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     color: var(--color-primary);
   }
   
   .rsvp-intro {
     text-align: center;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-lg);
     color: var(--color-text);
     font-size: var(--fs-md);
   }
@@ -50,7 +50,7 @@
   /* Form Layout */
   .rsvp-form {
     display: grid;
-    gap: var(--space-xl);
+    gap: var(--space-md);
     max-width: 600px;
     margin: 0 auto;
   }
@@ -61,7 +61,7 @@
     flex-direction: column;
     gap: var(--space-xs);
     background-color: var(--color-surface);
-    padding: var(--space-lg);
+    padding: var(--space-md);
     border-radius: var(--radius-lg);
     border: var(--border-width) solid var(--color-border);
   }
@@ -75,7 +75,7 @@
   
   .form-group input,
   .form-group textarea {
-    padding: var(--space-md);
+    padding: var(--space-sm);
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius-md);
     font-size: var(--fs-md);
@@ -93,7 +93,7 @@
   }
   
   .form-group textarea {
-    min-height: 100px;
+    min-height: 80px;
     resize: vertical;
   }
   
@@ -130,7 +130,7 @@
   }
   
   .radio-option span {
-    font-size: var(--fs-sm);
+    font-size: var(--fs-md);
     color: var(--color-text);
     cursor: pointer;
     font-family: var(--font-text);
@@ -147,7 +147,7 @@
   /* Guest Fields */
   .guest-details {
     display: grid;
-    gap: var(--space-lg);
+    gap: var(--space-md);
   }
   
   .guest-field {
@@ -159,7 +159,7 @@
   
   .guest-header {
     background-color: var(--color-primary);
-    padding: var(--space-md);
+    padding: var(--space-sm);
   }
   
   .guest-header h3 {
@@ -169,9 +169,9 @@
   }
   
   .guest-content {
-    padding: var(--space-lg);
+    padding: var(--space-md);
     display: grid;
-    gap: var(--space-lg);
+    gap: var(--space-md);
   }
   
   .guest-content .form-group {
@@ -183,30 +183,30 @@
   /* Age Info Section */
   .age-info {
     background-color: var(--color-surface);
-    padding: var(--space-lg);
+    padding: var(--space-md);
     border-radius: var(--radius-lg);
     border: var(--border-width) solid var(--color-border);
   }
   
   .age-info h3 {
     color: var(--color-primary);
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     font-size: var(--fs-md);
   }
   
   .age-list {
     display: grid;
-    gap: var(--space-md);
+    gap: var(--space-sm);
   }
   
   .age-item {
     display: flex;
     align-items: center;
-    gap: var(--space-md);
+    gap: var(--space-sm);
   }
   
   .age-icon {
-    font-size: var(--fs-xl);
+    font-size: var(--fs-lg);
   }
   
   .age-text {
@@ -224,8 +224,8 @@
   }
   
   .guest-btn {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     border: var(--border-width) solid var(--color-primary);
     background-color: var(--color-surface);
     color: var(--color-primary);
@@ -251,18 +251,15 @@
   }
   
   .guests-input input {
-    text-align: center;
-    font-size: var(--fs-lg);
-    font-weight: var(--fw-semibold);
     width: 60px;
-    height: 48px;
-    padding: 0;
-    margin: 0;
+    height: 40px;
+    text-align: center;
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--radius-md);
     background-color: var(--color-surface);
     color: var(--color-text);
-    -moz-appearance: textfield;
   }
   
   .guests-input input::-webkit-outer-spin-button,
@@ -271,18 +268,21 @@
     margin: 0;
   }
   
-  /* Button Styles */
+  .guests-input input[type=number] {
+    -moz-appearance: textfield;
+  }
+  
+  /* Submit Button */
   .btn-primary {
     background-color: var(--color-primary);
     color: var(--color-on-primary);
-    padding: var(--space-md) var(--space-xl);
-    font-size: var(--fs-btn);
-    font-weight: var(--fw-semibold);
     border: none;
     border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--fs-md);
+    font-weight: var(--fw-semibold);
     cursor: pointer;
     transition: all var(--transition-medium) var(--transition-timing);
-    font-family: var(--font-text);
     width: 100%;
     max-width: 300px;
     margin: 0 auto;
@@ -290,7 +290,6 @@
   
   .btn-primary:hover {
     background-color: var(--color-primary-dark);
-    transform: translateY(-1px);
   }
   
   .btn-primary:active {
@@ -298,15 +297,16 @@
   }
   
   .btn-primary:disabled {
-    background-color: var(--color-text-muted);
+    background-color: var(--color-border);
+    color: var(--color-text);
     cursor: not-allowed;
-    transform: none;
+    opacity: 0.7;
   }
   
-  /* Responsive Design */
+  /* Responsive Anpassungen */
   @media (max-width: 768px) {
     .rsvp-container {
-      padding: var(--space-lg);
+      padding: var(--space-md);
     }
     
     .form-group {
@@ -315,26 +315,24 @@
     
     .guest-content {
       padding: var(--space-md);
+      gap: var(--space-md);
     }
-
+    
     .guest-btn {
-      width: 40px;
-      height: 40px;
-      font-size: var(--fs-md);
+      width: 36px;
+      height: 36px;
     }
-
+    
     .guests-input input {
       width: 50px;
-      height: 40px;
-      font-size: var(--fs-md);
+      height: 36px;
     }
-
+    
     .radio-group {
       grid-template-columns: 1fr;
-      gap: var(--space-xs);
     }
-
+    
     .radio-option {
-      padding: var(--space-xs) var(--space-sm);
+      padding: var(--space-sm);
     }
   }

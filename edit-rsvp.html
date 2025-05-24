@@ -5,20 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RSVP – Bearbeiten</title>
 
-  <!-- Farbvariablen und Basis-Styles -->
+  <!-- Farbvariablen und Basis‑Styles -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/basic.css">
-  <!-- Spezifisches Styling für RSVP/Edit -->
-  <link rel="stylesheet" href="css/edit-rsvp.css">
+  <!-- Spezifisches Styling für RSVP -->
+  <link rel="stylesheet" href="css/rsvp.css">
 
-  <!-- jQuery (für Header/Footer-Include) -->
+  <!-- jQuery (für Header/Footer‑Include) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="js/includeTemplate.js"></script>
 
-  <!-- Firebase-SDKs -->
+  <!-- Firebase‑SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
@@ -35,53 +36,87 @@
 <body>
   <div id="header"></div>
 
+  <!-- RSVP-Seite: Modernes Zusageformular mit dynamischen Gastfeldern -->
   <section class="rsvp-section">
-    <h2>RSVP bearbeiten</h2>
-    <form class="rsvp-form" id="edit-form">
-      <div class="form-group">
-        <label for="familyName">Familienname</label>
-        <input type="text" id="familyName" name="familyName" placeholder="Dein Familienname" required>
-      </div>
-
-      <div class="form-group">
-        <label for="email">E-Mail</label>
-        <input type="email" id="email" name="email" placeholder="deine@mail.de" required>
-      </div>
-
-      <div class="form-group">
-        <label>Teilnahme</label>
-        <label><input type="radio" name="attending" value="yes" required> Ja</label>
-        <label><input type="radio" name="attending" value="no" required> Nein</label>
-      </div>
-
-      <div class="form-group">
-        <label for="guests">Gäste insgesamt</label>
-        <input type="number" id="guests" name="guests" min="1" max="10" value="1">
-      </div>
-
-      <div class="form-group age-description">
-        <p><strong>Alterskategorien:</strong></p>
-        <div class="age-list">
-          <p>Erwachsener ab 16 Jahren</p>
-          <p>Kind 6 bis 15 Jahre</p>
-          <p>Kleinkind bis 5 Jahre</p>
+    <div class="rsvp-container">
+      <h2>RSVP bearbeiten</h2>
+      <p class="rsvp-intro">Hier kannst du deine Zusage bearbeiten.</p>
+      
+      <form class="rsvp-form" id="edit-form">
+        <!-- Familienname -->
+        <div class="form-group">
+          <label for="familyName">Familienname</label>
+          <input type="text" id="familyName" name="familyName" placeholder="Dein Familienname" required>
         </div>
-      </div>
 
-      <div id="guest-details"></div>
+        <!-- E‑Mail -->
+        <div class="form-group">
+          <label for="email">E‑Mail</label>
+          <input type="email" id="email" name="email" placeholder="deine@mail.de" required>
+        </div>
 
-      <div class="form-group">
-        <label for="intolerances">Unverträglichkeiten</label>
-        <textarea id="intolerances" name="intolerances" rows="2" placeholder="z. B. Gluten, Laktose, Nüsse…"></textarea>
-      </div>
+        <!-- Teilnahme -->
+        <div class="form-group">
+          <label>Teilnahme</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="attending" value="yes" required>
+              <span>Ja, ich komme</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="attending" value="no" required>
+              <span>Nein, ich kann leider nicht</span>
+            </label>
+          </div>
+        </div>
 
-      <div class="form-group">
-        <label for="message">Nachricht</label>
-        <textarea id="message" name="message" rows="4"></textarea>
-      </div>
+        <!-- Begleitpersonen -->
+        <div class="form-group">
+          <label for="guests">Anzahl der Gäste</label>
+          <div class="guests-input">
+            <button type="button" class="guest-btn" id="decrease-guests">-</button>
+            <input type="number" id="guests" name="guests" min="1" max="5" value="1" readonly>
+            <button type="button" class="guest-btn" id="increase-guests">+</button>
+          </div>
+        </div>
 
-      <button type="submit" class="btn">Änderungen speichern</button>
-    </form>
+        <!-- Alterskategorien Info -->
+        <div class="form-group age-info">
+          <h3>Alterskategorien</h3>
+          <div class="age-list">
+            <div class="age-item">
+              <span class="age-icon">👨‍👩‍👧‍👦</span>
+              <span class="age-text">Erwachsener ab 16 Jahren</span>
+            </div>
+            <div class="age-item">
+              <span class="age-icon">👧</span>
+              <span class="age-text">Kind 6 bis 15 Jahre</span>
+            </div>
+            <div class="age-item">
+              <span class="age-icon">👶</span>
+              <span class="age-text">Kleinkind bis 5 Jahre</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Container für dynamische Gast-Felder -->
+        <div id="guest-details" class="guest-details"></div>
+
+        <!-- Unverträglichkeiten -->
+        <div class="form-group">
+          <label for="intolerances">Unverträglichkeiten</label>
+          <textarea id="intolerances" name="intolerances" rows="2" placeholder="z. B. Gluten, Laktose, Nüsse…"></textarea>
+        </div>
+
+        <!-- Nachricht -->
+        <div class="form-group">
+          <label for="message">Nachricht</label>
+          <textarea id="message" name="message" rows="4" placeholder="Möchtest du uns noch etwas mitteilen?"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+      </form>
+    </div>
   </section>
 
   <script>
@@ -94,32 +129,62 @@
     const form = document.getElementById('edit-form');
     const guestsInput = document.getElementById('guests');
     const detailsContainer = document.getElementById('guest-details');
+    const decreaseBtn = document.getElementById('decrease-guests');
+    const increaseBtn = document.getElementById('increase-guests');
 
-    // Rendert die Gast-Felder, optional mit Werten
     function renderGuestFields(count, guestDetails = []) {
       detailsContainer.innerHTML = '';
       for (let i = 1; i <= count; i++) {
         const data = guestDetails[i-1] || { name: '', type: 'Erwachsener' };
         const wrapper = document.createElement('div');
-        wrapper.classList.add('form-group');
+        wrapper.classList.add('guest-field');
         wrapper.innerHTML = `
-          <label>Gast ${i} (Vorname)</label>
-          <input type="text" name="guestName_${i}" placeholder="Vorname Gast ${i}" value="${data.name}" required>
-          <div class="radio-group">
-            <label><input type="radio" name="guestType_${i}" value="Erwachsener" ${data.type==='Erwachsener'? 'checked':''}> Erwachsener</label>
-            <label><input type="radio" name="guestType_${i}" value="Kind" ${data.type==='Kind'? 'checked':''}> Kind</label>
-            <label><input type="radio" name="guestType_${i}" value="Kleinkind" ${data.type==='Kleinkind'? 'checked':''}> Kleinkind</label>
+          <div class="guest-header">
+            <h3>Gast ${i}</h3>
+          </div>
+          <div class="guest-content">
+            <div class="form-group">
+              <label for="guestName_${i}">Vorname</label>
+              <input type="text" id="guestName_${i}" name="guestName_${i}" placeholder="Vorname Gast ${i}" value="${data.name}" required>
+            </div>
+            <div class="form-group">
+              <label>Alterskategorie</label>
+              <div class="radio-group">
+                <label class="radio-option">
+                  <input type="radio" name="guestType_${i}" value="Erwachsener" ${data.type==='Erwachsener'? 'checked':''}>
+                  <span>Erwachsener</span>
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="guestType_${i}" value="Kind" ${data.type==='Kind'? 'checked':''}>
+                  <span>Kind</span>
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="guestType_${i}" value="Kleinkind" ${data.type==='Kleinkind'? 'checked':''}>
+                  <span>Kleinkind</span>
+                </label>
+              </div>
+            </div>
           </div>
         `;
         detailsContainer.appendChild(wrapper);
       }
     }
 
-    // Beim Ändern der Gäste-Anzahl neu rendern
-    guestsInput.addEventListener('change', () => {
-      const count = Math.min(Math.max(1, parseInt(guestsInput.value) || 1), 10);
-      guestsInput.value = count;
-      renderGuestFields(count);
+    // Event Listener für Guest Counter
+    decreaseBtn.addEventListener('click', () => {
+      const currentValue = parseInt(guestsInput.value);
+      if (currentValue > 1) {
+        guestsInput.value = currentValue - 1;
+        renderGuestFields(currentValue - 1);
+      }
+    });
+
+    increaseBtn.addEventListener('click', () => {
+      const currentValue = parseInt(guestsInput.value);
+      if (currentValue < 5) {
+        guestsInput.value = currentValue + 1;
+        renderGuestFields(currentValue + 1);
+      }
     });
 
     // Daten laden und Formular befüllen
@@ -144,22 +209,29 @@
     // Submit: in Firestore updaten
     form.addEventListener('submit', async e => {
       e.preventDefault();
-      const guestCount = parseInt(guestsInput.value, 10) || 1;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wird gespeichert...';
+
+      const guestCount = parseInt(guestsInput.value) || 1;
       const guestDetails = [];
       for (let i = 1; i <= guestCount; i++) {
-        const name = form[`guestName_${i}`].value.trim();
-        const type = form[`guestType_${i}`].value;
-        guestDetails.push({ name, type });
+        const nameField = e.target[`guestName_${i}`];
+        const typeField = e.target[`guestType_${i}`];
+        guestDetails.push({
+          name: nameField.value.trim(),
+          type: typeField.value
+        });
       }
 
       const updated = {
-        familyName:   form.familyName.value.trim(),
-        email:        form.email.value.trim(),
-        attending:    form.attending.value,
+        familyName:   e.target.familyName.value.trim(),
+        email:        e.target.email.value.trim(),
+        attending:    e.target.attending.value,
         guests:       guestCount,
         guestDetails: guestDetails,
-        intolerances: form.intolerances.value.trim(),
-        message:      form.message.value.trim()
+        intolerances: e.target.intolerances.value.trim(),
+        message:      e.target.message.value.trim()
       };
 
       try {
@@ -168,6 +240,9 @@
       } catch (error) {
         console.error('Fehler beim Speichern:', error);
         alert('Fehler beim Speichern. Bitte versuche es später erneut.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Änderungen speichern';
       }
     });
   </script>

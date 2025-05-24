@@ -130,6 +130,7 @@ $(document).ready(() => {
   
             // Reservieren‑Button
             const btn = document.createElement('button');
+            btn.classList.add('gift-button');
             btn.textContent = data.reserved
                 ? `Reserviert von ${data.reserverEmail || 'jemandem'}`
                 : 'Jetzt reservieren';

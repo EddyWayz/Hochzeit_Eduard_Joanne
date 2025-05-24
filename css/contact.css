@@ -5,27 +5,7 @@
 /* Hero-Sektion */
 .hero {
   background-color: var(--color-accent-light);
-  color: var(--color-heading);
-  text-align: center;
-  padding: var(--space-hero-vertical) var(--space-hero-horizontal);
   min-height: 40vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.hero h1 {
-  font-size: var(--fs-hero-h1);
-  margin-bottom: var(--space-xs);
-  font-family: var(--font-capital_letters);
-}
-
-.hero p {
-  font-size: var(--fs-md);
-  font-family: var(--font-text);
-  max-width: 600px;
-  margin: 0 auto;
 }
 
 /* Kontakt-Sektion */
@@ -57,9 +37,6 @@
 /* Details-Box */
 .contact-details h2 {
   margin-bottom: var(--space-md);
-  font-size: var(--fs-xl);
-  font-family: var(--font-capital_letters);
-  color: var(--color-primary);
 }
 
 .contact-details p {
@@ -73,9 +50,6 @@
 /* Formular */
 .contact-form h2 {
   margin-bottom: var(--space-md);
-  font-size: var(--fs-xl);
-  font-family: var(--font-capital_letters);
-  color: var(--color-primary);
 }
 
 .form-group {

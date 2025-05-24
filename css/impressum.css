@@ -18,18 +18,10 @@
 }
 
 .impressum-section h2 {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-semibold);
   margin-bottom: var(--space-lg);
   text-align: center;
-  color: var(--color-primary);
-  font-family: var(--font-capital_letters);
 }
 
 .impressum-section p {
   margin-bottom: var(--space-md);
-  line-height: var(--lh-normal);
-  font-family: var(--font-text);
-  font-size: var(--fs-md);
-  color: var(--color-text);
 }

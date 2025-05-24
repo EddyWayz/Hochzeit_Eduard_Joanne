@@ -27,12 +27,8 @@
 
 /* Titel der RSVP-Sektion: zentriert, große Schriftgröße */
 .rsvp-section h2 {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-semibold);
-  margin-bottom: var(--space-lg);
   text-align: center;
-  color: var(--color-primary);
-  font-family: var(--font-capital_letters);
+  margin-bottom: var(--space-lg);
 }
 
 /* Formular-Gruppen */
@@ -137,15 +133,12 @@
   margin: 0;
   font-weight: var(--fw-semibold);
   color: var(--color-primary);
-  font-family: var(--font-text);
 }
 
 /* Auflistung der einzelnen Alterskategorien */
 .form-group.age-description .age-list p {
   margin: var(--space-xs) 0;
   font-size: var(--fs-sm);
-  color: var(--color-text);
-  font-family: var(--font-text);
 }
 
 /* ============================================
@@ -178,29 +171,12 @@
 }
 
 .form-group label {
-  font-size: var(--fs-md);
   font-weight: var(--fw-medium);
-  color: var(--color-text);
-  font-family: var(--font-text);
 }
 
 .form-group input,
 .form-group textarea {
-  padding: var(--space-sm);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-md);
-  font-family: var(--font-text);
-  color: var(--color-text);
-  background-color: var(--color-surface);
-  transition: border-color var(--transition-fast) var(--transition-timing);
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-light);
+  width: 100%;
 }
 
 .form-group textarea {
@@ -304,24 +280,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
-  font-size: var(--fs-md);
-  color: var(--color-primary);
-  background-color: transparent;
-  border: var(--border-width) solid var(--color-primary);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-medium) var(--transition-timing);
-  font-family: var(--font-text);
-}
-
-.add-guest-btn:hover {
-  background-color: var(--color-primary-light);
-  color: var(--color-on-primary);
-}
-
-.add-guest-btn:active {
-  transform: translateY(1px);
 }
 
 /* Remove Guest Button */

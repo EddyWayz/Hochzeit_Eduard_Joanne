@@ -36,79 +36,126 @@
 <body>
   <div id="header"></div>
 
-  <!-- RSVP-Seite: Zusageformular mit dynamischen Gastfeldern -->
+  <!-- RSVP-Seite: Modernes Zusageformular mit dynamischen Gastfeldern -->
   <section class="rsvp-section">
-    <h2>Zur Zusage</h2>
-    <form class="rsvp-form" action="#" method="post">
-      <!-- Familienname -->
-      <div class="form-group">
-        <label for="familyName">Familienname</label>
-        <input type="text" id="familyName" name="familyName" placeholder="Dein Familienname" required>
-      </div>
-
-      <!-- E‑Mail -->
-      <div class="form-group">
-        <label for="email">E‑Mail</label>
-        <input type="email" id="email" name="email" placeholder="deine@mail.de" required>
-      </div>
-
-      <!-- Teilnahme -->
-      <div class="form-group">
-        <label>Teilnahme</label>
-        <label><input type="radio" name="attending" value="yes" required> Ja</label>
-        <label><input type="radio" name="attending" value="no" required> Nein</label>
-      </div>
-
-      <!-- Begleitpersonen (mindestens 1) -->
-      <div class="form-group">
-        <label for="guests">Gäste insgesamt</label>
-        <input type="number" id="guests" name="guests" min="1" max="5" value="1">
-      </div>
-
-      <!-- Beschreibung der Alterskategorien -->
-      <div class="form-group age-description">
-        <p><strong>Alterskategorien:</strong></p>
-        <div class="age-list">
-          <p>Erwachsener ab 16 Jahren</p>
-          <p>Kind 6 bis 15 Jahre</p>
-          <p>Kleinkind bis 5 Jahre</p>
+    <div class="rsvp-container">
+      <h2>Zur Zusage</h2>
+      <p class="rsvp-intro">Wir freuen uns, wenn du dabei bist! Bitte fülle das Formular aus, um deine Teilnahme zu bestätigen.</p>
+      
+      <form class="rsvp-form" action="#" method="post">
+        <!-- Familienname -->
+        <div class="form-group">
+          <label for="familyName">Familienname</label>
+          <input type="text" id="familyName" name="familyName" placeholder="Dein Familienname" required>
         </div>
-      </div>
-      <!-- Container für dynamische Gast-Felder -->
-      <div id="guest-details"></div>
 
-      <!-- Unverträglichkeiten -->
-      <div class="form-group">
-        <label for="intolerances">Unverträglichkeiten</label>
-        <textarea id="intolerances" name="intolerances" rows="2" placeholder="z. B. Gluten, Laktose, Nüsse…"></textarea>
-      </div>
+        <!-- E‑Mail -->
+        <div class="form-group">
+          <label for="email">E‑Mail</label>
+          <input type="email" id="email" name="email" placeholder="deine@mail.de" required>
+        </div>
 
-      <!-- Nachricht -->
-      <div class="form-group">
-        <label for="message">Nachricht</label>
-        <textarea id="message" name="message" rows="4"></textarea>
-      </div>
+        <!-- Teilnahme -->
+        <div class="form-group">
+          <label>Teilnahme</label>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="attending" value="yes" required>
+              <span>Ja, ich komme</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="attending" value="no" required>
+              <span>Nein, ich kann leider nicht</span>
+            </label>
+          </div>
+        </div>
 
-      <button type="submit" class="btn">Absenden</button>
-    </form>
+        <!-- Begleitpersonen -->
+        <div class="form-group">
+          <label for="guests">Anzahl der Gäste</label>
+          <div class="guests-input">
+            <button type="button" class="guest-btn" id="decrease-guests">-</button>
+            <input type="number" id="guests" name="guests" min="1" max="5" value="1" readonly>
+            <button type="button" class="guest-btn" id="increase-guests">+</button>
+          </div>
+        </div>
+
+        <!-- Alterskategorien Info -->
+        <div class="form-group age-info">
+          <h3>Alterskategorien</h3>
+          <div class="age-list">
+            <div class="age-item">
+              <span class="age-icon">👨‍👩‍👧‍👦</span>
+              <span class="age-text">Erwachsener ab 16 Jahren</span>
+            </div>
+            <div class="age-item">
+              <span class="age-icon">👧</span>
+              <span class="age-text">Kind 6 bis 15 Jahre</span>
+            </div>
+            <div class="age-item">
+              <span class="age-icon">👶</span>
+              <span class="age-text">Kleinkind bis 5 Jahre</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Container für dynamische Gast-Felder -->
+        <div id="guest-details" class="guest-details"></div>
+
+        <!-- Unverträglichkeiten -->
+        <div class="form-group">
+          <label for="intolerances">Unverträglichkeiten</label>
+          <textarea id="intolerances" name="intolerances" rows="2" placeholder="z. B. Gluten, Laktose, Nüsse…"></textarea>
+        </div>
+
+        <!-- Nachricht -->
+        <div class="form-group">
+          <label for="message">Nachricht</label>
+          <textarea id="message" name="message" rows="4" placeholder="Möchtest du uns noch etwas mitteilen?"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Absenden</button>
+      </form>
+    </div>
   </section>
 
   <script>
     const guestsInput = document.getElementById('guests');
     const detailsContainer = document.getElementById('guest-details');
+    const decreaseBtn = document.getElementById('decrease-guests');
+    const increaseBtn = document.getElementById('increase-guests');
 
     function renderGuestFields(count) {
       detailsContainer.innerHTML = '';
       for (let i = 1; i <= count; i++) {
         const wrapper = document.createElement('div');
-        wrapper.classList.add('form-group');
+        wrapper.classList.add('guest-field');
         wrapper.innerHTML = `
-          <label>Gast ${i} (Vorname)</label>
-          <input type="text" name="guestName_${i}" placeholder="Vorname Gast ${i}" required>
-          <div class="radio-group">
-            <label><input type="radio" name="guestType_${i}" value="Erwachsener" checked> Erwachsener</label>
-            <label><input type="radio" name="guestType_${i}" value="Kind"> Kind</label>
-            <label><input type="radio" name="guestType_${i}" value="Kleinkind"> Kleinkind</label>
+          <div class="guest-header">
+            <h3>Gast ${i}</h3>
+          </div>
+          <div class="guest-content">
+            <div class="form-group">
+              <label for="guestName_${i}">Vorname</label>
+              <input type="text" id="guestName_${i}" name="guestName_${i}" placeholder="Vorname Gast ${i}" required>
+            </div>
+            <div class="form-group">
+              <label>Alterskategorie</label>
+              <div class="radio-group">
+                <label class="radio-option">
+                  <input type="radio" name="guestType_${i}" value="Erwachsener" checked>
+                  <span>Erwachsener</span>
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="guestType_${i}" value="Kind">
+                  <span>Kind</span>
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="guestType_${i}" value="Kleinkind">
+                  <span>Kleinkind</span>
+                </label>
+              </div>
+            </div>
           </div>
         `;
         detailsContainer.appendChild(wrapper);
@@ -118,15 +165,31 @@
     // Initial render mit 1 Gast
     renderGuestFields(parseInt(guestsInput.value));
 
-    guestsInput.addEventListener('change', () => {
-      const count = Math.min(Math.max(1, parseInt(guestsInput.value) || 1), 10);
-      guestsInput.value = count;
-      renderGuestFields(count);
+    // Event Listener für Guest Counter
+    decreaseBtn.addEventListener('click', () => {
+      const currentValue = parseInt(guestsInput.value);
+      if (currentValue > 1) {
+        guestsInput.value = currentValue - 1;
+        renderGuestFields(currentValue - 1);
+      }
     });
 
+    increaseBtn.addEventListener('click', () => {
+      const currentValue = parseInt(guestsInput.value);
+      if (currentValue < 5) {
+        guestsInput.value = currentValue + 1;
+        renderGuestFields(currentValue + 1);
+      }
+    });
+
+    // Form Submit Handler
     document.querySelector('.rsvp-form').addEventListener('submit', async e => {
       e.preventDefault();
-      const guestCount = parseInt(e.target.guests.value) || 1;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wird gesendet...';
+
+      const guestCount = parseInt(guestsInput.value) || 1;
       const guestDetails = [];
       for (let i = 1; i <= guestCount; i++) {
         const nameField = e.target[`guestName_${i}`];
@@ -157,6 +220,9 @@
       } catch (error) {
         console.error('Fehler beim Absenden:', error);
         alert('Beim Absenden ist leider ein Fehler aufgetreten. Bitte versuche es später erneut.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Absenden';
       }
     });
   </script>

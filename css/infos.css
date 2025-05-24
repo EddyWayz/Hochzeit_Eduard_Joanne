@@ -4,12 +4,7 @@
 
 /* Info Section */
 .info-section {
-  max-width: var(--max-container-width);
-  margin: 0 auto;
-  padding: var(--space-xl) var(--container-padding);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
+  margin-top: var(--space-lg);
 }
 
 /* Info Grid */
@@ -24,60 +19,35 @@
 .info-card {
   background-color: var(--color-surface-alt);
   padding: var(--space-lg);
-  border-radius: var(--radius-md);
   border: var(--border-width) solid var(--color-border);
-  transition: transform var(--transition-medium) var(--transition-timing);
-}
-
-.info-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
 }
 
 /* Info Title */
 .info-card h3 {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-semibold);
   color: var(--color-primary);
   margin-bottom: var(--space-md);
-  font-family: var(--font-capital_letters);
 }
 
 /* Info Content */
 .info-card p {
-  font-size: var(--fs-md);
-  color: var(--color-text);
-  line-height: var(--lh-normal);
   margin-bottom: var(--space-md);
-  font-family: var(--font-text);
 }
 
 /* Info List */
 .info-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  margin-bottom: var(--space-md);
 }
 
 .info-list li {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  margin-bottom: var(--space-sm);
-  font-size: var(--fs-md);
-  color: var(--color-text);
-  font-family: var(--font-text);
-}
-
-.info-list li:last-child {
-  margin-bottom: 0;
 }
 
 /* Info Icon */
 .info-icon {
   width: 24px;
   height: 24px;
-  color: var(--color-primary);
 }
 
 /* Info Button */
@@ -85,25 +55,6 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
-  font-size: var(--fs-md);
-  color: var(--color-primary);
-  background-color: transparent;
-  border: var(--border-width) solid var(--color-primary);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-medium) var(--transition-timing);
-  font-family: var(--font-text);
-  text-decoration: none;
-}
-
-.info-button:hover {
-  background-color: var(--color-primary-light);
-  color: var(--color-on-primary);
-}
-
-.info-button:active {
-  transform: translateY(1px);
 }
 
 /* Info Map */
@@ -189,24 +140,9 @@ section {
 .registry,
 .contact,
 .color-code {
-  background-color: var(--color-surface);
-  border-radius: var(--radius-md);
+  background-color: var(--color-surface-alt);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-soft);
-  transition: transform var(--transition-medium) var(--transition-timing);
-}
-
-/* Hover-Effekt für Karten */
-.details:hover,
-.schedule:hover,
-.accommodation:hover,
-.travel:hover,
-.dress-code:hover,
-.registry:hover,
-.contact:hover,
-.color-code:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  border: var(--border-width) solid var(--color-border);
 }
 
 /* Überschriften in Karten */
@@ -218,10 +154,7 @@ section {
 .registry h2,
 .contact h2,
 .color-code h2 {
-  font-size: var(--fs-xl);
   margin-bottom: var(--space-md);
-  color: var(--color-primary);
-  font-family: var(--font-capital_letters);
   text-transform: uppercase;
 }
 
@@ -231,10 +164,7 @@ section {
 .dress-code p,
 .contact p,
 .registry p {
-  font-family: var(--font-text);
-  font-size: var(--fs-md);
-  color: var(--color-text);
-  line-height: var(--lh-normal);
+  margin-bottom: var(--space-md);
 }
 
 /* Ablauf-Listen */
@@ -336,3 +266,10 @@ section {
 .swatch-primary-light { background-color: var(--color-primary-light); }
 .swatch-secondary-light { background-color: var(--color-secondary-light); }
 .swatch-accent-light { background-color: var(--color-accent-light); }
+
+/* Geschenkeliste-Link */
+.gift-button {
+  display: inline-block;
+  margin-top: var(--space-md);
+  text-align: center;
+}

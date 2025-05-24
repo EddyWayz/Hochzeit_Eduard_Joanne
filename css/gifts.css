@@ -37,13 +37,13 @@
   border-radius: var(--radius-lg);
   max-width: 350px;
   width: 90%;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-soft);
   transform: translateY(0);
   transition: transform var(--transition-medium) var(--transition-timing);
 }
 
 .modal-content:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 /* --------------------------------------------
@@ -63,19 +63,12 @@
    -------------------------------------------- */
 .buttons button {
   padding: var(--space-sm) var(--space-lg);
-  font-size: var(--fs-btn);
-  font-weight: var(--fw-semibold);
-  color: var(--color-on-primary);
-  background-color: var(--color-primary);
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-medium) var(--transition-timing);
 }
+
 .buttons button:hover {
-  background-color: var(--color-primary-dark);
   transform: translateY(-1px);
 }
+
 .buttons button:active {
   transform: translateY(1px);
 }
@@ -89,16 +82,80 @@
   margin: 0 auto;         /* zentriert den Container */
   padding: var(--space-md);
   box-sizing: border-box; /* wichtig, damit Padding nicht nach außen schiebt */
+  display: grid;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
 }
 
 .gift-list h2 {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-semibold);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-lg);
   text-align: center;
-  color: var(--color-primary);
-  font-family: var(--font-capital_letters);
 }
+
+.gift-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid var(--color-border);
+}
+
+.gift-info {
+  flex: 1;
+}
+
+.gift-info h3 {
+  margin: 0;
+  color: var(--color-primary);
+}
+
+.gift-info p {
+  margin: var(--space-xs) 0 0;
+  color: var(--color-text);
+}
+
+.gift-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.gift-button {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--fs-sm);
+  color: var(--color-primary);
+  background-color: transparent;
+  border: var(--border-width) solid var(--color-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-medium) var(--transition-timing);
+}
+
+.gift-button:hover {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.gift-button:active {
+  transform: translateY(1px);
+}
+
+/* Disabled Gift Button */
+.gift-button:disabled {
+  color: var(--color-text-muted);
+  background-color: var(--color-surface-alt);
+  border-color: var(--color-border);
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+.gift-button:disabled:hover {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-muted);
+}
+
 #gifts {
   list-style: none;
   padding: 0;
@@ -120,8 +177,8 @@
   transition: transform var(--transition-medium) var(--transition-timing);
 }
 #gifts li:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
 }
 #gifts li div {
   margin-bottom: var(--space-md);
@@ -139,8 +196,7 @@
   color: var(--color-primary-dark);
 }
 #gifts li button {
-  margin-top: auto;   /* Button immer unten im Card-Layout */
-  align-self: flex-start;
+  margin: 0 auto;   /* Button mittig ausrichten */
   font-family: var(--font-text);
 }
 

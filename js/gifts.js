@@ -163,7 +163,7 @@ $(document).ready(() => {
         imgElement.style.opacity = '1';
     }
 
-    // Liste rendern
+       // Liste rendern
     function renderList(docs) {
         lastDocs = docs;
         giftsUl.innerHTML = '';
@@ -182,8 +182,11 @@ $(document).ready(() => {
         });
         
         // Ladescreen nur anzeigen wenn tatsächlich Bilder zu laden sind
+        // UND erst nachdem totalImages korrekt gesetzt wurde
         if (totalImages > 0) {
             showLoadingScreen();
+            // Initiale Anzeige mit korrekten Werten
+            updateLoadingProgress();
         }
         
         docs.forEach((doc, index) => {

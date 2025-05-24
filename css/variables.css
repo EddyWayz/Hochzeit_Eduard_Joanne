@@ -194,9 +194,9 @@
      ------------------------------------------------------------------ */
   --hero-bg-image: url('../img/backgroundImage.png');  /* Hero-Hintergrund */
 
-  /* Hero Schriftgrößen - Clamp-Werte */
-  --fs-hero-h1: clamp(2.5rem, 5vw, 3.5rem);          /* 40-56px - Hero H1 */
-  --fs-hero-h2: clamp(2rem, 4vw, 2.5rem);            /* 32-40px - Hero H2 */
+  /* Hero Schriftgrößen */
+  --fs-hero-h1: clamp(3rem, 6vw, 4rem);     /* 48-64px - Hero H1 */
+  --fs-hero-h2: clamp(2rem, 4vw, 2.5rem);   /* 32-40px - Hero H2 */
 }
 
 /* Nur noch Media Query für die Navigation, da sie sich grundlegend anders verhält */

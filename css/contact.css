@@ -2,11 +2,7 @@
    Kontakt Stylesheet: Layout für Kontaktformular und Details
    ============================================ */
 
-/* Hero-Sektion */
-.hero {
-  background-color: var(--color-accent-light);
-  min-height: 40vh;
-}
+/* Hero-Sektion wird von basic.css übernommen */
 
 /* Kontakt-Sektion */
 .contact-section {
@@ -15,17 +11,28 @@
   gap: var(--space-xl);
   padding: var(--space-xl) var(--container-padding);
   max-width: var(--max-container-width);
-  margin: 0 auto;
+  margin: var(--space-xl) auto;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
 }
 
 .contact-details,
 .contact-form {
   flex: 1 1 300px;
   background-color: var(--color-surface);
-  padding: var(--space-xl);
+  padding: var(--space-xl) var(--container-padding);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   transition: transform var(--transition-medium) var(--transition-timing);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .contact-details:hover,
@@ -37,6 +44,11 @@
 /* Details-Box */
 .contact-details h2 {
   margin-bottom: var(--space-md);
+  max-width: 100%;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
 }
 
 .contact-details p {
@@ -50,6 +62,11 @@
 /* Formular */
 .contact-form h2 {
   margin-bottom: var(--space-md);
+  max-width: 100%;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
 }
 
 .form-group {
@@ -115,4 +132,36 @@
 .checkbox-label input[type="checkbox"] {
   width: auto;
   margin: 0;
+}
+
+/* Media Queries für responsive Anpassungen */
+@media (max-width: 768px) {
+  .contact-section {
+    padding: var(--space-lg) var(--space-md);
+    gap: var(--space-lg);
+    margin: var(--space-lg) auto;
+  }
+
+  .contact-details,
+  .contact-form {
+    padding: var(--space-lg) var(--space-md);
+    flex-basis: 100%;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-section {
+    padding: var(--space-md) var(--space-sm);
+    margin: var(--space-md) auto;
+  }
+
+  .contact-details,
+  .contact-form {
+    padding: var(--space-md) var(--space-sm);
+  }
 }

@@ -21,17 +21,20 @@
   /* RSVP Section */
   .rsvp-section {
     max-width: var(--max-container-width);
-    margin: var(--space-lg) auto;
-    padding: var(--space-lg) var(--container-padding);
-  }
-  
-  .rsvp-container {
+    margin: var(--space-xl) auto;
+    padding: var(--space-xl) var(--container-padding);
+    width: 100%;
+    box-sizing: border-box;
     background-color: var(--color-surface);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    padding: var(--space-lg);
+  }
+  
+  .rsvp-container {
     max-width: 800px;
     margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .rsvp-section h2 {
@@ -305,8 +308,13 @@
   
   /* Responsive Anpassungen */
   @media (max-width: 768px) {
+    .rsvp-section {
+      padding: var(--space-lg) var(--space-md);
+      margin: var(--space-lg) auto;
+    }
+    
     .rsvp-container {
-      padding: var(--space-md);
+      padding: 0;
     }
     
     .form-group {
@@ -334,5 +342,16 @@
     
     .radio-option {
       padding: var(--space-sm);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .rsvp-section {
+      padding: var(--space-md) var(--space-sm);
+      margin: var(--space-md) auto;
+    }
+    
+    .rsvp-container {
+      padding: 0;
     }
   }

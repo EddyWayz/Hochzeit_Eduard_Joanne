@@ -30,27 +30,75 @@
       <!-- Kontaktinformationen -->
       <div class="contact-details">
         <h2>Kontaktinformationen</h2>
-        <p><strong>E‑Mail:</strong> <a href="mailto:email@example.com">email@example.com</a></p>
-        <p><strong>Telefon:</strong> +49 [Telefonnummer]</p>
+        <div class="contact-card">
+          <h3>Brautpaar</h3>
+          <p><strong>Eduard & Joanne</strong></p>
+          <p><strong>E‑Mail:</strong> <a href="mailto:hochzeit@example.com">hochzeit@example.com</a></p>
+          <p><strong>Telefon:</strong> +49 30 123456789</p>
+        </div>
+
+        <div class="contact-card">
+          <h3>Trauzeugen</h3>
+          <p><strong>Max Mustermann (Trauzeuge)</strong><br>
+          <a href="mailto:max@example.com">max@example.com</a><br>
+          Tel: +49 30 987654321</p>
+          
+          <p><strong>Anna Schmidt (Trauzeugin)</strong><br>
+          <a href="mailto:anna@example.com">anna@example.com</a><br>
+          Tel: +49 30 456789123</p>
+        </div>
+
+        <div class="contact-card">
+          <h3>Wichtige Hinweise</h3>
+          <ul>
+            <li>Bitte meldet euch bei Fragen zur Anfahrt oder Unterkunft</li>
+            <li>Für spezielle Essenswünsche oder Allergien</li>
+            <li>Bei Fragen zur Geschenkeliste</li>
+            <li>Für organisatorische Anliegen</li>
+          </ul>
+        </div>
       </div>
 
       <!-- Kontaktformular -->
       <div class="contact-form">
         <h2>Kontaktformular</h2>
-        <form class="form" action="mailto:email@example.com" method="post" enctype="text/plain">
+        <form class="form" action="mailto:hochzeit@example.com" method="post" enctype="text/plain">
           <div class="form-group">
             <label for="name">Name</label>
             <input type="text" id="name" name="Name" placeholder="Dein Name" required>
           </div>
+          
           <div class="form-group">
             <label for="emailInput">E‑Mail</label>
             <input type="email" id="emailInput" name="E‑Mail" placeholder="deine@mail.de" required>
           </div>
+
+          <div class="form-group">
+            <label for="subject">Betreff</label>
+            <select id="subject" name="Betreff" required>
+              <option value="">Bitte wählen</option>
+              <option value="anfahrt">Frage zur Anfahrt</option>
+              <option value="unterkunft">Frage zur Unterkunft</option>
+              <option value="essen">Essenswünsche/Allergien</option>
+              <option value="geschenke">Frage zu Geschenken</option>
+              <option value="organisation">Organisatorisches</option>
+              <option value="sonstiges">Sonstiges</option>
+            </select>
+          </div>
+          
           <div class="form-group">
             <label for="message">Nachricht</label>
             <textarea id="message" name="Nachricht" rows="5" placeholder="Deine Nachricht..." required></textarea>
           </div>
-          <button type="submit" class="btn">Absenden</button>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" name="newsletter" value="yes">
+              Ich möchte über wichtige Updates zur Hochzeit informiert werden
+            </label>
+          </div>
+
+          <button type="submit" class="btn">Nachricht senden</button>
         </form>
       </div>
     </section>

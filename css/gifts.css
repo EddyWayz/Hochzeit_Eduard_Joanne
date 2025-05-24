@@ -59,16 +59,16 @@
   font-size: var(--fs-md-desktop);
   font-weight: var(--fw-semibold);
   color: #fff;
-  background-color: var(--color-primary, #2c3e50);
+  background-color: var(--color-primary);
   border: none;
-  border-radius: var(--radius-md, 0.5rem);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition:
     background-color var(--transition-medium) var(--transition-timing),
     transform var(--transition-fast) var(--transition-timing);
 }
 .buttons button:hover {
-  background-color: var(--color-primary-dark, #b2594e);
+  background-color: var(--color-primary-dark);
   transform: translateY(-1px);
 }
 .buttons button:active {
@@ -162,26 +162,27 @@
 }
 
 /* --------------------------------------------
-   Optimiertes Bild-Layout mit Container
+   Optimiertes Bild-Layout
    – Verhindert Layout Shift beim Laden
+   – Sofortige Anzeige in korrekter Größe
    -------------------------------------------- */
 .gift-img-container {
   width: 100%;
   margin-bottom: var(--space-sm);
+  aspect-ratio: 4 / 3;
+  background-color: #ffffff;
+  border-radius: var(--radius-sm);
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
 }
 
 .gift-img {
   width: 100%;
-  display: block;
-  aspect-ratio: 4 / 3;
+  height: 100%;
   object-fit: contain;
   object-position: center;
-  background-color: #ffffff; /* Weißer Hintergrund */
-  border-radius: var(--radius-sm);
-  border: 1px solid #f0f0f0;
-  /* Verhindert Layout Shift */
-  height: auto;
-  min-height: 0;
+  background-color: #ffffff;
+  transition: opacity 0.2s ease-in-out;
 }
 
 /* Fallback für ältere Browser ohne aspect-ratio */
@@ -190,7 +191,6 @@
     position: relative;
     width: 100%;
     padding-bottom: 75%; /* 4:3 ratio = 75% */
-    margin-bottom: var(--space-sm);
   }
   
   .gift-img {
@@ -199,131 +199,52 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    object-position: center;
   }
 }
 
 /* ============================================
-   Loading Screen & Progress Bar
+   Responsive Anpassungen
    ============================================ */
-#loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  transition: opacity 0.3s ease-in-out;
-}
 
-.loading-content {
-  text-align: center;
-  max-width: 400px;
-  padding: var(--space-xl);
-}
-
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto var(--space-lg);
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-content h3 {
-  color: var(--color-primary);
-  margin-bottom: var(--space-lg);
-  font-size: var(--fs-lg-desktop);
-}
-
-.loading-bar {
-  width: 100%;
-  height: 8px;
-  background-color: #f0f0f0;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: var(--space-md);
-}
-
-.loading-progress {
-  height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
-  width: 0%;
-  transition: width 0.3s ease-in-out;
-  border-radius: 4px;
-}
-
-.loading-content p {
-  color: #666;
-  font-size: var(--fs-sm-desktop);
-  margin: 0;
-}
-
-/* Gift List Transition */
-.gift-list {
-  transition: opacity 0.5s ease-in-out;
-}
-
-/* Loading-Effekt für Bilder */
-.gift-img {
-  transition: opacity 0.3s ease-in-out;
-}
-
-/* Placeholder-Styling mit weißem Hintergrund */
-.gift-img[src*="data:image/svg"] {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-}
-
-/* Tablet Layout bis 768px:
-   – Zwei Spalten statt auto-fit
-   – Angepasstes Padding und Font-Size in Buttons & Überschriften
-*/
+/* Tablet Layout bis 768px */
 @media (max-width: 768px) {
   #gifts {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-md);
   }
+  
   .gift-list {
     padding: var(--space-md);
   }
+  
   #gifts li {
     padding: var(--space-sm);
   }
+  
   .buttons {
     gap: var(--space-sm);
     margin-top: var(--space-sm);
   }
+  
   .buttons button {
     font-size: var(--fs-md-mobile);
   }
+  
   .gift-list h2 {
     font-size: var(--fs-xl-mobile);
   }
 }
 
-/* Mobile Layout bis 576px:
-   – Eine Spalte, mobile Font-Größen
-*/
+/* Mobile Layout bis 576px */
 @media (max-width: 576px) {
   #gifts {
     grid-template-columns: 1fr;
   }
+  
   .buttons button {
     font-size: var(--fs-md-mobile);
   }
+  
   .gift-list h2 {
     font-size: var(--fs-xl-mobile);
   }

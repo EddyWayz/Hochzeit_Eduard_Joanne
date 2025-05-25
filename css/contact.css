@@ -17,6 +17,7 @@
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
+
 }
 
 .contact-details,
@@ -33,6 +34,7 @@
   word-wrap: break-word;
   word-break: break-word;
   hyphens: auto;
+  margin-bottom: var(--space-sm);
 }
 
 .contact-details:hover,
@@ -41,85 +43,7 @@
   box-shadow: var(--shadow-md);
 }
 
-/* Details-Box */
-.contact-details h2 {
-  margin-bottom: var(--space-md);
-  max-width: 100%;
-  overflow-wrap: break-word;
-  hyphens: auto;
-  -webkit-hyphens: auto;
-  -ms-hyphens: auto;
-}
 
-.contact-details p {
-  margin-bottom: var(--space-sm);
-  line-height: var(--lh-normal);
-  font-family: var(--font-text);
-  font-size: var(--fs-md);
-  color: var(--color-text);
-}
-
-/* Formular */
-.contact-form h2 {
-  margin-bottom: var(--space-md);
-  max-width: 100%;
-  overflow-wrap: break-word;
-  hyphens: auto;
-  -webkit-hyphens: auto;
-  -ms-hyphens: auto;
-}
-
-.form-group {
-  margin-bottom: var(--space-lg);
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: var(--space-xs);
-  font-weight: var(--fw-semibold);
-  font-family: var(--font-text);
-  color: var(--color-text);
-  font-size: var(--fs-md);
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: var(--space-sm);
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--fs-md);
-  font-family: var(--font-text);
-  transition: border-color var(--transition-fast) var(--transition-timing);
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
-}
-
-.btn {
-  display: inline-block;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  padding: var(--space-sm) var(--space-lg);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--fs-btn);
-  font-family: var(--font-text);
-  cursor: pointer;
-  transition: all var(--transition-medium) var(--transition-timing);
-}
-
-.btn:hover {
-  background-color: var(--color-primary-dark);
-  transform: translateY(-1px);
-}
-
-.btn:active {
-  transform: translateY(1px);
-}
 
 /* Checkbox-Styling */
 .checkbox-label {

@@ -102,24 +102,7 @@
   border: var(--border-width) solid var(--color-border);
 }
 
-.gift-info {
-  flex: 1;
-}
 
-.gift-info h3 {
-  margin: 0;
-  color: var(--color-primary);
-}
-
-.gift-info p {
-  margin: var(--space-xs) 0 0;
-  color: var(--color-text);
-}
-
-.gift-actions {
-  display: flex;
-  gap: var(--space-sm);
-}
 
 .gift-button {
   padding: var(--space-sm) var(--space-md);

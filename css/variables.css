@@ -95,7 +95,7 @@
      Layout & Spacing
      ------------------------------------------------------------------ */
   /* Container & Breakpoints */
-  --max-container-width: min(90vw, 1200px);     /* Maximale Seitenbreite */
+  --max-container-width: min(90vw, 1000px);     /* Maximale Seitenbreite */
   --container-padding: clamp(1rem, 2vw, 1.5rem); /* Seitenabstand */
   --border-width: clamp(1px, 0.1vw, 2px);       /* Standard-Rahmenbreite */
 

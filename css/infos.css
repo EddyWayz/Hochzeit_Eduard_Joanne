@@ -136,20 +136,16 @@
    Infos Stylesheet: Layout und Karten für Veranstaltungsinformationen
    ============================================ */
 
-/* Hauptbereich: zentriert mit Maximalbreite und Innenabstand */
-main {
-  max-width: var(--max-container-width);
-  margin: 0 auto;
-  padding: var(--space-xl) var(--container-padding);
-  width: 100%;
-  box-sizing: border-box;
-}
-
 /* Abschnitt: Abstand nach unten */
 section {
   margin-bottom: var(--space-section);
   width: 100%;
   box-sizing: border-box;
+}
+
+.content {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* Karten-Layout: Einheitliches Styling für alle Infokarten */
@@ -161,10 +157,12 @@ section {
 .registry,
 .contact,
 .color-code {
+
   background-color: var(--color-surface);
   padding: var(--space-xl) var(--container-padding);
   border: var(--border-width) solid var(--color-border);
   width: 100%;
+  max-width: var(--max-container-width);
   box-sizing: border-box;
   margin: var(--space-xl) auto;
   border-radius: var(--radius-lg);
@@ -321,10 +319,10 @@ section {
   .travel,
   .dress-code,
   .registry,
-  .contact,
+  .contact-section,
   .color-code {
-    padding: var(--space-lg) var(--space-md);
-    margin: var(--space-lg) auto;
+
+
   }
 
   .info-card {
@@ -342,8 +340,8 @@ section {
   .registry,
   .contact,
   .color-code {
-    padding: var(--space-md) var(--space-sm);
-    margin: var(--space-md) auto;
+
+
   }
 
   .info-card {

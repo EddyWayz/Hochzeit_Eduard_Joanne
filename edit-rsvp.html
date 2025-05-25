@@ -71,7 +71,7 @@
         </div>
 
         <!-- Begleitpersonen -->
-        <div class="form-group">
+        <div class="form-group guests-form-group">
           <label for="guests">Anzahl der Gäste</label>
           <div class="guests-input">
             <button type="button" class="guest-btn" id="decrease-guests">-</button>
@@ -103,13 +103,13 @@
         <div id="guest-details" class="guest-details"></div>
 
         <!-- Unverträglichkeiten -->
-        <div class="form-group">
+        <div class="form-group intolerances-form-group">
           <label for="intolerances">Unverträglichkeiten</label>
           <textarea id="intolerances" name="intolerances" rows="2" placeholder="z. B. Gluten, Laktose, Nüsse…"></textarea>
         </div>
 
         <!-- Nachricht -->
-        <div class="form-group">
+        <div class="form-group message-form-group">
           <label for="message">Nachricht</label>
           <textarea id="message" name="message" rows="4" placeholder="Möchtest du uns noch etwas mitteilen?"></textarea>
         </div>
@@ -134,10 +134,14 @@
 
     function renderGuestFields(count, guestDetails = []) {
       detailsContainer.innerHTML = '';
+      const isDisabled = document.querySelector('input[name="attending"]:checked')?.value === 'no';
+      
       for (let i = 1; i <= count; i++) {
         const data = guestDetails[i-1] || { name: '', type: 'Erwachsener' };
         const wrapper = document.createElement('div');
         wrapper.classList.add('guest-field');
+        if (isDisabled) wrapper.classList.add('disabled');
+        
         wrapper.innerHTML = `
           <div class="guest-header">
             <h3>Gast ${i}</h3>
@@ -145,21 +149,25 @@
           <div class="guest-content">
             <div class="form-group">
               <label for="guestName_${i}">Vorname</label>
-              <input type="text" id="guestName_${i}" name="guestName_${i}" placeholder="Vorname Gast ${i}" value="${data.name}" required>
+              <input type="text" id="guestName_${i}" name="guestName_${i}" 
+                     placeholder="Vorname Gast ${i}" value="${data.name}" required ${isDisabled ? 'disabled' : ''}>
             </div>
             <div class="form-group">
               <label>Alterskategorie</label>
               <div class="radio-group">
                 <label class="radio-option">
-                  <input type="radio" name="guestType_${i}" value="Erwachsener" ${data.type==='Erwachsener'? 'checked':''}>
+                  <input type="radio" name="guestType_${i}" value="Erwachsener" 
+                         ${data.type==='Erwachsener'? 'checked':''} ${isDisabled ? 'disabled' : ''}>
                   <span>Erwachsener</span>
                 </label>
                 <label class="radio-option">
-                  <input type="radio" name="guestType_${i}" value="Kind" ${data.type==='Kind'? 'checked':''}>
+                  <input type="radio" name="guestType_${i}" value="Kind" 
+                         ${data.type==='Kind'? 'checked':''} ${isDisabled ? 'disabled' : ''}>
                   <span>Kind</span>
                 </label>
                 <label class="radio-option">
-                  <input type="radio" name="guestType_${i}" value="Kleinkind" ${data.type==='Kleinkind'? 'checked':''}>
+                  <input type="radio" name="guestType_${i}" value="Kleinkind" 
+                         ${data.type==='Kleinkind'? 'checked':''} ${isDisabled ? 'disabled' : ''}>
                   <span>Kleinkind</span>
                 </label>
               </div>
@@ -168,6 +176,48 @@
         `;
         detailsContainer.appendChild(wrapper);
       }
+    }
+
+    // Funktion zum Aktivieren/Deaktivieren der Formularfelder
+    function toggleFormFields(disable) {
+      const fieldsToToggle = [
+        '#guests',
+        '#decrease-guests',
+        '#increase-guests',
+        '#intolerances',
+        '#message'
+      ];
+      
+      // Hauptfelder togglen
+      fieldsToToggle.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+          element.disabled = disable;
+        }
+      });
+      
+      // Gast-Detail-Felder togglen
+      const guestFields = document.querySelectorAll('#guest-details input, #guest-details textarea');
+      guestFields.forEach(field => {
+        field.disabled = disable;
+      });
+      
+      // Container-Klasse für visuelles Styling
+      const guestDetailsContainer = document.getElementById('guest-details');
+      const guestsFormGroup = document.querySelector('.guests-form-group');
+      const ageInfoGroup = document.querySelector('.age-info');
+      const intolerancesGroup = document.querySelector('.intolerances-form-group');
+      const messageGroup = document.querySelector('.message-form-group');
+      
+      [guestDetailsContainer, guestsFormGroup, ageInfoGroup, intolerancesGroup, messageGroup].forEach(container => {
+        if (container) {
+          if (disable) {
+            container.classList.add('disabled');
+          } else {
+            container.classList.remove('disabled');
+          }
+        }
+      });
     }
 
     // Event Listener für Guest Counter
@@ -187,6 +237,28 @@
       }
     });
 
+    // Event Listener für Teilnahme Radio Buttons
+    document.querySelectorAll('input[name="attending"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const isNotAttending = this.value === 'no';
+        toggleFormFields(isNotAttending);
+        
+        // Gast-Felder neu rendern um disabled state zu berücksichtigen
+        const currentGuestDetails = [];
+        for (let i = 1; i <= parseInt(guestsInput.value); i++) {
+          const nameField = document.querySelector(`#guestName_${i}`);
+          const typeField = document.querySelector(`input[name="guestType_${i}"]:checked`);
+          if (nameField && typeField) {
+            currentGuestDetails.push({
+              name: nameField.value,
+              type: typeField.value
+            });
+          }
+        }
+        renderGuestFields(parseInt(guestsInput.value), currentGuestDetails);
+      });
+    });
+
     // Daten laden und Formular befüllen
     db.collection('rsvps').doc(rsvpId).get().then(doc => {
       if (!doc.exists) {
@@ -200,7 +272,14 @@
       guestsInput.value       = data.guests;
       form.intolerances.value = data.intolerances || '';
       form.message.value      = data.message || '';
+      
+      // Initial render mit den geladenen Daten
       renderGuestFields(data.guests, data.guestDetails);
+      
+      // Formularfelder entsprechend der Teilnahme ein-/ausblenden
+      const isNotAttending = data.attending === 'no';
+      toggleFormFields(isNotAttending);
+      
     }).catch(err => {
       console.error(err);
       alert('Fehler beim Laden der Daten.');

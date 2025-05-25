@@ -305,6 +305,76 @@
     cursor: not-allowed;
     opacity: 0.7;
   }
+
+  /* ============================================
+     DISABLED FORM STYLES
+     ============================================ */
+  
+  /* Disabled Form Groups */
+  .form-group.disabled,
+  .guest-field.disabled,
+  .age-info.disabled,
+  #guest-details.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    filter: grayscale(0.7);
+    transition: all var(--transition-medium) var(--transition-timing);
+  }
+  
+  .form-group.disabled input,
+  .form-group.disabled textarea,
+  .form-group.disabled button,
+  .guest-field.disabled input,
+  .guest-field.disabled textarea {
+    background-color: var(--color-bg-light) !important;
+    color: #888 !important;
+    border-color: #ccc !important;
+    cursor: not-allowed !important;
+  }
+  
+  .form-group.disabled .radio-option,
+  .guest-field.disabled .radio-option {
+    background-color: var(--color-bg-light) !important;
+    border-color: #ccc !important;
+    color: #888 !important;
+    cursor: not-allowed !important;
+  }
+  
+  .form-group.disabled .radio-option:hover,
+  .guest-field.disabled .radio-option:hover {
+    background-color: var(--color-bg-light) !important;
+    border-color: #ccc !important;
+  }
+  
+  .form-group.disabled .radio-option span,
+  .guest-field.disabled .radio-option span {
+    color: #888 !important;
+  }
+  
+  .form-group.disabled .guest-btn,
+  .guest-field.disabled .guest-btn {
+    background-color: var(--color-bg-light) !important;
+    border-color: #ccc !important;
+    color: #888 !important;
+    cursor: not-allowed !important;
+  }
+  
+  .form-group.disabled .guest-btn:hover,
+  .guest-field.disabled .guest-btn:hover {
+    background-color: var(--color-bg-light) !important;
+    color: #888 !important;
+    transform: none !important;
+  }
+  
+  .form-group.disabled .guest-header,
+  .guest-field.disabled .guest-header {
+    background-color: #ccc !important;
+  }
+  
+  .form-group.disabled .guest-header h3,
+  .guest-field.disabled .guest-header h3 {
+    color: #888 !important;
+  }
   
   /* Responsive Anpassungen */
   @media (max-width: 768px) {

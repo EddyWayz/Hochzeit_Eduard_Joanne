@@ -17,6 +17,15 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Einheitliches Box-Sizing für konsistente Layouts */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth; /* Sanftes Scrollen für Ankerlinks */
+}
+
 body {
   padding: 0;
   font-family: var(--font-text);
@@ -28,6 +37,8 @@ body {
   padding-bottom: 4rem;
   position: relative;
   width: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Basis Layout */
@@ -121,6 +132,10 @@ p {
   font-family: var(--font-text);
 }
 
+p:last-child {
+  margin-bottom: 0;
+}
+
 /* Standard List Styles */
 ul, ol {
   list-style: none;
@@ -149,6 +164,11 @@ a {
 
 a:hover {
   color: var(--color-primary-dark);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 /* Standard Form Styles */

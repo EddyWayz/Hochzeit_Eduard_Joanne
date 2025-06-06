@@ -4,21 +4,6 @@
 
 /* Hero-Sektion wird von basic.css übernommen */
 
-/* Kontakt-Sektion */
-.contact-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xl);
-  padding: var(--space-xl) var(--container-padding);
-  max-width: var(--max-container-width);
-  margin: var(--space-xl) auto;
-  width: 100%;
-  box-sizing: border-box;
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
-
-}
 
 .contact-details,
 .contact-form {
@@ -60,11 +45,6 @@
 
 /* Media Queries für responsive Anpassungen */
 @media (max-width: 768px) {
-  .contact-section {
-    padding: var(--space-lg) var(--space-md);
-    gap: var(--space-lg);
-    margin: var(--space-lg) auto;
-  }
 
   .contact-details,
   .contact-form {
@@ -79,10 +59,6 @@
 }
 
 @media (max-width: 480px) {
-  .contact-section {
-    padding: var(--space-md) var(--space-sm);
-    margin: var(--space-md) auto;
-  }
 
   .contact-details,
   .contact-form {

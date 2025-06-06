@@ -92,17 +92,6 @@
   text-align: center;
 }
 
-.gift-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-md);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-md);
-  border: var(--border-width) solid var(--color-border);
-}
-
-
 
 .gift-button {
   padding: var(--space-sm) var(--space-md);

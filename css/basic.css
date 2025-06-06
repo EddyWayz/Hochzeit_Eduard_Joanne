@@ -242,35 +242,6 @@ button:active {
 }
 
 /* Button Variants */
-.btn-outline {
-  background-color: transparent;
-  border: var(--border-width) solid var(--color-primary);
-  color: var(--color-primary);
-}
-
-.btn-outline:hover {
-  background-color: var(--color-primary-light);
-  color: var(--color-on-primary);
-}
-
-.btn-danger {
-  background-color: var(--color-error);
-  color: var(--color-on-error);
-}
-
-.btn-danger:hover {
-  background-color: var(--color-error-dark);
-}
-
-.btn-danger.btn-outline {
-  border-color: var(--color-error);
-  color: var(--color-error);
-}
-
-.btn-danger.btn-outline:hover {
-  background-color: var(--color-error);
-  color: var(--color-on-error);
-}
 
 /* Content Section - Basis für alle Hauptcontainer */
 .content {
@@ -287,7 +258,6 @@ button:active {
 .schedule,
 .rsvp-section,
 .gift-list,
-.contact-section,
 .impressum-section {
   width: 100%;
   margin: var(--space-xl) auto;
@@ -305,7 +275,6 @@ button:active {
 .schedule:hover,
 .rsvp-section:hover,
 .gift-list:hover,
-.contact-section:hover,
 .impressum-section:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
@@ -381,7 +350,7 @@ button:active {
 /* Section Headings */
 .story h2, .details h2, .schedule h2,
 .rsvp-section h2, .gift-list h2,
-.contact-section h2, .impressum-section h2 {
+.impressum-section h2 {
   text-align: center;
   margin-bottom: var(--space-lg);
 }
@@ -658,7 +627,6 @@ body {
   .schedule,
   .rsvp-section,
   .gift-list,
-  .contact-section,
   .impressum-section {
     margin: var(--space-lg) auto;
     padding: var(--space-lg) var(--space-md);
@@ -714,7 +682,6 @@ body {
   .schedule,
   .rsvp-section,
   .gift-list,
-  .contact-section,
   .impressum-section {
     margin: var(--space-md) auto;
     padding: var(--space-md) var(--space-sm);
@@ -732,7 +699,6 @@ body {
   .schedule,
   .rsvp-section,
   .gift-list,
-  .contact-section,
   .impressum-section {
     max-width: var(--max-container-width);
   }

@@ -8,4 +8,4 @@ node_modules/
 /dist/
 
 
-js/firebase-init.js
+firebase-init.js

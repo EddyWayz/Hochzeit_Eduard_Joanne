@@ -281,7 +281,6 @@ button:active {
 }
 
 /* Standard Container Styles - Basis für alle Sektionen */
-.container,
 .card,
 .story,
 .details,
@@ -300,7 +299,6 @@ button:active {
   box-sizing: border-box;
 }
 
-.container:hover,
 .card:hover,
 .story:hover,
 .details:hover,
@@ -313,17 +311,6 @@ button:active {
   box-shadow: var(--shadow-md);
 }
 
-/* Standard Icon Styles */
-.icon {
-  width: 24px;
-  height: 24px;
-  color: var(--color-primary);
-  transition: color var(--transition-medium) var(--transition-timing);
-}
-
-.icon:hover {
-  color: var(--color-primary-dark);
-}
 
 /* Logo */
 .logo {
@@ -665,7 +652,6 @@ body {
     margin-right: 0;
   }
 
-  .container,
   .card,
   .story,
   .details,
@@ -722,7 +708,6 @@ body {
     padding: 0 var(--space-sm);
   }
 
-  .container,
   .card,
   .story,
   .details,
@@ -741,7 +726,6 @@ body {
     max-width: var(--max-container-width);
   }
 
-  .container,
   .card,
   .story,
   .details,

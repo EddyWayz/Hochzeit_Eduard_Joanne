@@ -8,6 +8,10 @@ $(function() {
       e.stopPropagation(); // Verhindert sofortiges Schließen
       $('.nav-menu').toggleClass('open');
     });
+    // Menü schließen, wenn ein Link angeklickt wird
+    $(document).on('click touchstart', '.nav-menu a', function() {
+      $('.nav-menu').removeClass('open');
+    });
     // Schließen, wenn außerhalb des Menüs getippt/geclickt wird
     $(document).on('click touchstart', function(e) {
       var $nav = $('.nav-menu');

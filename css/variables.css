@@ -10,6 +10,7 @@
     src: url('../fonts/Hello August.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -17,6 +18,7 @@
     src: url('../fonts/Kiona-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
+    font-display: swap;
 }
 
 :root {

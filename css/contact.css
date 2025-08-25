@@ -8,24 +8,11 @@
 .contact-details,
 .contact-form {
   flex: 1 1 300px;
-  background-color: var(--color-surface);
-  padding: var(--space-xl) var(--container-padding);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
-  transition: transform var(--transition-medium) var(--transition-timing);
-  width: 100%;
-  box-sizing: border-box;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
   hyphens: auto;
-  margin-bottom: var(--space-sm);
-}
-
-.contact-details:hover,
-.contact-form:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  margin: 0 0 var(--space-sm);
 }
 
 
@@ -45,23 +32,13 @@
 
 /* Media Queries für responsive Anpassungen */
 @media (max-width: 768px) {
-
   .contact-details,
   .contact-form {
-    padding: var(--space-lg) var(--space-md);
     flex-basis: 100%;
   }
 
   .form-group input,
   .form-group textarea {
     max-width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-
-  .contact-details,
-  .contact-form {
-    padding: var(--space-md) var(--space-sm);
   }
 }

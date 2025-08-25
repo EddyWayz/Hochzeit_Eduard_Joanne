@@ -1,15 +1,55 @@
 // js/gifts.js: Verwaltung der Geschenkeliste
-document.addEventListener("DOMContentLoaded", () => {
-  const giftsUl = document.getElementById("gifts");
-  const modal = document.getElementById("reservation-modal");
-  const form = document.getElementById("reservation-form");
-  const emailIn = document.getElementById("reserver-email");
-  const cancelBtn = document.getElementById("cancel-btn");
-  let currentId = null;
-  let lastDocs = [];
-  let imageCache = new Map(); // Cache für geladene Bilder
-  const BATCH_SIZE = 9; // Anzahl der parallel zu ladenden Bilder
-  const VISIBLE_BATCH_SIZE = 9; // Anzahl der Bilder mit hoher Priorität
+
+document.addEventListener('DOMContentLoaded', () => {
+    const giftsUl   = document.getElementById('gifts');
+    const modal     = document.getElementById('reservation-modal');
+    const form      = document.getElementById('reservation-form');
+    const emailIn   = document.getElementById('reserver-email');
+    const cancelBtn = document.getElementById('cancel-btn');
+    let   currentId = null;
+    let   lastDocs  = [];
+    let   lastFocusedBtn = null;
+    let   imageCache = new Map(); // Cache für geladene Bilder
+    const BATCH_SIZE = 9; // Anzahl der parallel zu ladenden Bilder
+    const VISIBLE_BATCH_SIZE = 9; // Anzahl der Bilder mit hoher Priorität
+
+    // Hilfsfunktion: Bild mit optimiertem Loading
+    function createImageElement(data, imageId) {
+        const imgContainer = document.createElement('div');
+        imgContainer.classList.add('gift-img-container');
+        
+        const imgEl = document.createElement('img');
+        imgEl.classList.add('gift-img');
+        imgEl.alt = data.name;
+        
+        // Sofort die richtige Größe setzen
+        imgEl.style.aspectRatio = '4 / 3';
+        imgEl.style.width = '100%';
+        imgEl.style.objectFit = 'contain';
+        imgEl.style.objectPosition = 'center';
+        imgEl.style.backgroundColor = '#ffffff';
+        imgEl.style.borderRadius = 'var(--radius-sm)';
+        imgEl.style.border = '1px solid #f0f0f0';
+        imgEl.style.opacity = '0';
+        imgEl.style.transition = 'opacity 0.2s ease-out';
+        
+        imgContainer.appendChild(imgEl);
+        return { container: imgContainer, img: imgEl };
+    }
+    
+    // Bild laden mit Preloading und Priorität
+    function loadImage(imgElement, src, priority = false) {
+        return new Promise((resolve, reject) => {
+            // Prüfen ob Bild bereits im Cache ist
+            if (imageCache.has(src)) {
+                imgElement.src = imageCache.get(src);
+                requestAnimationFrame(() => {
+                    imgElement.style.opacity = '1';
+                });
+                resolve();
+                return;
+            }
+
 
   // Hilfsfunktion: Bild mit optimiertem Loading
   function createImageElement(data, imageId) {
@@ -147,28 +187,64 @@ document.addEventListener("DOMContentLoaded", () => {
       requestAnimationFrame(() => {
         li.style.opacity = "1";
       });
-      return { li, imgEl, data };
+
+  
+    function closeModal() {
+      modal.style.display = 'none';
+      emailIn.value = '';
+      currentId = null;
+      if (lastFocusedBtn) {
+        lastFocusedBtn.focus();
+        lastFocusedBtn = null;
+      }
+    }
+
+    // Button-Klick öffnet Modal
+    giftsUl.addEventListener('click', e => {
+      if (e.target.tagName === 'BUTTON' && !e.target.disabled) {
+        currentId = e.target.dataset.id;
+        lastFocusedBtn = e.target;
+        modal.style.display = 'flex';
+        emailIn.focus();
+      }
     });
 
-    // Lade zuerst die sichtbaren Bilder
-    const visibleItems = listItems.slice(0, VISIBLE_BATCH_SIZE);
-    const visiblePromises = visibleItems.map(({ imgEl, data }, index) => {
-      if (data.imgUrl) {
-        const urlStr = data.imgUrl;
-        return (async () => {
-          try {
-            const downloadUrl = urlStr.startsWith("gs://")
-              ? await storage.refFromURL(urlStr).getDownloadURL()
-              : urlStr;
-            await loadImage(imgEl, downloadUrl, true);
-          } catch (err) {
-            console.error("Fehler beim Laden des Bildes:", err);
-            setPlaceholderImage(imgEl, data.name);
-          }
-        })();
-      } else {
-        setPlaceholderImage(imgEl, data.name);
-        return Promise.resolve();
+    // Modal Abbrechen
+    cancelBtn.addEventListener('click', () => {
+      closeModal();
+    });
+
+    // Modal mit Escape schließen
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeModal();
+      }
+    });
+  
+    // Formular abschicken
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = emailIn.value.trim();
+      if (!currentId || !email) return;
+  
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Reservieren…';
+  
+      try {
+        await db.collection('gifts').doc(currentId).update({
+          reserved: true,
+          reserverEmail: email,
+          reservedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        closeModal();
+      } catch (err) {
+        console.error('Reservierung fehlgeschlagen:', err);
+        alert('Reservierung fehlgeschlagen. Bitte versuche es erneut.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Bestätigen';
+
       }
     });
 

@@ -133,37 +133,31 @@ document.addEventListener('DOMContentLoaded', () => {
             </svg>
         `)}`;
 
-    imgElement.src = placeholder;
-    requestAnimationFrame(() => {
-      imgElement.style.opacity = "1";
-    });
-  }
 
-  // Liste rendern mit optimiertem Bildladen
-  async function renderList(docs) {
-    lastDocs = docs;
-    giftsUl.innerHTML = "";
+    // Liste rendern mit optimiertem Bildladen
+    async function renderList(docs) {
+        lastDocs = docs;
+        giftsUl.innerHTML = '';
+        
+        // Erstelle zuerst alle Listenelemente ohne Bilder
+        const listItems = docs.map((doc, index) => {
+            const data = doc.data();
+            const id   = doc.id;
+            const imageId = `img_${index}_${id}`;
+  
+            const li = document.createElement('li');
+            li.classList.add('card', 'gift-card');
+            li.style.opacity = '0';
+            li.style.transition = 'opacity 0.2s ease-out';
+            
+            // Bild-Container erstellen
+            const { container: imgContainer, img: imgEl } = createImageElement(data, imageId);
+            li.appendChild(imgContainer);
+  
+            // Name + Beschreibung
+            const info = document.createElement('div');
+            info.innerHTML = `
 
-    // Erstelle zuerst alle Listenelemente ohne Bilder
-    const listItems = docs.map((doc, index) => {
-      const data = doc.data();
-      const id = doc.id;
-      const imageId = `img_${index}_${id}`;
-
-      const li = document.createElement("li");
-      li.style.opacity = "0";
-      li.style.transition = "opacity 0.2s ease-out";
-
-      // Bild-Container erstellen
-      const { container: imgContainer, img: imgEl } = createImageElement(
-        data,
-        imageId,
-      );
-      li.appendChild(imgContainer);
-
-      // Name + Beschreibung
-      const info = document.createElement("div");
-      info.innerHTML = `
                 <strong>${data.name}</strong> – ${data.description}
                 ${
                   data.link
@@ -171,7 +165,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     : ""
                 }
             `;
-      li.appendChild(info);
+
+            li.appendChild(info);
+  
+            // Reservieren‑Button
+            const btn = document.createElement('button');
+            btn.classList.add('btn', 'btn-outline', 'btn-sm');
+            btn.textContent = data.reserved
+                ? `Reserviert von ${data.reserverEmail || 'jemandem'}`
+                : 'Jetzt reservieren';
+            btn.disabled   = data.reserved;
+            btn.dataset.id = id;
+            li.appendChild(btn);
+  
+            giftsUl.appendChild(li);
+            requestAnimationFrame(() => {
+                li.style.opacity = '1';
+            });
+            return { li, imgEl, data };
+        });
+
 
       // Reservieren‑Button
       const btn = document.createElement("button");

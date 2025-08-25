@@ -1,12 +1,12 @@
 // js/firebase-init.js
 // Gemeinsame Initialisierung von Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
-  authDomain: "hochzeiteduardjoanne.firebaseapp.com",
-  projectId: "hochzeiteduardjoanne",
-  storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
-  messagingSenderId: "209565556740",
-  appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
+  apiKey: "__FIREBASE_API_KEY__",
+  authDomain: "__FIREBASE_AUTH_DOMAIN__",
+  projectId: "__FIREBASE_PROJECT_ID__",
+  storageBucket: "__FIREBASE_STORAGE_BUCKET__",
+  messagingSenderId: "__FIREBASE_MESSAGING_SENDER_ID__",
+  appId: "__FIREBASE_APP_ID__"
 };
 
 firebase.initializeApp(firebaseConfig);

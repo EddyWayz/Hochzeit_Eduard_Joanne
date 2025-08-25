@@ -1,54 +1,70 @@
 <!-- geschenke.html -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geschenkeliste – Unsere Hochzeit</title>
-  <meta name="description" content="Unsere Wünsche und Geschenkeliste zur Hochzeit.">
-  <meta property="og:title" content="Geschenkeliste – Hochzeit Eduard & Joanne">
-  <meta property="og:description" content="Finde Ideen, womit du uns eine Freude machen kannst.">
-  <meta property="og:type" content="website">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geschenkeliste – Unsere Hochzeit</title>
+    <meta
+      name="description"
+      content="Unsere Wünsche und Geschenkeliste zur Hochzeit."
+    />
+    <meta
+      property="og:title"
+      content="Geschenkeliste – Hochzeit Eduard & Joanne"
+    />
+    <meta
+      property="og:description"
+      content="Finde Ideen, womit du uns eine Freude machen kannst."
+    />
+    <meta property="og:type" content="website" />
 
-  <!-- Bestehende Farbvariablen & Basis-Styles -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/basic.css">
-  <!-- Neues Styling für Geschenke -->
-  <link rel="stylesheet" href="css/gifts.css">
+    <!-- Bestehende Farbvariablen & Basis-Styles -->
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/basic.css" />
+    <!-- Neues Styling für Geschenke -->
+    <link rel="stylesheet" href="css/gifts.css" />
 
-  <script src="js/includeTemplate.js"></script>
+    <script src="js/includeTemplate.js"></script>
 
-  <!-- Firebase‑SDKs (compat mode) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-  <script src="js/firebase-init.js"></script>
-</head>
-<body>
-  <div id="header"></div>
+    <!-- Firebase‑SDKs (compat mode) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
+  </head>
+  <body>
+    <div id="header"></div>
 
-  <!-- Geschenk-Liste: Dynamisch geladene Geschenke mit Reservierungsmodal -->
-  <section class="gift-list">
-    <h2>Unsere Geschenkeliste</h2>
-    <ul id="gifts"></ul>
-  </section>
+    <!-- Geschenk-Liste: Dynamisch geladene Geschenke mit Reservierungsmodal -->
+    <section class="gift-list">
+      <h2>Unsere Geschenkeliste</h2>
+      <ul id="gifts"></ul>
+    </section>
 
-  <!-- Modal für Reservierung -->
-  <div id="reservation-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <h3>Reservieren</h3>
-      <form id="reservation-form">
-        <input type="email" id="reserver-email" placeholder="Deine E-Mail" required />
-        <div class="buttons">
-          <button type="submit">Bestätigen</button>
-          <button type="button" id="cancel-btn">Abbrechen</button>
-        </div>
-      </form>
+
+    <!-- Modal für Reservierung -->
+    <div id="reservation-modal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h3>Reservieren</h3>
+        <form id="reservation-form">
+          <input
+            type="email"
+            id="reserver-email"
+            placeholder="Deine E-Mail"
+            required
+          />
+          <div class="buttons">
+            <button type="submit">Bestätigen</button>
+            <button type="button" id="cancel-btn">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+
     </div>
-  </div>
 
-  <div id="footer"></div>
-  
-  <script src="js/gifts.js"></script>
-</body>
+    <div id="footer"></div>
+
+    <script src="js/gifts.js"></script>
+  </body>
 </html>

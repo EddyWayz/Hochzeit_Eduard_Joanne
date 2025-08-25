@@ -4,17 +4,41 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Header laden und danach Event-Handler setzen
   fetch('html/templates/header.html')
-    .then(response => response.text())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
     .then(html => {
       document.getElementById('header').innerHTML = html;
       initMenuToggle();
+    })
+    .catch(err => {
+      console.error('Fehler beim Laden des Headers:', err);
+      const headerEl = document.getElementById('header');
+      if (headerEl) {
+        headerEl.innerHTML = '<p>Header konnte nicht geladen werden.</p>';
+      }
     });
 
   // Footer laden
   fetch('html/templates/footer.html')
-    .then(response => response.text())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
     .then(html => {
       document.getElementById('footer').innerHTML = html;
+    })
+    .catch(err => {
+      console.error('Fehler beim Laden des Footers:', err);
+      const footerEl = document.getElementById('footer');
+      if (footerEl) {
+        footerEl.innerHTML = '<p>Footer konnte nicht geladen werden.</p>';
+      }
     });
 });
 

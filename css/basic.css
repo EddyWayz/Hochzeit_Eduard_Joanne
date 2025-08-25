@@ -362,6 +362,8 @@ button:active {
   cursor: pointer;
   color: var(--color-nav-text);
   padding: var(--space-xs);
+  background: none;
+  border: none;
   transition: color var(--transition-fast) var(--transition-timing);
 }
 

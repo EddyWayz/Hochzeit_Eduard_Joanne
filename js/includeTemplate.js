@@ -1,23 +1,42 @@
 // js/includeTemplate.js
 // Lädt Header und Footer und steuert das mobile Menü-Toggle
-$(function() {
+
+document.addEventListener('DOMContentLoaded', () => {
   // Header laden und danach Event-Handler setzen
-  $('#header').load('html/templates/header.html', function() {
-    // Öffnen/Schließen per Klick oder Touch auf das Burger-Icon
-    $(document).on('click touchstart', '.menu-toggle', function(e) {
-      e.stopPropagation(); // Verhindert sofortiges Schließen
-      $('.nav-menu').toggleClass('open');
+  fetch('html/templates/header.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('header').innerHTML = html;
+      initMenuToggle();
     });
-    // Schließen, wenn außerhalb des Menüs getippt/geclickt wird
-    $(document).on('click touchstart', function(e) {
-      var $nav = $('.nav-menu');
-      if ($nav.hasClass('open') &&
-          !$(e.target).closest('.nav-menu, .menu-toggle').length) {
-        $nav.removeClass('open');
-      }
-    });
-  });
 
   // Footer laden
-  $('#footer').load('html/templates/footer.html');
+  fetch('html/templates/footer.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('footer').innerHTML = html;
+    });
 });
+
+// Event-Handler für das mobile Menü
+function initMenuToggle() {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+
+  if (!menuToggle || !navMenu) return;
+
+  // Öffnen/Schließen per Klick auf das Burger-Icon
+  menuToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    navMenu.classList.toggle('open');
+  });
+
+  // Schließen, wenn außerhalb des Menüs geklickt wird
+  document.addEventListener('click', e => {
+    if (navMenu.classList.contains('open') &&
+        !e.target.closest('.nav-menu') &&
+        !e.target.closest('.menu-toggle')) {
+      navMenu.classList.remove('open');
+    }
+  });
+}

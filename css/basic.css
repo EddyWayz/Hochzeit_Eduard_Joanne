@@ -457,6 +457,40 @@ button:active {
   transform: translateY(1px);
 }
 
+.btn:focus,
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+/* Timeline */
+.timeline {
+  border-left: 4px solid var(--color-primary-light);
+  margin-left: var(--space-lg);
+  padding-left: var(--space-xl);
+}
+
+.timeline .event {
+  position: relative;
+  margin-bottom: var(--space-xl);
+}
+
+.timeline .event:last-child {
+  margin-bottom: 0;
+}
+
+.timeline .event::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--space-xl) - (var(--space-md) / 2));
+  top: var(--space-sm);
+  width: var(--space-md);
+  height: var(--space-md);
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+}
+
 /* Footer */
 .site-footer {
   background-color: var(--color-surface);

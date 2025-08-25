@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelBtn = document.getElementById('cancel-btn');
     let   currentId = null;
     let   lastDocs  = [];
+    let   lastFocusedBtn = null;
     let   imageCache = new Map(); // Cache für geladene Bilder
     const BATCH_SIZE = 9; // Anzahl der parallel zu ladenden Bilder
     const VISIBLE_BATCH_SIZE = 9; // Anzahl der Bilder mit hoher Priorität
@@ -205,19 +206,36 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Fehler beim Laden der Geschenke:', err);
       });
   
+    function closeModal() {
+      modal.style.display = 'none';
+      emailIn.value = '';
+      currentId = null;
+      if (lastFocusedBtn) {
+        lastFocusedBtn.focus();
+        lastFocusedBtn = null;
+      }
+    }
+
     // Button-Klick öffnet Modal
     giftsUl.addEventListener('click', e => {
       if (e.target.tagName === 'BUTTON' && !e.target.disabled) {
         currentId = e.target.dataset.id;
+        lastFocusedBtn = e.target;
         modal.style.display = 'flex';
+        emailIn.focus();
       }
     });
-  
+
     // Modal Abbrechen
     cancelBtn.addEventListener('click', () => {
-      modal.style.display = 'none';
-      emailIn.value = '';
-      currentId = null;
+      closeModal();
+    });
+
+    // Modal mit Escape schließen
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeModal();
+      }
     });
   
     // Formular abschicken
@@ -236,9 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
           reserverEmail: email,
           reservedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        modal.style.display = 'none';
-        emailIn.value = '';
-        currentId = null;
+        closeModal();
       } catch (err) {
         console.error('Reservierung fehlgeschlagen:', err);
         alert('Reservierung fehlgeschlagen. Bitte versuche es erneut.');

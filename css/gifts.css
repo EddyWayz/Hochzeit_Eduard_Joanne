@@ -77,44 +77,25 @@
    Geschenkeliste Styles
    – Übersichtlicher Grid-Look für Geschenk-Karten
    ============================================ */
-.gift-list {
-  max-width: var(--max-container-width);
-  margin: 0 auto;         /* zentriert den Container */
-  padding: var(--space-md);
-  box-sizing: border-box; /* wichtig, damit Padding nicht nach außen schiebt */
-  display: grid;
-  gap: var(--space-md);
-  margin-top: var(--space-lg);
-}
 
 .gift-list h2 {
-  margin-bottom: var(--space-lg);
   text-align: center;
 }
 
 
-.gift-button {
-  padding: var(--space-sm) var(--space-md);
-  font-size: var(--fs-sm);
-  color: var(--color-primary);
+/* Button Varianten */
+.btn-outline {
   background-color: transparent;
+  color: var(--color-primary);
   border: var(--border-width) solid var(--color-primary);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-medium) var(--transition-timing);
 }
 
-.gift-button:hover {
+.btn-outline:hover {
   background-color: var(--color-primary);
   color: var(--color-on-primary);
 }
 
-.gift-button:active {
-  transform: translateY(1px);
-}
-
-/* Disabled Gift Button */
-.gift-button:disabled {
+.btn-outline:disabled {
   color: var(--color-text-muted);
   background-color: var(--color-surface-alt);
   border-color: var(--color-border);
@@ -123,9 +104,14 @@
   transform: none;
 }
 
-.gift-button:disabled:hover {
+.btn-outline:disabled:hover {
   background-color: var(--color-surface-alt);
   color: var(--color-text-muted);
+}
+
+.btn-sm {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--fs-sm);
 }
 
 #gifts {
@@ -137,39 +123,19 @@
   justify-content: center;
   gap: var(--space-lg);
 }
-#gifts li {
-  background-color: var(--color-surface);
+.gift-card {
   border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform var(--transition-medium) var(--transition-timing);
 }
-#gifts li:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-soft);
-}
-#gifts li div {
+
+.gift-card div {
   margin-bottom: var(--space-md);
-  font-family: var(--font-text);
-  font-size: var(--fs-md);
-  color: var(--color-text);
 }
-#gifts li a {
-  color: var(--color-primary);
-  text-decoration: none;
-  font-weight: var(--fw-normal);
-  transition: color var(--transition-medium) var(--transition-timing);
-}
-#gifts li a:hover {
-  color: var(--color-primary-dark);
-}
-#gifts li button {
+
+.gift-card .btn {
   margin: 0 auto;   /* Button mittig ausrichten */
-  font-family: var(--font-text);
 }
 
 /* --------------------------------------------

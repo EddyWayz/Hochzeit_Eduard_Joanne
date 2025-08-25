@@ -2,42 +2,9 @@
    Impressum Stylesheet
    ============================================ */
 
-.impressum-section {
-  max-width: var(--max-container-width);
-  margin: var(--space-section) auto;
-  padding: var(--space-xl) var(--container-padding);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
-  transition: transform var(--transition-medium) var(--transition-timing);
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.impressum-section:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.impressum-section h2 {
-  margin-bottom: var(--space-lg);
-  text-align: center;
-}
-
-.impressum-section p {
-  margin-bottom: var(--space-md);
-}
-
-@media (max-width: 768px) {
+/* Sonderabstände für die Impressum-Sektion */
+@media (min-width: 769px) {
   .impressum-section {
-    padding: var(--space-lg) var(--space-md);
-    margin: var(--space-lg) auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .impressum-section {
-    padding: var(--space-md) var(--space-sm);
-    margin: var(--space-md) auto;
+    margin: var(--space-section) auto;
   }
 }

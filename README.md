@@ -100,6 +100,29 @@ Upload aller Dateien auf euren Webspace.
 
 Stelle sicher, dass die Dateistruktur erhalten bleibt.
 
+Firebase-Konfiguration
+
+Die Datei js/firebase-init.js enthält Platzhalter wie __FIREBASE_API_KEY__.
+Vor einem Deployment müssen diese mit euren echten Firebase-Werten ersetzt
+werden. Setzt dazu die entsprechenden Umgebungsvariablen und führt z.B. diesen
+Build-Schritt aus:
+
+FIREBASE_API_KEY=... \
+FIREBASE_AUTH_DOMAIN=... \
+FIREBASE_PROJECT_ID=... \
+FIREBASE_STORAGE_BUCKET=... \
+FIREBASE_MESSAGING_SENDER_ID=... \
+FIREBASE_APP_ID=... \
+envsubst < js/firebase-init.js > js/firebase-init.js.tmp && \
+mv js/firebase-init.js.tmp js/firebase-init.js
+
+CI/CD-Plattformen können auf die gleiche Weise die Platzhalter während des
+Deployments ersetzen.
+
+Die Firestore-Sicherheitsregeln liegen in firestore.rules und sollten nach
+Anpassungen mit der Firebase CLI (firebase deploy --only firestore:rules)
+ausgerollt werden.
+
 Contributing
 
 Beiträge sind willkommen! Bitte öffne Issues für Fehler oder Feature-Requests und erstelle Pull Requests für Änderungen.

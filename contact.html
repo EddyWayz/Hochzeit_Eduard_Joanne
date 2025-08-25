@@ -66,7 +66,7 @@
       <!-- Kontaktformular -->
       <div class="contact-form">
         <h2>Kontaktformular</h2>
-        <form class="form" action="mailto:hochzeit@example.com" method="post" enctype="text/plain">
+        <form class="form" action="/.netlify/functions/contact" method="POST">
           <div class="form-group">
             <label for="name">Name</label>
             <input type="text" id="name" name="Name" placeholder="Dein Name" required>
@@ -110,5 +110,6 @@
 
   <!-- Footer-Include -->
   <div id="footer"></div>
+  <script src="js/contact.js"></script>
 </body>
 </html>

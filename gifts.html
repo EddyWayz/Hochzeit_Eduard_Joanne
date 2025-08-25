@@ -34,9 +34,9 @@
   </section>
 
   <!-- Modal für Reservierung -->
-  <div id="reservation-modal" class="modal" style="display:none;">
+  <div id="reservation-modal" class="modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="reservation-title">
     <div class="modal-content">
-      <h3>Reservieren</h3>
+      <h3 id="reservation-title">Reservieren</h3>
       <form id="reservation-form">
         <input type="email" id="reserver-email" placeholder="Deine E-Mail" required />
         <div class="buttons">

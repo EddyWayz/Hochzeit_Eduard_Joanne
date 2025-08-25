@@ -111,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageId = `img_${index}_${id}`;
   
             const li = document.createElement('li');
+            li.classList.add('card', 'gift-card');
             li.style.opacity = '0';
             li.style.transition = 'opacity 0.2s ease-out';
             
@@ -130,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
             // Reservieren‑Button
             const btn = document.createElement('button');
-            btn.classList.add('gift-button');
+            btn.classList.add('btn', 'btn-outline', 'btn-sm');
             btn.textContent = data.reserved
                 ? `Reserviert von ${data.reserverEmail || 'jemandem'}`
                 : 'Jetzt reservieren';

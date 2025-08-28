@@ -16,49 +16,109 @@ try {
 
 const webhookUrl = "https://script.google.com/macros/s/AKfycbzQ2Rhg5Sva8EnfShO0tg8mhrl0K5cUSIYlIEJ--ih5IDbGNm2z0WujwYVz0kJOXKrZRg/exec";
 
+/**
+ * A helper function to send emails using a template.
+ * @param {string} templateName The name of the HTML template file (without extension).
+ * @param {object} mailData The data for the email payload and template.
+ */
+async function sendEmail(templateName, mailData) {
+  const Handlebars = require('handlebars');
+  const templateDir = path.join(__dirname, 'templates');
+  const tplSrc = fs.readFileSync(path.join(templateDir, `${templateName}.html`), 'utf8');
+  const template = Handlebars.compile(tplSrc);
+  const html = template(mailData.templateVariables);
+
+  const payload = {
+    to_email: mailData.to_email,
+    to_name: mailData.to_name,
+    subject: mailData.subject,
+    html: html,
+    text: mailData.text,
+  };
+
+  try {
+    console.log(`Attempting to send email for template: ${templateName} to ${mailData.to_email}`);
+    await axios.post(webhookUrl, payload);
+    console.log(`Email for template ${templateName} sent successfully.`);
+  } catch (err) {
+    console.error(`Error sending email for ${templateName}:`, JSON.stringify(err, null, 2));
+  }
+}
+
 exports.onGiftReserved = functions.firestore
   .document('gifts/{giftId}')
   .onUpdate(async (change, context) => {
     const before = change.before.data();
-    const after  = change.after.data();
-    if (!before?.reserved && after?.reserved) {
-      // Lazily load heavy modules and templates only when function is triggered
-      const Handlebars = require('handlebars');
-      const templateDir = path.join(__dirname, 'templates');
-      const giftTplSrc = fs.readFileSync(path.join(templateDir, 'reservation.html'), 'utf8');
-      const giftTemplate = Handlebars.compile(giftTplSrc);
+    const after = change.after.data();
 
-      const giftId        = context.params.giftId;
+    if (!before?.reserved && after?.reserved) {
+      const giftId = context.params.giftId;
       const { name, reserverEmail, reserverName } = after;
-      const token         = crypto.randomBytes(32).toString('hex');
+      const token = crypto.randomBytes(32).toString('hex');
+
       await change.after.ref.update({
         token,
-        reservedAt: admin.firestore.FieldValue.serverTimestamp()
-      });
-      const undoUrl       = `https://us-central1-hochzeiteduardjoanne.cloudfunctions.net/undoGift?giftId=${giftId}&token=${token}`; 
-      
-      const html = giftTemplate({
-        reserverName: reserverName || 'Freund',
-        giftName:     name,
-        undoUrl
+        reservedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-      const payload = {
+      const undoUrl = `https://us-central1-hochzeiteduardjoanne.cloudfunctions.net/undoGift?giftId=${giftId}&token=${token}`;
+
+      await sendEmail('reservation', {
         to_email: reserverEmail,
         to_name: reserverName || reserverEmail,
         subject: "Deine Geschenkauswahl bei Eduard & Joanne",
-        html: html,
-        text: `Hallo! Du hast ${name} reserviert. Rückgängig: ${undoUrl}`
-      };
-
-      try {
-        console.log("Attempting to POST to Google Script URL:", webhookUrl);
-        await axios.post(webhookUrl, payload);
-        console.log(`Bestätigungsmail an ${reserverEmail} gesendet (Gift: ${giftId})`);
-      } catch (err) {
-        console.error('Fehler beim Senden der Bestätigungsmail an Google Script:', JSON.stringify(err, null, 2));
-      }
+        text: `Hallo! Du hast ${name} reserviert. Rückgängig: ${undoUrl}`,
+        templateVariables: {
+          reserverName: reserverName || 'Freund',
+          giftName: name,
+          undoUrl,
+        },
+      });
     }
+    return null;
+  });
+
+exports.onRsvpSubmitted = functions.firestore
+  .document('rsvps/{rsvpId}')
+  .onCreate(async (snap, context) => {
+    const data = snap.data();
+    const rsvpId = context.params.rsvpId;
+    const editUrl = `https://eddywayz.github.io/Hochzeit_Eduard_Joanne/edit-rsvp.html?id=${rsvpId}`;
+
+    await sendEmail('rsvp_confirmation', {
+      to_email: data.email,
+      to_name: data.familyName,
+      subject: "Deine RSVP-Bestätigung für unsere Hochzeit",
+      text: `Hallo ${data.familyName}, vielen Dank für deine Rückmeldung! Bearbeiten: ${editUrl}`,
+      templateVariables: {
+        ...data,
+        attending: data.attending === 'yes' ? 'Ja' : 'Nein',
+        intolerances: data.intolerances || '–',
+        editUrl,
+      },
+    });
+    return null;
+  });
+
+exports.onRsvpUpdated = functions.firestore
+  .document('rsvps/{rsvpId}')
+  .onUpdate(async (change, context) => {
+    const data = change.after.data();
+    const rsvpId = context.params.rsvpId;
+    const editUrl = `https://eddywayz.github.io/Hochzeit_Eduard_Joanne/edit-rsvp.html?id=${rsvpId}`;
+
+    await sendEmail('rsvp_update_confirmation', {
+      to_email: data.email,
+      to_name: data.familyName,
+      subject: "Deine RSVP wurde aktualisiert",
+      text: `Hallo ${data.familyName}, deine Änderungen wurden gespeichert. Erneut bearbeiten: ${editUrl}`,
+      templateVariables: {
+        ...data,
+        attending: data.attending === 'yes' ? 'Ja' : 'Nein',
+        intolerances: data.intolerances || '–',
+        editUrl,
+      },
+    });
     return null;
   });
 
@@ -66,16 +126,16 @@ exports.undoGift = functions.https.onRequest(async (req, res) => {
   const { giftId, token } = req.query;
   if (!giftId || !token) return res.status(400).send('Ungültiger Link.');
   const docRef = admin.firestore().collection('gifts').doc(giftId);
-  const doc    = await docRef.get();
+  const doc = await docRef.get();
   if (!doc.exists) return res.status(404).send('Geschenk nicht gefunden.');
   const data = doc.data();
   if (data.token !== token) return res.status(403).send('Ungültiges Token.');
   try {
     await docRef.update({
-      reserved:      false,
+      reserved: false,
       reserverEmail: admin.firestore.FieldValue.delete(),
-      token:         admin.firestore.FieldValue.delete(),
-      reservedAt:    admin.firestore.FieldValue.delete()
+      token: admin.firestore.FieldValue.delete(),
+      reservedAt: admin.firestore.FieldValue.delete(),
     });
     return res.redirect(302, `${functions.config().app.base_url}/gifts.html`);
   } catch (err) {
@@ -83,102 +143,6 @@ exports.undoGift = functions.https.onRequest(async (req, res) => {
     return res.status(500).send('Ein interner Fehler ist aufgetreten.');
   }
 });
-
-exports.onRsvpSubmitted = functions.firestore
-  .document('rsvps/{rsvpId}')
-  .onCreate(async (snap, context) => {
-    const Handlebars = require('handlebars');
-    const data = snap.data();
-    const {
-      familyName,
-      email,
-      attending,
-      guests,
-      guestDetails,
-      intolerances,
-      message
-    } = data;
-    const rsvpId = context.params.rsvpId;
-
-    const htmlSrc = fs.readFileSync(path.join(__dirname, 'templates', 'rsvp_confirmation.html'), 'utf8');
-    const rsvpTemplate = Handlebars.compile(htmlSrc);
-
-    const editUrl = `https://eddywayz.github.io/Hochzeit_Eduard_Joanne/edit-rsvp.html?id=${rsvpId}`;
-
-    const filledHtml = rsvpTemplate({
-      familyName,
-      attending: attending === 'yes' ? 'Ja' : 'Nein',
-      guests,
-      guestDetails,
-      intolerances: intolerances || '–',
-      message,
-      editUrl
-    });
-
-    const payload = {
-      to_email: email,
-      to_name: familyName,
-      subject: "Deine RSVP-Bestätigung für unsere Hochzeit",
-      html: filledHtml,
-      text: `Hallo ${familyName}, vielen Dank für deine Rückmeldung! Bearbeiten: ${editUrl}`
-    };
-
-    try {
-      await axios.post(webhookUrl, payload);
-      console.log(`RSVP-Mail gesendet an ${email}`);
-    } catch (err) {
-      console.error('Fehler beim Versenden der RSVP-Mail an Google Script:', err);
-    }
-    return null;
-  });
-
-exports.onRsvpUpdated = functions.firestore
-  .document('rsvps/{rsvpId}')
-  .onUpdate(async (change, context) => {
-    const Handlebars = require('handlebars');
-    const after = change.after.data();
-    const {
-      familyName,
-      email,
-      attending,
-      guests,
-      guestDetails,
-      intolerances,
-      message
-    } = after;
-    const rsvpId = context.params.rsvpId;
-
-    const htmlSrc = fs.readFileSync(path.join(__dirname, 'templates', 'rsvp_update_confirmation.html'), 'utf8');
-    const updateTemplate = Handlebars.compile(htmlSrc);
-
-    const editUrl = `${functions.config().app.base_url}/edit-rsvp.html?id=${rsvpId}`;
-
-    const filledHtml = updateTemplate({
-      familyName,
-      attending: attending === 'yes' ? 'Ja' : 'Nein',
-      guests,
-      guestDetails,
-      intolerances: intolerances || '–',
-      message,
-      editUrl
-    });
-
-    const payload = {
-      to_email: email,
-      to_name: familyName,
-      subject: "Deine RSVP wurde aktualisiert",
-      html: filledHtml,
-      text: `Hallo ${familyName}, deine Änderungen wurden gespeichert. Erneut bearbeiten: ${editUrl}`
-    };
-
-    try {
-      await axios.post(webhookUrl, payload);
-      console.log(`Update-Mail gesendet an ${email}`);
-    } catch (err) {
-      console.error('Fehler beim Versenden der Update-Mail an Google Script:', err);
-    }
-    return null;
-  });
 
 exports.login = functions.https.onRequest((req, res) => {
   res.sendFile(path.join(__dirname, "../login.html"));
@@ -231,7 +195,7 @@ exports.sendContactMail = functions.https.onRequest(async (req, res) => {
     reply_to_email: email,
     reply_to_name: Name,
     subject: `Kontaktformular: ${Betreff}`,
-    text: `Name: ${Name}\nE-Mail: ${email}\nBetreff: ${Betreff}\nNewsletter: ${ newsletter === "yes" ? "Ja" : "Nein"}\n\nNachricht:\n${Nachricht}`
+    text: `Name: ${Name}\nE-Mail: ${email}\nBetreff: ${Betreff}\nNewsletter: ${ newsletter === "yes" ? "Ja" : "Nein"}\n\nNachricht:\n${Nachricht}`,
   };
 
   try {

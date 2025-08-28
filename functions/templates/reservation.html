@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservierungsbestätigung – Unsere Hochzeit</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f4f4;">
+    <tr>
+      <td align="center">
+        <table width="600" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: auto;">
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background-color: #ffffff; padding: 1rem; border-bottom: 1px solid #dddddd;">
+              <h1 style="font-family: 'Kiona', Arial, sans-serif; font-size: 2rem; color: #d26b58; margin: 0;">Eduard & Joanne</h1>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="background-color: #ffffff; padding: 2rem;">
+              <h2 style="font-family: 'Kiona', Arial, sans-serif; font-size: 1.5rem; color: #d26b58; margin-top: 0;">Reservierungsbestätigung</h2>
+              <p style="line-height: 1.5; color: #000000;">Hallo Familie {{reserverName}},</p>
+              <p style="line-height: 1.5; color: #000000;">ihr habt <strong>{{giftName}}</strong> reserviert. Vielen Dank dafür schon mal im Voraus!</p>
+              <p style="line-height: 1.5; color: #000000;">Wenn ihr eure Reservierung stornieren möchtet, klickt auf den Button:</p>
+              <p style="margin-top: 2rem; margin-bottom: 2rem;">
+                <a href="{{undoUrl}}" style="display: inline-block; padding: 0.75rem 1.5rem; background-color: #d26b58; color: #ffffff; text-decoration: none; border-radius: 0.25rem; font-weight: 600;">Reservierung stornieren</a>
+              </p>
+              <p style="line-height: 1.5; color: #000000;">Oder direkt: <br><small style="word-break: break-all;"><a href="{{undoUrl}}" style="color: #d26b58;">{{undoUrl}}</a></small></p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="background-color: #ffffff; padding: 1rem; border-top: 1px solid #dddddd; font-size: 0.8rem; color: #555555;">
+              &copy; 2025 Wayz
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

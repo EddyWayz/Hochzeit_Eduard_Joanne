@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSVP-Bestätigung</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f4f4;">
+    <tr>
+      <td align="center">
+        <table width="600" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: auto;">
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background-color: #ffffff; padding: 1rem; border-bottom: 1px solid #dddddd;">
+              <h1 style="font-family: 'Kiona', Arial, sans-serif; font-size: 2rem; color: #d26b58; margin: 0;">Eduard & Joanne</h1>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="background-color: #ffffff; padding: 2rem;">
+              <h2 style="font-family: 'Kiona', Arial, sans-serif; font-size: 1.5rem; color: #d26b58; margin-top: 0;">Deine Zusage</h2>
+              <p style="line-height: 1.5; color: #000000;">Hallo {{familyName}},</p>
+              <p style="line-height: 1.5; color: #000000;">vielen Dank für deine Rückmeldung! Hier sind die Details deiner Zusage:</p>
+
+              <table width="100%" border="0" cellspacing="0" cellpadding="5" style="border-collapse: collapse; margin-bottom: 1rem;">
+                <tr><th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">Teilnahme</th><td style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">{{attending}}</td></tr>
+                <tr><th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">Anzahl Gäste</th><td style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">{{guests}}</td></tr>
+                <tr><th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">Unverträglichkeiten</th><td style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">{{intolerances}}</td></tr>
+                {{#if message}}
+                <tr><th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">Nachricht</th><td style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">{{message}}</td></tr>
+                {{/if}}
+              </table>
+
+              {{#if guestDetails}}
+              <h3 style="font-family: 'Kiona', Arial, sans-serif; font-size: 1.2rem; color: #d26b58; margin-top: 2rem;">Gast-Details</h3>
+              <table width="100%" border="0" cellspacing="0" cellpadding="5" style="border-collapse: collapse; margin-bottom: 1rem;">
+                <tr><th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">Name</th><th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">Typ</th></tr>
+                {{#each guestDetails}}
+                <tr><td style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">{{this.name}}</td><td style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #eee;">{{this.type}}</td></tr>
+                {{/each}}
+              </table>
+              {{/if}}
+
+              <p style="line-height: 1.5; color: #000000;">Falls du deine Angaben ändern möchtest, klicke hier:</p>
+              <p style="margin-top: 2rem; margin-bottom: 2rem;"><a href="{{editUrl}}" style="display: inline-block; padding: 0.75rem 1.5rem; background-color: #d26b58; color: #ffffff; text-decoration: none; border-radius: 0.25rem; font-weight: 600;">RSVP bearbeiten</a></p>
+
+              <p style="line-height: 1.5; color: #000000;">Wir freuen uns auf dich!</p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="background-color: #ffffff; padding: 1rem; border-top: 1px solid #dddddd; font-size: 0.8rem; color: #555555;">
+              &copy; 2025 Wayz
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

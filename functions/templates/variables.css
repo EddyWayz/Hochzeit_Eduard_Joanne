@@ -1,0 +1,13 @@
+/* templates/variables.css */
+:root {
+  --color-primary:    #d26b58;
+  --color-on-primary: #ffffff;
+  --color-bg:         #ffffff;
+  --color-surface:    #ffffff;
+  --color-text:       #000000;
+  --radius-md:        0.25rem;
+  --space-md:         1rem;
+  --fs-xl:            2rem;
+  --font-primary:     'Hello August', cursive;
+  --font-capital_letters: 'Kiona';
+}

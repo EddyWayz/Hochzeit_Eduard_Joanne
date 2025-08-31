@@ -6,6 +6,10 @@ const fs = require('fs');
 const path = require('path');
 const cookieParser = require("cookie-parser");
 const axios = require('axios');
+const cors = require('cors')({origin: true});
+const express = require('express');
+
+const app = express();
 
 // Initialize admin only once in the global scope
 try {
@@ -15,6 +19,9 @@ try {
 }
 
 const webhookUrl = "https://script.google.com/macros/s/AKfycbzQ2Rhg5Sva8EnfShO0tg8mhrl0K5cUSIYlIEJ--ih5IDbGNm2z0WujwYVz0kJOXKrZRg/exec";
+
+app.use(cors);
+app.use(express.json());
 
 /**
  * A helper function to send emails using a template.
@@ -44,6 +51,27 @@ async function sendEmail(templateName, mailData) {
     console.error(`Error sending email for ${templateName}:`, JSON.stringify(err, null, 2));
   }
 }
+
+app.post('/sendContactMail', async (req, res) => {
+  const { Name, "E-Mail": email, Betreff, Nachricht, newsletter } = req.body;
+
+  const payload = {
+    to_email: "eduard.wayz@gmail.com",
+    to_name: "Eduard & Joanne",
+    reply_to_email: email,
+    reply_to_name: Name,
+    subject: `Kontaktformular: ${Betreff}`,
+    text: `Name: ${Name}\nE-Mail: ${email}\nBetreff: ${Betreff}\nNewsletter: ${ newsletter === "yes" ? "Ja" : "Nein"}\n\nNachricht:\n${Nachricht}`,
+  };
+
+  try {
+    await axios.post(webhookUrl, payload);
+    res.status(200).send("OK");
+  } catch (err) {
+    console.error("Fehler beim Versenden der Kontakt-E-Mail an Google Script:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 exports.onGiftReserved = functions.firestore
   .document('gifts/{giftId}')
@@ -186,23 +214,4 @@ exports.admin = functions.https.onRequest((req, res) => {
     });
 });
 
-exports.sendContactMail = functions.https.onRequest(async (req, res) => {
-  const { Name, "E-Mail": email, Betreff, Nachricht, newsletter } = req.body;
-
-  const payload = {
-    to_email: "eduard.wayz@gmail.com",
-    to_name: "Eduard & Joanne",
-    reply_to_email: email,
-    reply_to_name: Name,
-    subject: `Kontaktformular: ${Betreff}`,
-    text: `Name: ${Name}\nE-Mail: ${email}\nBetreff: ${Betreff}\nNewsletter: ${ newsletter === "yes" ? "Ja" : "Nein"}\n\nNachricht:\n${Nachricht}`,
-  };
-
-  try {
-    await axios.post(webhookUrl, payload);
-    res.status(200).send("OK");
-  } catch (err) {
-    console.error("Fehler beim Versenden der Kontakt-E-Mail an Google Script:", err);
-    res.status(500).send("Internal Server Error");
-  }
-});
+exports.sendContactMail = functions.https.onRequest(app);

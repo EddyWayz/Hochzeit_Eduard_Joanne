@@ -190,7 +190,7 @@ exports.sendContactMail = functions.https.onRequest(async (req, res) => {
   const { Name, "E-Mail": email, Betreff, Nachricht, newsletter } = req.body;
 
   const payload = {
-    to_email: "hochzeit@example.com",
+    to_email: "eduard.wayz@gmail.com",
     to_name: "Eduard & Joanne",
     reply_to_email: email,
     reply_to_name: Name,

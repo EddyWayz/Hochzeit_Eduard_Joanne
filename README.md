@@ -112,7 +112,7 @@ Kontakt
 
 Eduard & Joanne
 
-E-Mail: [email@example.com]
+E-Mail: [eduard.wayz@gmail.com]
 
 Telefon: +49 [Telefonnummer]
 

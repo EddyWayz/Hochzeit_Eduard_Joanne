@@ -33,18 +33,18 @@
         <div class="contact-card">
           <h3>Brautpaar</h3>
           <p><strong>Eduard & Joanne</strong></p>
-          <p><strong>E‑Mail:</strong> <a href="mailto:hochzeit@example.com">hochzeit@example.com</a></p>
+          <p><strong>E‑Mail:</strong> <a href="mailto:eduard.wayz@gmail.com">eduard.wayz@gmail.com</a></p>
           <p><strong>Telefon:</strong> +49 30 123456789</p>
         </div>
 
         <div class="contact-card">
           <h3>Trauzeugen</h3>
           <p><strong>Max Mustermann (Trauzeuge)</strong><br>
-          <a href="mailto:max@example.com">max@example.com</a><br>
+          <a href="mailto:eduard.wayz@gmail.com">eduard.wayz@gmail.com</a><br>
           Tel: +49 30 987654321</p>
           
           <p><strong>Anna Schmidt (Trauzeugin)</strong><br>
-          <a href="mailto:anna@example.com">anna@example.com</a><br>
+          <a href="mailto:eduard.wayz@gmail.com">eduard.wayz@gmail.com</a><br>
           Tel: +49 30 456789123</p>
         </div>
 
@@ -62,7 +62,7 @@
       <!-- Kontaktformular -->
       <div class="contact-form">
         <h2>Kontaktformular</h2>
-        <form class="form" action="mailto:hochzeit@example.com" method="post" enctype="text/plain">
+        <form class="form">
           <div class="form-group">
             <label for="name">Name</label>
             <input type="text" id="name" name="Name" placeholder="Dein Name" required>
@@ -106,5 +106,34 @@
 
   <!-- Footer-Include -->
   <div id="footer"></div>
+
+  <script>
+    const form = document.querySelector('.form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch('https://us-central1-hochzeiteduardjoanne.cloudfunctions.net/sendContactMail', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          alert('Vielen Dank für deine Nachricht! Wir werden uns so schnell wie möglich bei dir melden.');
+          form.reset();
+        } else {
+          throw new Error('Beim Senden der Nachricht ist ein Fehler aufgetreten.');
+        }
+      } catch (error) {
+        console.error(error);
+        alert(error.message);
+      }
+    });
+  </script>
 </body>
 </html>

@@ -17,6 +17,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
   <script>
     // Firebase-Konfiguration
@@ -31,11 +32,12 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db   = firebase.firestore();
+    const storage = firebase.storage();
   </script>
 
   <style>
     body { font-family: sans-serif; padding: 2rem; background: var(--color-bg); }
-    #login, #rsvpTable { max-width: 900px; margin: auto; }
+    #login, #rsvpTable, #giftAdmin { max-width: 1000px; margin: auto; }
     #login input { width: 100%; padding: 0.5rem; margin-bottom: 1rem; }
     #login button { padding: 0.5rem 1rem; }
     table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
@@ -44,6 +46,23 @@
     .group-header td { background: var(--color-primary-light); font-weight: bold; }
     .family-header td { background: var(--color-surface); font-style: italic; }
     .info-row td { background: #f9f9f9; font-size: 0.9rem; }
+
+    /* Gifts admin */
+    #giftAdmin { display: none; margin-top: 2rem; }
+    #giftAdmin h2 { margin-top: 3rem; }
+    .gift-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: var(--color-surface); padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .gift-form .full { grid-column: 1 / -1; }
+    .gift-form label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+    .gift-form input, .gift-form textarea { width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text); }
+    .gift-form textarea { min-height: 80px; resize: vertical; }
+    .gift-form .actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+    .gift-form button { padding: 0.5rem 1rem; }
+    .gift-list { margin-top: 1.5rem; }
+    .gift-list img { width: 80px; height: 60px; object-fit: contain; background: #fff; border: 1px solid #eee; border-radius: 6px; }
+    .status-pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.85rem; }
+    .status-ok { background: #e7f7ee; color: #146c43; border: 1px solid #b7e4c7; }
+    .status-res { background: #fff3cd; color: #8a6d3b; border: 1px solid #ffe69c; }
+    .danger { color: #b42318; }
   </style>
 </head>
 <body>
@@ -55,6 +74,7 @@
     <input id="email"    type="email"    placeholder="E‑Mail">
     <input id="password" type="password" placeholder="Passwort">
     <button id="btnLogin">Einloggen</button>
+    <button id="btnLogout" style="display:none;">Logout</button>
   </div>
 
   <table id="rsvpTable" style="display:none;">
@@ -68,19 +88,75 @@
     <tbody></tbody>
   </table>
 
+  <!-- Geschenke verwalten -->
+  <section id="giftAdmin">
+    <h2>Geschenke verwalten</h2>
+    <form id="giftForm" class="gift-form">
+      <div class="full">
+        <label for="gName">Name *</label>
+        <input id="gName" type="text" required placeholder="z.B. Reisekasse">
+      </div>
+      <div class="full">
+        <label for="gDesc">Beschreibung</label>
+        <textarea id="gDesc" placeholder="Kurze Beschreibung"></textarea>
+      </div>
+      <div>
+        <label for="gLink">Kauflink (optional)</label>
+        <input id="gLink" type="url" placeholder="https://…">
+      </div>
+      <div>
+        <label for="gImg">Bild (URL oder Datei)</label>
+        <input id="gImgUrl" type="url" placeholder="https://… (oder leer lassen)">
+        <input id="gImgFile" type="file" accept="image/*" style="margin-top: .25rem;">
+      </div>
+      <div class="actions full">
+        <button type="submit">Geschenk hinzufügen</button>
+        <button type="button" id="giftReset">Formular leeren</button>
+      </div>
+    </form>
+
+    <div class="gift-list">
+      <table id="giftTable">
+        <thead>
+          <tr>
+            <th>Bild</th>
+            <th>Name</th>
+            <th>Beschreibung</th>
+            <th>Link</th>
+            <th>Status</th>
+            <th>Aktionen</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
   <div id="footer"></div>
 
   <script>
-    document.getElementById('btnLogin').addEventListener('click', async () => {
+    const btnLogin = document.getElementById('btnLogin');
+    const btnLogout = document.getElementById('btnLogout');
+
+    btnLogin.addEventListener('click', async () => {
       const email = document.getElementById('email').value;
       const pw    = document.getElementById('password').value;
       try {
         await auth.signInWithEmailAndPassword(email, pw);
-        document.getElementById('login').style.display = 'none';
+        document.getElementById('email').style.display = 'none';
+        document.getElementById('password').style.display = 'none';
+        btnLogin.style.display = 'none';
+        btnLogout.style.display = '';
         loadRSVPs();
+        initGiftsAdmin();
       } catch (err) {
         alert('Login fehlgeschlagen: ' + err.message);
       }
+    });
+
+    btnLogout.addEventListener('click', async () => {
+      try { await auth.signOut(); } catch {}
+      location.reload();
     });
 
     async function loadRSVPs() {
@@ -152,6 +228,138 @@
       renderBlock('Abgesagt', groups.no);
 
       document.getElementById('rsvpTable').style.display = '';
+    }
+
+    // ==========================
+    // Gifts Admin
+    // ==========================
+    function initGiftsAdmin() {
+      const section = document.getElementById('giftAdmin');
+      const tbody = document.querySelector('#giftTable tbody');
+      const form = document.getElementById('giftForm');
+      const nameIn = document.getElementById('gName');
+      const descIn = document.getElementById('gDesc');
+      const linkIn = document.getElementById('gLink');
+      const imgUrlIn = document.getElementById('gImgUrl');
+      const imgFileIn = document.getElementById('gImgFile');
+      const resetBtn = document.getElementById('giftReset');
+
+      section.style.display = '';
+
+      // Realtime Liste
+      db.collection('gifts').orderBy('createdAt', 'desc').onSnapshot(snap => {
+        tbody.innerHTML = '';
+        snap.docs.forEach(doc => {
+          const d = doc.data();
+          const tr = document.createElement('tr');
+          const imgCell = document.createElement('td');
+          const img = document.createElement('img');
+          if (d.imgUrl) {
+            if (d.imgUrl.startsWith('gs://')) {
+              storage.refFromURL(d.imgUrl).getDownloadURL().then(u => img.src = u).catch(() => {});
+            } else { img.src = d.imgUrl; }
+          }
+          img.alt = d.name || '';
+          imgCell.appendChild(img);
+          tr.appendChild(imgCell);
+
+          const nameCell = document.createElement('td');
+          nameCell.textContent = d.name || '';
+          tr.appendChild(nameCell);
+
+          const descCell = document.createElement('td');
+          descCell.textContent = d.description || '';
+          tr.appendChild(descCell);
+
+          const linkCell = document.createElement('td');
+          if (d.link) {
+            const a = document.createElement('a');
+            a.href = d.link; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Öffnen';
+            linkCell.appendChild(a);
+          } else { linkCell.textContent = '—'; }
+          tr.appendChild(linkCell);
+
+          const statusCell = document.createElement('td');
+          const pill = document.createElement('span');
+          if (d.reserved) {
+            pill.textContent = `Reserviert${d.reserverEmail ? ' ('+d.reserverEmail+')' : ''}`;
+            pill.className = 'status-pill status-res';
+          } else {
+            pill.textContent = 'Frei'; pill.className = 'status-pill status-ok';
+          }
+          statusCell.appendChild(pill);
+          tr.appendChild(statusCell);
+
+          const actCell = document.createElement('td');
+          const delBtn = document.createElement('button');
+          delBtn.textContent = 'Löschen';
+          delBtn.className = 'danger';
+          delBtn.addEventListener('click', async () => {
+            if (!confirm('Geschenk wirklich löschen?')) return;
+            try { await db.collection('gifts').doc(doc.id).delete(); } catch (e) { alert('Fehler: '+e.message); }
+          });
+
+          actCell.appendChild(delBtn);
+
+          if (d.reserved) {
+            const resetRes = document.createElement('button');
+            resetRes.textContent = 'Reservierung zurücksetzen';
+            resetRes.style.marginLeft = '0.5rem';
+            resetRes.addEventListener('click', async () => {
+              if (!confirm('Reservierung für dieses Geschenk wirklich zurücksetzen?')) return;
+              try {
+                await db.collection('gifts').doc(doc.id).update({
+                  reserved: false,
+                  reserverEmail: firebase.firestore.FieldValue.delete(),
+                  reservedAt: firebase.firestore.FieldValue.delete(),
+                  token: firebase.firestore.FieldValue.delete()
+                });
+              } catch (e) { alert('Fehler: '+e.message); }
+            });
+            actCell.appendChild(resetRes);
+          }
+
+          tr.appendChild(actCell);
+          tbody.appendChild(tr);
+        });
+      });
+
+      // Submit: Hinzufügen
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = nameIn.value.trim();
+        const description = descIn.value.trim();
+        const link = linkIn.value.trim();
+        const urlFromInput = imgUrlIn.value.trim();
+        const file = imgFileIn.files && imgFileIn.files[0];
+        if (!name) { alert('Bitte Name angeben.'); return; }
+
+        let finalImgUrl = urlFromInput || '';
+        try {
+          if (file) {
+            const safeName = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
+            const baseRef = storage.refFromURL('gs://hochzeiteduardjoanne.appspot.com');
+            const ref = baseRef.child(`gifts/${Date.now()}_${safeName}`);
+            const snap = await ref.put(file);
+            finalImgUrl = await snap.ref.getDownloadURL();
+          }
+
+          await db.collection('gifts').add({
+            name,
+            description: description || null,
+            link: link || null,
+            imgUrl: finalImgUrl || null,
+            reserved: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          form.reset();
+        } catch (err) {
+          console.error(err);
+          alert('Fehler beim Speichern: ' + err.message);
+        }
+      });
+
+      resetBtn.addEventListener('click', () => form.reset());
     }
   </script>
 </body>

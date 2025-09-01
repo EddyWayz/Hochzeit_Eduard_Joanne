@@ -5,21 +5,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Impressum – Hochzeit Eduard & Joanne</title>
+  
+  <!-- SEO -->
+  <meta name="description" content="Impressum und gesetzliche Pflichtangaben für die Hochzeitswebsite von Eduard & Joanne.">
+  <meta name="theme-color" content="#d26b58">
+
+  <!-- Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:title" content="Impressum – Hochzeit Eduard & Joanne">
+  <meta property="og:description" content="Pflichtangaben und Kontakt für rechtliche Hinweise.">
+  <meta property="og:image" content="img/backgroundImage.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Impressum – Hochzeit Eduard & Joanne">
+  <meta name="twitter:description" content="Pflichtangaben und Kontakt für rechtliche Hinweise.">
+  <meta name="twitter:image" content="img/backgroundImage.png">
+  <link rel="manifest" href="site.webmanifest">
   <!-- Basis‑Styles -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/basic.css">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Spezifisches Styling für Impressum -->
-  <link rel="stylesheet" href="css/impressum.css">
-  <!-- jQuery für Header/Footer‑Includes -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="js/includeTemplate.js"></script>
+  <link rel="stylesheet" href="assets/css/impressum.css">
+  
+  <!-- Header/Footer Include (vanilla) -->
+  <script defer src="assets/js/includeTemplate.js"></script>
 </head>
 <body>
+  <!-- Accessibility: Skip link for keyboard users -->
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
   <!-- Header einbinden -->
   <div id="header"></div>
 
 <!-- Impressum-Seite: Pflichtangaben gemäß TM G -->
-  <main>
+  <main id="main" class="content">
     <!-- Hero-Sektion -->
     <section class="hero">
       <h1>Impressum</h1>
@@ -73,5 +92,8 @@
 
   <!-- Footer einbinden -->
   <div id="footer"></div>
+  <noscript>
+    <div class="noscript-warning">Bitte aktivieren Sie JavaScript, um Navigation und Inhalte vollständig zu sehen.</div>
+  </noscript>
 </body>
 </html>

@@ -1,4 +1,19 @@
 /* Farbcodex-Liste */
+/* Subpage hero sizing for better hierarchy */
+.hero h1 {
+  font-size: var(--fs-3xl);
+}
+
+.hero p {
+  font-size: var(--fs-lg);
+}
+
+/* Make subheadings inside 'Datum & Ort' a bit smaller */
+.details .location-details h3 {
+  font-size: var(--fs-lg);
+  margin-bottom: var(--space-xs);
+}
+
 .color-code-list {
   display: flex;
   flex-wrap: wrap;
@@ -44,4 +59,3 @@
 .swatch-primary-light { background-color: var(--color-primary-light); }
 .swatch-secondary-light { background-color: var(--color-secondary-light); }
 .swatch-accent-light { background-color: var(--color-accent-light); }
-

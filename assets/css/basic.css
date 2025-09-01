@@ -30,6 +30,39 @@ body {
   width: 100%;
 }
 
+/* Accessible Skip Link */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skip-link:focus {
+  position: absolute;
+  left: var(--container-padding);
+  top: var(--space-sm);
+  width: auto;
+  height: auto;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-sm);
+  z-index: var(--z-index-fixed);
+}
+
+/* Noscript message */
+.noscript-warning {
+  margin: var(--space-md) var(--container-padding);
+  padding: var(--space-sm) var(--space-md);
+  background: #fff3cd; /* warning background */
+  color: #664d03;
+  border: 1px solid #ffecb5;
+  border-radius: var(--radius-md);
+}
+
 /* Basis Layout */
 main {
   width: 100%;
@@ -325,6 +358,70 @@ button:active {
   color: var(--color-primary-dark);
 }
 
+/* Shared timeline layout */
+.timeline {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.timeline .event {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition-medium) var(--transition-timing),
+              box-shadow var(--transition-medium) var(--transition-timing);
+}
+
+.timeline .event:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Additional info list on home: match cards */
+.additional-info { 
+  margin-top: var(--space-lg);
+}
+
+.additional-info h3 {
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+.additional-info ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-md);
+}
+
+.additional-info li {
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: transform var(--transition-medium) var(--transition-timing),
+              box-shadow var(--transition-medium) var(--transition-timing);
+}
+
+.additional-info li::before {
+  content: '✓';
+  color: var(--color-primary);
+  font-weight: var(--fw-bold);
+}
+
+.additional-info li:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.timeline .event h3 {
+  margin-top: 0;
+}
+
 /* Logo */
 .logo {
   display: inline-block;
@@ -356,19 +453,27 @@ button:active {
 .nav-links {
   list-style: none;
   display: flex;
-  gap: var(--space-xl);
+  gap: clamp(0.75rem, 2.5vw, var(--space-xl));
+  flex-wrap: nowrap; /* einzeilig halten */
   -webkit-overflow-scrolling: touch;
 }
 
 .nav-links a {
   text-decoration: none;
   font-size: var(--fs-nav-link);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-medium);
   color: var(--color-nav-text);
   position: relative;
   padding: var(--space-xs) 0;
   transition: color var(--transition-medium) var(--transition-timing);
   touch-action: manipulation;
+}
+
+/* Erlaubt gezieltes Umbruchverhalten für "Save your spot" */
+.nav-links a.nav-stack {
+  white-space: normal;
+  max-width: 7.5ch; /* zwingt Zeilenumbruch in 2–3 Zeilen */
+  text-align: center;
 }
 
 .nav-links a::before {
@@ -466,6 +571,7 @@ button:active {
 .font-kiona {
   font-family: var(--font-capital_letters);
   text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 /* Components */
@@ -639,22 +745,25 @@ body {
   }
 
   .nav-menu.open {
-    max-height: 500px;
+    max-height: none; /* nur so hoch wie der Inhalt */
   }
 
   .nav-links {
     flex-direction: column;
-    gap: var(--space-md);
+    gap: var(--space-sm);
     width: 100%;
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    justify-content: flex-start;
+    align-items: stretch;
   }
 
   .nav-links a {
     display: block;
     width: 100%;
-    padding: var(--space-md);
+    padding: var(--space-sm);
+    font-size: var(--fs-md);
     border-bottom: none;
     text-align: center;
     box-sizing: border-box;
@@ -704,6 +813,31 @@ body {
     margin: var(--space-lg) auto;
     padding: var(--space-lg) var(--space-md);
   }
+}
+
+/* Ab ~1024px auf Burger-Navigation umstellen (nur Nav) */
+@media (max-width: 1024px) {
+  .menu-toggle { display: block; }
+  .nav-menu {
+    position: absolute;
+    top: var(--percent-full);
+    left: 0;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-medium) var(--transition-timing);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-md);
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
+    box-sizing: border-box;
+  }
+  .nav-menu.open { max-height: none; }
+  .nav-links { flex-direction: column; gap: var(--space-sm); width: 100%; padding: 0; margin: 0; justify-content: flex-start; align-items: stretch; }
+  .nav-links a { display: block; width: 100%; padding: var(--space-sm); text-align: center; }
+  /* In der Burger-Navigation soll 'Save your spot' nicht schmal sein */
+  .nav-links a.nav-stack { max-width: none; margin: 0; }
+  .nav-links a::before { content: none; }
 }
 
 @media (max-width: 480px) {

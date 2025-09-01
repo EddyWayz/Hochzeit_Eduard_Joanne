@@ -7,14 +7,14 @@
    ------------------------------------------------------------------ */
 @font-face {
     font-family: 'Hello August';
-    src: url('../fonts/Hello August.ttf') format('truetype');
+    src: url('../../fonts/Hello August.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Kiona';
-    src: url('../fonts/Kiona-Regular.ttf') format('truetype');
+    src: url('../../fonts/Kiona-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -158,7 +158,8 @@
      ------------------------------------------------------------------ */
   /* Navigation */
   --fs-nav-icon: clamp(1.5rem, 3vw, 1.75rem);  /* 24-28px - Navigations-Icons */
-  --fs-nav-link: var(--fs-lg);                 /* Nav-Links */
+  /* Etwas kleiner, damit die Navi nicht dominiert */
+  --fs-nav-link: var(--fs-md);                 /* Nav-Links */
   --nav-height: clamp(4rem, 8vw, 5rem);        /* Navigation-Höhe */
   --nav-padding: clamp(1rem, 2vw, 1.5rem);     /* Navigation-Padding */
 
@@ -192,7 +193,7 @@
   /* ------------------------------------------------------------------
      Hero-Bereich
      ------------------------------------------------------------------ */
-  --hero-bg-image: url('../img/backgroundImage.png');  /* Hero-Hintergrund */
+  --hero-bg-image: url('../../img/backgroundImage.png');  /* Hero-Hintergrund */
 
   /* Hero Schriftgrößen */
   --fs-hero-h1: clamp(3rem, 6vw, 4rem);     /* 48-64px - Hero H1 */

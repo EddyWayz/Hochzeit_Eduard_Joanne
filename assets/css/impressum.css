@@ -2,6 +2,10 @@
    Impressum Stylesheet
    ============================================ */
 
+/* Subpage hero sizing */
+.hero h1 { font-size: var(--fs-3xl); }
+.hero p  { font-size: var(--fs-lg); }
+
 .impressum-section {
   max-width: var(--max-container-width);
   margin: var(--space-section) auto;

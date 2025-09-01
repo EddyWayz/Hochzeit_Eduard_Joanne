@@ -3,6 +3,9 @@
    ============================================ */
 
 /* Hero-Sektion wird von basic.css übernommen */
+/* Subpage hero sizing */
+.hero h1 { font-size: var(--fs-3xl); }
+.hero p  { font-size: var(--fs-lg); }
 
 /* Kontakt-Sektion */
 .contact-section {

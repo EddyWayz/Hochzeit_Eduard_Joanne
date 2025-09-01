@@ -1,20 +1,41 @@
-<!-- Infos-Seite: Datum, Ablauf, Farbcodex, Geschenke und Kontakt -->
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Infos – Hochzeit Eduard & Joanne</title>
+  
+  <!-- SEO -->
+  <meta name="description" content="Alle Infos zur Hochzeit von Eduard & Joanne: Datum, Orte, Ablauf, Dresscode und Geschenke.">
+  <meta name="theme-color" content="#d26b58">
+
+  <!-- Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:title" content="Infos – Hochzeit Eduard & Joanne">
+  <meta property="og:description" content="Datum, Ort, Ablauf, Dresscode und Geschenkeliste auf einen Blick.">
+  <meta property="og:image" content="img/backgroundImage.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Infos – Hochzeit Eduard & Joanne">
+  <meta name="twitter:description" content="Datum, Ort, Ablauf, Dresscode und Geschenkeliste auf einen Blick.">
+  <meta name="twitter:image" content="img/backgroundImage.png">
+  <link rel="manifest" href="site.webmanifest">
   <!-- Farbvariablen und Basis‑Styles -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/basic.css">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Spezifisches Styling für Infos -->
-  <link rel="stylesheet" href="css/infos.css">
-  <!-- jQuery (für Header/Footer‑Include) -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="js/includeTemplate.js"></script>
+  <link rel="stylesheet" href="assets/css/infos.css">
+
+  <!-- Performance hints -->
+  <link rel="preload" as="image" href="img/backgroundImage.png">
+
+  <!-- Header/Footer Include (vanilla) -->
+  <script defer src="assets/js/includeTemplate.js"></script>
 </head>
 <body>
+  <!-- Accessibility: Skip link for keyboard users -->
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
   <!-- Header-Include -->
   <div id="header"></div>
 
@@ -24,25 +45,25 @@
     <p>Hier findest du alle wichtigen Informationen für unseren großen Tag.</p>
   </section>
 
-  <main class="content">
+  <main id="main" class="content">
     <!-- Datum & Ort -->
     <section class="details card">
       <h2>Datum &amp; Ort</h2>
       <div class="location-details">
         <h3>Trauung</h3>
-        <p><strong>15. Juni 2025, 14:00 Uhr</strong><br>
-        Schlosskirche Berlin<br>
+        <p><strong><time datetime="2025-06-15T14:00">15. Juni 2025, 14:00 Uhr</time></strong></p>
+        <address>Schlosskirche Berlin<br>
         Schlossplatz 1<br>
-        10178 Berlin</p>
+        10178 Berlin</address>
         <p class="note">Bitte seien Sie 30 Minuten vor Beginn der Trauung vor Ort.</p>
       </div>
       
       <div class="location-details">
         <h3>Feier</h3>
-        <p><strong>15. Juni 2025, ab 15:30 Uhr</strong><br>
-        Hotel Adlon Kempinski<br>
+        <p><strong><time datetime="2025-06-15T15:30">15. Juni 2025, ab 15:30 Uhr</time></strong></p>
+        <address>Hotel Adlon Kempinski<br>
         Unter den Linden 77<br>
-        10117 Berlin</p>
+        10117 Berlin</address>
       </div>
     </section>
 
@@ -51,7 +72,7 @@
       <h2>Detaillierter Ablauf</h2>
       <div class="timeline">
         <div class="event">
-          <h3>14:00 Uhr - Trauung</h3>
+          <h3><time datetime="2025-06-15T14:00">14:00 Uhr</time> – Trauung</h3>
           <p>Schlosskirche Berlin</p>
           <ul>
             <li>Einlass ab 13:30 Uhr</li>
@@ -61,7 +82,7 @@
         </div>
 
         <div class="event">
-          <h3>15:30 Uhr - Sektempfang</h3>
+          <h3><time datetime="2025-06-15T15:30">15:30 Uhr</time> – Sektempfang</h3>
           <p>Schlossgarten</p>
           <ul>
             <li>Champagner und Canapés</li>
@@ -71,7 +92,7 @@
         </div>
 
         <div class="event">
-          <h3>18:00 Uhr - Dinner & Party</h3>
+          <h3><time datetime="2025-06-15T18:00">18:00 Uhr</time> – Dinner &amp; Party</h3>
           <p>Festsaal im Hotel Adlon</p>
           <ul>
             <li>4-Gänge-Menü mit Weinbegleitung</li>
@@ -162,5 +183,8 @@
 
   <!-- Footer-Include -->
   <div id="footer"></div>
+  <noscript>
+    <div class="noscript-warning">Bitte aktivieren Sie JavaScript, um Navigation und Inhalte vollständig zu sehen.</div>
+  </noscript>
 </body>
 </html>

@@ -1,0 +1,6 @@
+# robots.txt for GitHub Pages site
+User-agent: *
+Allow: /
+
+# Project Pages URL
+Sitemap: https://EddyWayz.github.io/Hochzeit_Eduard_Joanne/sitemap.xml

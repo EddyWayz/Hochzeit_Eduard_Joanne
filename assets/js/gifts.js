@@ -1,5 +1,5 @@
-// js/gifts.js: Verwaltung der Geschenkeliste
-$(document).ready(() => {
+// js/gifts.js: Verwaltung der Geschenkeliste (vanilla JS)
+document.addEventListener('DOMContentLoaded', () => {
     const giftsUl   = document.getElementById('gifts');
     const modal     = document.getElementById('reservation-modal');
     const form      = document.getElementById('reservation-form');

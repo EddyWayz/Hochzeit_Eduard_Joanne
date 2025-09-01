@@ -1,0 +1,11 @@
+{
+  "name": "Hochzeit Eduard & Joanne",
+  "short_name": "Hochzeit",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d26b58",
+  "icons": [
+    { "src": "img/backgroundImage.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

@@ -4,17 +4,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geschenkeliste – Unsere Hochzeit</title>
+<title>Geschenkeliste – Hochzeit Eduard & Joanne</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Unsere Hochzeitsgeschenkeliste: stöbere, reserviere und hilf uns, Wünsche zu erfüllen.">
+  <meta name="theme-color" content="#d26b58">
+
+  <!-- Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:title" content="Geschenkeliste – Hochzeit Eduard & Joanne">
+  <meta property="og:description" content="Stöbere in unserer Geschenkeliste und reserviere ein Geschenk.">
+  <meta property="og:image" content="img/backgroundImage.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Geschenkeliste – Hochzeit Eduard & Joanne">
+  <meta name="twitter:description" content="Stöbere in unserer Geschenkeliste und reserviere ein Geschenk.">
+  <meta name="twitter:image" content="img/backgroundImage.png">
+  <link rel="manifest" href="site.webmanifest">
 
   <!-- Bestehende Farbvariablen & Basis-Styles -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/basic.css">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Neues Styling für Geschenke -->
-  <link rel="stylesheet" href="css/gifts.css">
+  <link rel="stylesheet" href="assets/css/gifts.css">
 
-  <!-- jQuery + Template‑Include -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="js/includeTemplate.js"></script>
+  <!-- Header/Footer Include (vanilla) -->
+  <script defer src="assets/js/includeTemplate.js"></script>
 
   <!-- Firebase‑SDKs (compat mode) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -35,10 +50,13 @@
   </script>
 </head>
 <body>
+  <!-- Accessibility: Skip link for keyboard users -->
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
   <div id="header"></div>
 
   <!-- Geschenk-Liste: Dynamisch geladene Geschenke mit Reservierungsmodal -->
-  <section class="gift-list">
+  <section id="main" role="main" class="gift-list">
     <h2>Unsere Geschenkeliste</h2>
     <ul id="gifts"></ul>
   </section>
@@ -58,7 +76,10 @@
   </div>
 
   <div id="footer"></div>
+  <noscript>
+    <div class="noscript-warning">Bitte aktivieren Sie JavaScript, um Navigation und Inhalte vollständig zu sehen.</div>
+  </noscript>
   
-  <script src="js/gifts.js"></script>
+  <script src="assets/js/gifts.js"></script>
 </body>
 </html>

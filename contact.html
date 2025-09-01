@@ -4,16 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kontakt – Hochzeit Eduard & Joanne</title>
+  
+  <!-- SEO -->
+  <meta name="description" content="Kontakt zum Brautpaar und Team: Stelle Fragen oder sende uns eine Nachricht.">
+  <meta name="theme-color" content="#d26b58">
+
+  <!-- Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:title" content="Kontakt – Hochzeit Eduard & Joanne">
+  <meta property="og:description" content="Schreib uns bei Fragen zur Hochzeit.">
+  <meta property="og:image" content="img/backgroundImage.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Kontakt – Hochzeit Eduard & Joanne">
+  <meta name="twitter:description" content="Schreib uns bei Fragen zur Hochzeit.">
+  <meta name="twitter:image" content="img/backgroundImage.png">
+  <link rel="manifest" href="site.webmanifest">
   <!-- Farbvariablen und Basis‑Styles -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/basic.css">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Spezifisches Styling für Kontakt-Seite -->
-  <link rel="stylesheet" href="css/contact.css">
-  <!-- jQuery (für Header/Footer‑Include) -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="js/includeTemplate.js"></script>
+  <link rel="stylesheet" href="assets/css/contact.css">
+  
+  <!-- Header/Footer Include (vanilla) -->
+  <script defer src="assets/js/includeTemplate.js"></script>
 </head>
 <body>
+  <!-- Accessibility: Skip link for keyboard users -->
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
   <!-- Header-Include -->
   <div id="header"></div>
 
@@ -24,7 +43,7 @@
     <p>Habt ihr Fragen oder möchtet uns etwas mitteilen? Wir freuen uns auf eure Nachricht!</p>
   </section>
 
-  <main class="content">
+  <main id="main" class="content">
     <!-- Kontakt-Inhalte -->
     <section class="content card">
       <!-- Kontaktinformationen -->
@@ -106,6 +125,9 @@
 
   <!-- Footer-Include -->
   <div id="footer"></div>
+  <noscript>
+    <div class="noscript-warning">Bitte aktivieren Sie JavaScript, um Navigation und Inhalte vollständig zu sehen.</div>
+  </noscript>
 
   <script>
     const form = document.querySelector('.form');

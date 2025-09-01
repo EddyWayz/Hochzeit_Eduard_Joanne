@@ -3,32 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Startseite – Hochezeit Eduard & Joanne</title>
+  <title>Startseite – Hochzeit Eduard & Joanne</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Wir heiraten am 15. Juni 2025 in Berlin. Alle Infos zu Ablauf, Anfahrt, Geschenken und RSVP.">
+  <meta name="theme-color" content="#d26b58">
+
+  <!-- Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:title" content="Hochzeit Eduard & Joanne – 15. Juni 2025, Berlin">
+  <meta property="og:description" content="Feiere mit uns! Alle Details zum Ablauf und RSVP.">
+  <meta property="og:image" content="img/backgroundImage.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hochzeit Eduard & Joanne – 15. Juni 2025, Berlin">
+  <meta name="twitter:description" content="Feiere mit uns! Alle Details zum Ablauf und RSVP.">
+  <meta name="twitter:image" content="img/backgroundImage.png">
+  <link rel="manifest" href="site.webmanifest">
 
   <!-- Farbvariablen und Basis‑Styles -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/basic.css">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Spezifisches Styling für Index -->
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="assets/css/index.css">
 
-  <!-- jQuery (für Header/Footer‑Include) -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="js/includeTemplate.js"></script>
+  <!-- Performance hints -->
+  <link rel="preload" as="image" href="img/backgroundImage.png">
+
+  <!-- Header/Footer Include (vanilla) -->
+  <script defer src="assets/js/includeTemplate.js"></script>
+
+  <!-- Structured data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "Hochzeit Eduard & Joanne",
+    "startDate": "2025-06-15T14:00",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "image": [
+      "img/backgroundImage.png"
+    ],
+    "description": "Hochzeit von Eduard & Joanne in Berlin mit Trauung, Sektempfang sowie Dinner & Party.",
+    "location": {
+      "@type": "Place",
+      "name": "Schlosskirche Berlin",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Schlossplatz 1",
+        "addressLocality": "Berlin",
+        "postalCode": "10178",
+        "addressCountry": "DE"
+      }
+    }
+  }
+  </script>
 
 </head>
 <body>
+  <!-- Accessibility: Skip link for keyboard users -->
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
   <div id="header"></div>
 
   <!-- Startseite: Hero, Story und Event-Details -->
   <!-- Hero-Sektion -->
   <section class="hero">
-    <h1>Wir sagen „Ja"</h1>
-    <h2>Version 1.20</h2>
-    <p>15. Juni 2025 in Berlin</p>
-    <a href="rsvp.html" class="btn">Zur Zusage</a>
+    <h1>Wir sagen „Ja“</h1>
+    <!-- Hinweis: frühere Anzeige 'Version 1.20' entfernt -->
+    <p><time datetime="2025-06-15">15. Juni 2025</time> · Berlin</p>
+    <a href="rsvp.html" class="btn" aria-label="Zur Zusage – RSVP">Zur Zusage</a>
   </section>
 
-  <main class="content">
+  <main id="main" class="content">
     <!-- Story -->
     <section class="story">
       <h2>Unsere Geschichte</h2>
@@ -43,23 +91,23 @@
       <h2>Der Ablauf</h2>
       <div class="timeline">
         <div class="event">
-          <h3>14:00 Uhr - Trauung</h3>
-          <p>Schlosskirche Berlin<br>
-          Schlossplatz 1, 10178 Berlin</p>
+          <h3><time datetime="2025-06-15T14:00">14:00 Uhr</time> – Trauung</h3>
+          <address>Schlosskirche Berlin<br>
+          Schlossplatz 1, 10178 Berlin</address>
           <p>Die Trauung findet in der historischen Schlosskirche statt. Bitte seien Sie 30 Minuten vorher da.</p>
         </div>
         
         <div class="event">
-          <h3>15:30 Uhr - Sektempfang</h3>
-          <p>Schlossgarten<br>
-          Lustgarten, 10178 Berlin</p>
+          <h3><time datetime="2025-06-15T15:30">15:30 Uhr</time> – Sektempfang</h3>
+          <address>Schlossgarten<br>
+          Lustgarten, 10178 Berlin</address>
           <p>Nach der Trauung laden wir Sie zu einem Sektempfang im wunderschönen Schlossgarten ein. Bei gutem Wetter können wir die Terrasse nutzen.</p>
         </div>
         
         <div class="event">
-          <h3>18:00 Uhr - Dinner & Party</h3>
-          <p>Festsaal im Hotel Adlon<br>
-          Unter den Linden 77, 10117 Berlin</p>
+          <h3><time datetime="2025-06-15T18:00">18:00 Uhr</time> – Dinner &amp; Party</h3>
+          <address>Festsaal im Hotel Adlon<br>
+          Unter den Linden 77, 10117 Berlin</address>
           <p>Das Abendessen wird ein 4-Gänge-Menü sein, gefolgt von einer Party mit Live-Musik und DJ. Für Übernachtungsgäste haben wir ein spezielles Zimmerkontingent reserviert.</p>
         </div>
       </div>
@@ -76,5 +124,8 @@
     </section>
   </main>
   <div id="footer"></div>
+  <noscript>
+    <div class="noscript-warning">Bitte aktivieren Sie JavaScript, um Navigation und Inhalte vollständig zu sehen.</div>
+  </noscript>
 </body>
 </html>

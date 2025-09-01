@@ -105,6 +105,7 @@ app.post('/uploadGiftImage', async (req, res) => {
     }
 
     const bucket = getStorage().bucket();
+    const bucketName = bucket.name; // resolve actual default bucket name
     const safeName = String(filename).replace(/[^a-zA-Z0-9_.-]/g, '_');
     const objectPath = `gifts/${Date.now()}_${safeName}`;
     const file = bucket.file(objectPath);
@@ -119,8 +120,8 @@ app.post('/uploadGiftImage', async (req, res) => {
       validation: false,
     });
 
-    const gsUrl = `gs://hochzeiteduardjoanne.appspot.com/${objectPath}`;
-    const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/hochzeiteduardjoanne.appspot.com/o/${encodeURIComponent(objectPath)}?alt=media&token=${token}`;
+    const gsUrl = `gs://${bucketName}/${objectPath}`;
+    const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(objectPath)}?alt=media&token=${token}`;
     return res.json({ gsUrl, downloadUrl, path: objectPath });
   } catch (e) {
     console.error('uploadGiftImage error', e);
@@ -149,17 +150,38 @@ exports.onGiftReserved = functions.firestore
         if (imgUrl.startsWith('gs://')) {
           try {
             const bucket = getStorage().bucket();
-            const file = bucket.file(imgUrl.replace('gs://hochzeiteduardjoanne.appspot.com/', ''));
-            const urls = await file.getSignedUrl({
-              action: 'read',
-              expires: '03-09-2491'
-            });
+            const bucketName = bucket.name;
+            const prefix = `gs://${bucketName}/`;
+            const filePath = imgUrl.startsWith(prefix)
+              ? imgUrl.substring(prefix.length)
+              : imgUrl.replace(/^gs:\/\/[^\/]+\//, '');
+            const file = bucket.file(filePath);
+            const urls = await file.getSignedUrl({ action: 'read', expires: '03-09-2491' });
             giftImage = urls[0];
           } catch (error) {
             console.error('Error getting download URL', error);
           }
         } else {
-          giftImage = imgUrl;
+          try {
+            const bucket = getStorage().bucket();
+            const bucketName = bucket.name;
+            const u = new URL(imgUrl);
+            if (u.hostname === 'firebasestorage.googleapis.com') {
+              const parts = u.pathname.split('/');
+              const bIndex = parts.indexOf('b');
+              if (bIndex > -1 && parts[bIndex + 1] && parts[bIndex + 1] !== bucketName) {
+                parts[bIndex + 1] = bucketName;
+                u.pathname = parts.join('/');
+                giftImage = u.toString();
+              } else {
+                giftImage = imgUrl;
+              }
+            } else {
+              giftImage = imgUrl;
+            }
+          } catch {
+            giftImage = imgUrl;
+          }
         }
       }
 

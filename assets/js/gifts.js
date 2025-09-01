@@ -147,14 +147,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Lade zuerst die sichtbaren Bilder
         const visibleItems = listItems.slice(0, VISIBLE_BATCH_SIZE);
+        function normalizeStorageDownloadUrl(url) {
+            try {
+                const u = new URL(url);
+                if (u.hostname !== 'firebasestorage.googleapis.com') return url;
+                const parts = u.pathname.split('/'); // ['', 'v0', 'b', '<bucket>', 'o', '<object>']
+                const bIndex = parts.indexOf('b');
+                const confBucket = firebase.app().options.storageBucket;
+                if (bIndex > -1 && parts[bIndex + 1] && confBucket && parts[bIndex + 1] !== confBucket) {
+                    parts[bIndex + 1] = confBucket;
+                    u.pathname = parts.join('/');
+                    return u.toString();
+                }
+            } catch {}
+            return url;
+        }
+
         const visiblePromises = visibleItems.map(({ imgEl, data }, index) => {
             if (data.imgUrl) {
                 const urlStr = data.imgUrl;
                 return (async () => {
                     try {
-                        const downloadUrl = urlStr.startsWith('gs://')
-                            ? await storage.refFromURL(urlStr).getDownloadURL()
-                            : urlStr;
+                        let downloadUrl = urlStr;
+                        if (urlStr.startsWith('gs://')) {
+                            const confBucket = firebase.app().options.storageBucket;
+                            const normalizedGs = urlStr.replace(/^gs:\/\/[^\/]+\//, `gs://${confBucket}/`);
+                            downloadUrl = await storage.refFromURL(normalizedGs).getDownloadURL();
+                        } else {
+                            downloadUrl = normalizeStorageDownloadUrl(urlStr);
+                        }
                         await loadImage(imgEl, downloadUrl, true);
                     } catch (err) {
                         console.error('Fehler beim Laden des Bildes:', err);
@@ -179,9 +200,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const urlStr = data.imgUrl;
                     return (async () => {
                         try {
-                            const downloadUrl = urlStr.startsWith('gs://')
-                                ? await storage.refFromURL(urlStr).getDownloadURL()
-                                : urlStr;
+                            let downloadUrl = urlStr;
+                            if (urlStr.startsWith('gs://')) {
+                                const confBucket = firebase.app().options.storageBucket;
+                                const normalizedGs = urlStr.replace(/^gs:\/\/[^\/]+\//, `gs://${confBucket}/`);
+                                downloadUrl = await storage.refFromURL(normalizedGs).getDownloadURL();
+                            } else {
+                                downloadUrl = normalizeStorageDownloadUrl(urlStr);
+                            }
                             await loadImage(imgEl, downloadUrl, false);
                         } catch (err) {
                             console.error('Fehler beim Laden des Bildes:', err);

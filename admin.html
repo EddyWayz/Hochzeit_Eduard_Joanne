@@ -25,7 +25,7 @@
       apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
       authDomain: "hochzeiteduardjoanne.firebaseapp.com",
       projectId: "hochzeiteduardjoanne",
-      storageBucket: "hochzeiteduardjoanne.appspot.com",
+      storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
       messagingSenderId: "209565556740",
       appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
     };
@@ -261,9 +261,29 @@
           const imgCell = document.createElement('td');
           const img = document.createElement('img');
           if (d.imgUrl) {
+            const confBucket = firebase.app().options.storageBucket;
+            const setSrc = (url) => { img.src = url; };
             if (d.imgUrl.startsWith('gs://')) {
-              storage.refFromURL(d.imgUrl).getDownloadURL().then(u => img.src = u).catch(() => {});
-            } else { img.src = d.imgUrl; }
+              const normalizedGs = d.imgUrl.replace(/^gs:\/\/[^\/]+\//, `gs://${confBucket}/`);
+              storage.refFromURL(normalizedGs).getDownloadURL().then(setSrc).catch(() => {});
+            } else {
+              try {
+                const u = new URL(d.imgUrl);
+                if (u.hostname === 'firebasestorage.googleapis.com') {
+                  const parts = u.pathname.split('/');
+                  const bIndex = parts.indexOf('b');
+                  if (bIndex > -1 && parts[bIndex + 1] && confBucket && parts[bIndex + 1] !== confBucket) {
+                    parts[bIndex + 1] = confBucket;
+                    u.pathname = parts.join('/');
+                    setSrc(u.toString());
+                  } else {
+                    setSrc(d.imgUrl);
+                  }
+                } else {
+                  setSrc(d.imgUrl);
+                }
+              } catch { setSrc(d.imgUrl); }
+            }
           }
           img.alt = d.name || '';
           imgCell.appendChild(img);

@@ -1,6 +1,7 @@
 // index.js
 const functions = require('firebase-functions/v1');
 require('dotenv').config();
+const { getStorage } = require('firebase-admin/storage');
 const admin = require('firebase-admin');
 const crypto = require('crypto');
 const fs = require('fs');
@@ -97,13 +98,32 @@ exports.onGiftReserved = functions.firestore
 
     if (!before?.reserved && after?.reserved) {
       const giftId = context.params.giftId;
-      const { name, reserverEmail, reserverName } = after;
+      const { name, reserverEmail, reserverName, imgUrl } = after;
       const token = crypto.randomBytes(32).toString('hex');
 
       await change.after.ref.update({
         token,
         reservedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
+
+      let giftImage = null;
+      if (imgUrl) {
+        if (imgUrl.startsWith('gs://')) {
+          try {
+            const bucket = getStorage().bucket('hochzeiteduardjoanne.appspot.com');
+            const file = bucket.file(imgUrl.replace('gs://hochzeiteduardjoanne.appspot.com/', ''));
+            const urls = await file.getSignedUrl({
+              action: 'read',
+              expires: '03-09-2491'
+            });
+            giftImage = urls[0];
+          } catch (error) {
+            console.error('Error getting download URL', error);
+          }
+        } else {
+          giftImage = imgUrl;
+        }
+      }
 
       const undoUrl = `https://us-central1-hochzeiteduardjoanne.cloudfunctions.net/undoGift?giftId=${giftId}&token=${token}`;
 
@@ -115,6 +135,7 @@ exports.onGiftReserved = functions.firestore
         templateVariables: {
           reserverName: reserverName || 'Freund',
           giftName: name,
+          giftImage,
           undoUrl,
         },
       });
@@ -141,6 +162,20 @@ exports.onRsvpSubmitted = functions.firestore
         editUrl,
       },
     });
+
+    if (process.env.NTFY_TOPIC) {
+      try {
+        await axios.post(`https://ntfy.sh/${process.env.NTFY_TOPIC}`, {
+          topic: process.env.NTFY_TOPIC,
+          message: `${data.familyName} hat sich angemeldet. (${data.guests} Gäste)`,
+          title: "Neue Zusage für die Hochzeit!",
+          priority: "high"
+        });
+      } catch (error) {
+        console.error('Error sending ntfy notification', error);
+      }
+    }
+
     return null;
   });
 

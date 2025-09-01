@@ -22,6 +22,9 @@
             <td style="background-color: #ffffff; padding: 2rem;">
               <h2 style="font-family: 'Kiona', Arial, sans-serif; font-size: 1.5rem; color: #d26b58; margin-top: 0;">Reservierungsbestätigung</h2>
               <p style="line-height: 1.5; color: #000000;">Hallo Familie {{reserverName}},</p>
+              {{#if giftImage}}
+              <img src="{{giftImage}}" alt="{{giftName}}" style="max-width: 100%; height: auto; display: block; margin-bottom: 1rem;">
+              {{/if}}
               <p style="line-height: 1.5; color: #000000;">ihr habt <strong>{{giftName}}</strong> reserviert. Vielen Dank dafür schon mal im Voraus!</p>
               <p style="line-height: 1.5; color: #000000;">Wenn ihr eure Reservierung stornieren möchtet, klickt auf den Button:</p>
               <p style="margin-top: 2rem; margin-bottom: 2rem;">

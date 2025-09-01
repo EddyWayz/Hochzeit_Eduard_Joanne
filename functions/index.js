@@ -23,7 +23,8 @@ try {
 const webhookUrl = "https://script.google.com/macros/s/AKfycbzQ2Rhg5Sva8EnfShO0tg8mhrl0K5cUSIYlIEJ--ih5IDbGNm2z0WujwYVz0kJOXKrZRg/exec";
 
 app.use(cors);
-app.use(express.json());
+// allow larger payload for base64 image uploads
+app.use(express.json({ limit: '12mb' }));
 
 /**
  * A helper function to send emails using a template.
@@ -90,6 +91,43 @@ app.post('/sendContactMail', async (req, res) => {
   }
 });
 
+// Upload gift image via HTTPS to avoid client-side Storage CORS
+app.post('/uploadGiftImage', async (req, res) => {
+  try {
+    const { filename, contentType, dataBase64, dataUrl } = req.body || {};
+    if (!filename || !contentType || (!dataBase64 && !dataUrl)) {
+      return res.status(400).json({ error: 'missing_fields' });
+    }
+    const base64Payload = dataBase64 || String(dataUrl || '').split('base64,').pop();
+    const buffer = Buffer.from(base64Payload, 'base64');
+    if (buffer.length > 10 * 1024 * 1024) {
+      return res.status(413).json({ error: 'file_too_large' });
+    }
+
+    const bucket = getStorage().bucket();
+    const safeName = String(filename).replace(/[^a-zA-Z0-9_.-]/g, '_');
+    const objectPath = `gifts/${Date.now()}_${safeName}`;
+    const file = bucket.file(objectPath);
+    const token = crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(16).toString('hex');
+
+    await file.save(buffer, {
+      metadata: {
+        contentType,
+        metadata: { firebaseStorageDownloadTokens: token },
+      },
+      resumable: false,
+      validation: false,
+    });
+
+    const gsUrl = `gs://hochzeiteduardjoanne.appspot.com/${objectPath}`;
+    const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/hochzeiteduardjoanne.appspot.com/o/${encodeURIComponent(objectPath)}?alt=media&token=${token}`;
+    return res.json({ gsUrl, downloadUrl, path: objectPath });
+  } catch (e) {
+    console.error('uploadGiftImage error', e);
+    return res.status(500).json({ error: 'upload_failed', message: e?.message || String(e) });
+  }
+});
+
 exports.onGiftReserved = functions.firestore
   .document('gifts/{giftId}')
   .onUpdate(async (change, context) => {
@@ -110,7 +148,7 @@ exports.onGiftReserved = functions.firestore
       if (imgUrl) {
         if (imgUrl.startsWith('gs://')) {
           try {
-            const bucket = getStorage().bucket('hochzeiteduardjoanne.appspot.com');
+            const bucket = getStorage().bucket();
             const file = bucket.file(imgUrl.replace('gs://hochzeiteduardjoanne.appspot.com/', ''));
             const urls = await file.getSignedUrl({
               action: 'read',

@@ -25,7 +25,7 @@
       apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
       authDomain: "hochzeiteduardjoanne.firebaseapp.com",
       projectId: "hochzeiteduardjoanne",
-      storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
+      storageBucket: "hochzeiteduardjoanne.appspot.com",
       messagingSenderId: "209565556740",
       appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
     };
@@ -149,6 +149,9 @@
         btnLogout.style.display = '';
         loadRSVPs();
         initGiftsAdmin();
+        // Sichtbarkeit sicherstellen
+        const ga = document.getElementById('giftAdmin');
+        if (ga) ga.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } catch (err) {
         alert('Login fehlgeschlagen: ' + err.message);
       }
@@ -244,7 +247,10 @@
       const imgFileIn = document.getElementById('gImgFile');
       const resetBtn = document.getElementById('giftReset');
 
-      section.style.display = '';
+      // Sichtbar schalten (CSS hat display:none)
+      section.style.display = 'block';
+
+      const FN_BASE = 'https://us-central1-hochzeiteduardjoanne.cloudfunctions.net/sendContactMail';
 
       // Realtime Liste
       db.collection('gifts').orderBy('createdAt', 'desc').onSnapshot(snap => {
@@ -325,6 +331,15 @@
       });
 
       // Submit: Hinzufügen
+      function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const fr = new FileReader();
+          fr.onload = () => resolve(fr.result);
+          fr.onerror = reject;
+          fr.readAsDataURL(file);
+        });
+      }
+
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = nameIn.value.trim();
@@ -337,11 +352,27 @@
         let finalImgUrl = urlFromInput || '';
         try {
           if (file) {
-            const safeName = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
-            const baseRef = storage.refFromURL('gs://hochzeiteduardjoanne.appspot.com');
-            const ref = baseRef.child(`gifts/${Date.now()}_${safeName}`);
-            const snap = await ref.put(file);
-            finalImgUrl = await snap.ref.getDownloadURL();
+            // Primär: Upload via Cloud Function (vermeidet Storage-CORS)
+            try {
+              const dataUrl = await fileToDataUrl(file);
+              const resp = await fetch(`${FN_BASE}/uploadGiftImage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filename: file.name, contentType: file.type || 'application/octet-stream', dataUrl })
+              });
+              const data = await resp.json().catch(() => ({}));
+              if (!resp.ok) throw new Error(data?.message || 'Upload API Fehler');
+              // Bevorzuge die tokenisierte Download-URL, damit Public-Read-Regeln nicht nötig sind
+              finalImgUrl = data.downloadUrl || data.gsUrl || '';
+            } catch (uploadErr) {
+              console.warn('Upload via Function fehlgeschlagen, versuche direkten Storage-Upload …', uploadErr);
+              // Fallback: direkter Upload auf Standard‑Bucket (benötigt CORS)
+              const safeName = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
+              const ref = storage.ref().child(`gifts/${Date.now()}_${safeName}`);
+              const snap = await ref.put(file);
+              // Speichere gs:// Pfad, nicht nur die Download-URL
+              finalImgUrl = ref.toString();
+            }
           }
 
           await db.collection('gifts').add({

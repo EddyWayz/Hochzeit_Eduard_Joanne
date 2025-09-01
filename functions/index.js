@@ -1,5 +1,6 @@
 // index.js
 const functions = require('firebase-functions/v1');
+require('dotenv').config();
 const admin = require('firebase-admin');
 const crypto = require('crypto');
 const fs = require('fs');
@@ -66,6 +67,21 @@ app.post('/sendContactMail', async (req, res) => {
 
   try {
     await axios.post(webhookUrl, payload);
+    
+    // Send confirmation email to user
+    await sendEmail('contact_confirmation', {
+      to_email: email,
+      to_name: Name,
+      subject: 'Bestätigung deiner Kontaktanfrage',
+      text: `Hallo ${Name},\n\nvielen Dank für deine Nachricht. Wir haben sie erhalten und werden uns so schnell wie möglich bei dir melden.\n\nDeine Nachricht:\nBetreff: ${Betreff}\nNachricht: ${Nachricht}\n\n Viele Grüße,\nEduard & Joanne`,
+      templateVariables: {
+        Name,
+        email,
+        Betreff,
+        Nachricht,
+      },
+    });
+
     res.status(200).send("OK");
   } catch (err) {
     console.error("Fehler beim Versenden der Kontakt-E-Mail an Google Script:", err);
@@ -165,7 +181,7 @@ exports.undoGift = functions.https.onRequest(async (req, res) => {
       token: admin.firestore.FieldValue.delete(),
       reservedAt: admin.firestore.FieldValue.delete(),
     });
-    return res.redirect(302, `${functions.config().app.base_url}/gifts.html`);
+    return res.redirect(302, `${process.env.APP_BASE_URL}/gifts.html`);
   } catch (err) {
     console.error('Fehler beim Zurücksetzen der Reservierung:', err);
     return res.status(500).send('Ein interner Fehler ist aufgetreten.');

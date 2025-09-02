@@ -44,7 +44,6 @@
     .family-header td { background: var(--color-surface); font-style: italic; }
     .info-row td { background: #f9f9f9; font-size: 0.9rem; }
     /* Gifts admin small bits */
-    #giftAdmin { display: none; }
     .gift-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .gift-form .full { grid-column: 1 / -1; }
     .gift-list img { width: 80px; height: 60px; object-fit: contain; background: #fff; border: 1px solid #eee; border-radius: 6px; }
@@ -86,17 +85,24 @@
         <div class="stat"><h4>Gäste zugesagt</h4><div id="statYesGuests" class="value">–</div></div>
         <div class="stat"><h4>Familien abgesagt</h4><div id="statNoFamilies" class="value">–</div></div>
       </div>
-      <div class="table-wrap">
-        <table id="rsvpTable" style="display:none;">
-    <thead>
-      <tr>
-        <th>Familie</th>
-        <th>Gast</th>
-        <th>Typ</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+      <div class="card">
+        <div class="card-body">
+          <div class="rsvp-toolbar">
+            <input id="rsvpSearch" class="search" type="search" placeholder="Suche (Familie, E‑Mail, Gast)">
+            <div class="pill-group">
+              <button type="button" class="pill active" data-rsvp="all">Alle</button>
+              <button type="button" class="pill" data-rsvp="yes">Zugesagt</button>
+              <button type="button" class="pill" data-rsvp="no">Abgesagt</button>
+            </div>
+            <select id="rsvpSort" class="pill">
+              <option value="date_desc">Neueste zuerst</option>
+              <option value="date_asc">Älteste zuerst</option>
+              <option value="name_az">Familie A–Z</option>
+            </select>
+            <button id="rsvpExport" class="btn-outline">Export CSV</button>
+          </div>
+          <div id="rsvpList" class="rsvp-cards"></div>
+        </div>
       </div>
     </section>
 
@@ -210,81 +216,114 @@
     async function loadRSVPs() {
       const snapshot = await db.collection('rsvps').get();
 
-      // Gruppen nach Teilnahme und Familie
-      const groups = { yes: {}, no: {} };
+      const families = [];
       snapshot.forEach(doc => {
         const d = doc.data();
-        const key = d.attending === 'yes' ? 'yes' : 'no';
-        const fam = d.familyName || '—';
-        if (!groups[key][fam]) groups[key][fam] = [];
-        groups[key][fam].push(d);
+        families.push({
+          id: doc.id,
+          fam: d.familyName || '—',
+          email: d.email || '',
+          attending: d.attending === 'yes' ? 'yes' : 'no',
+          guests: d.guestDetails || [],
+          intolerances: d.intolerances || '',
+          message: d.message || '',
+          ts: d.timestamp ? d.timestamp.toDate() : null,
+        });
       });
 
-      const tbody = document.querySelector('#rsvpTable tbody');
-      tbody.innerHTML = '';
+      // Stats
+      const yesFamilies = families.filter(f => f.attending==='yes').length;
+      const yesGuests   = families.filter(f=>f.attending==='yes').reduce((s,f)=> s + (f.guests?.length||0), 0);
+      const noFamilies  = families.filter(f => f.attending==='no').length;
+      const setTxt = (id, v) => { const el=document.getElementById(id); if (el) el.textContent=String(v); };
+      setTxt('statYesFamilies', yesFamilies);
+      setTxt('statYesGuests', yesGuests);
+      setTxt('statNoFamilies', noFamilies);
 
-      // Hilfsfunktion zum Rendern eines Blocks
-      function renderBlock(label, block) {
-        // Attendance header
-        tbody.insertAdjacentHTML('beforeend', `
-          <tr class="group-header"><td colspan="3">${label} (${Object.keys(block).length} Familien)</td></tr>
-        `);
-        let blockGuestTotal = 0;
-        // Jede Familie
-        Object.keys(block).sort().forEach(fam => {
-          const entries = block[fam];
-          // Familien-Header mit Anzahl Gäste
-          const famGuestCount = entries.reduce((sum, d) => sum + (d.guestDetails?.length || 0), 0);
-          blockGuestTotal += famGuestCount;
-          tbody.insertAdjacentHTML('beforeend', `
-            <tr class="family-header"><td colspan="3">Familie ${fam} (${famGuestCount} Gäste)</td></tr>
-          `);
-          // E-Mail, Unverträglichkeiten & Nachricht
-          // Timestamp aus Firebase in deutsches Datumsformat umwandeln
-          const info = entries[0];
-          const dateStr = info.timestamp
-            ? info.timestamp.toDate().toLocaleString('de-DE')
-            : '-';
-          tbody.insertAdjacentHTML('beforeend', `
-            <tr class="info-row"><td colspan="3">
-              <strong>Zeitstempel:</strong> ${dateStr}<br>
-              <strong>E‑Mail:</strong> ${info.email}<br>
-              <strong>Unverträglichkeiten:</strong> ${info.intolerances || '-'}<br>
-              <strong>Nachricht:</strong> ${info.message || '-'}
-            </td></tr>
-          `);
-          // Gäste auflisten
-          entries.forEach(d => {
-            d.guestDetails.forEach(g => {
-              tbody.insertAdjacentHTML('beforeend', `
-                <tr>
-                  <td></td>
-                  <td>${g.name}</td>
-                  <td>${g.type}</td>
-                </tr>
-              `);
-            });
+      const listEl   = document.getElementById('rsvpList');
+      const searchEl = document.getElementById('rsvpSearch');
+      const sortEl   = document.getElementById('rsvpSort');
+      let filter = 'all';
+      let q = '';
+
+      function render() {
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        let arr = families.slice();
+        if (filter !== 'all') arr = arr.filter(f => f.attending === filter);
+        if (q) {
+          const lq = q.toLowerCase();
+          arr = arr.filter(f => {
+            const inGuests = (f.guests||[]).some(g => (g.name||'').toLowerCase().includes(lq));
+            return f.fam.toLowerCase().includes(lq) || (f.email||'').toLowerCase().includes(lq) || inGuests;
           });
+        }
+        const sort = (sortEl && sortEl.value) || 'date_desc';
+        arr.sort((a,b)=>{
+          if (sort==='name_az') return a.fam.localeCompare(b.fam);
+          const at = a.ts ? a.ts.getTime() : 0, bt = b.ts ? b.ts.getTime() : 0;
+          return sort==='date_asc' ? at-bt : bt-at;
         });
-        // Gesamt Gäste im Block
-        tbody.insertAdjacentHTML('beforeend', `
-          <tr class="group-header"><td colspan="3">Gesamt Gäste (${label}): ${blockGuestTotal}</td></tr>
-        `);
+
+        arr.forEach(f => {
+          const card = document.createElement('div');
+          card.className = 'rsvp-card';
+          const count = (f.guests||[]).length;
+          const dateStr = f.ts ? f.ts.toLocaleString('de-DE') : '-';
+          card.innerHTML = `
+            <header>
+              <div class="rsvp-title">Familie ${f.fam} <span class="muted">(${count} Gäste)</span></div>
+              <span class="badge ${f.attending==='yes'?'yes':'no'}">${f.attending==='yes'?'Zugesagt':'Abgesagt'}</span>
+            </header>
+            <div class="rsvp-body">
+              <div class="rsvp-meta"><strong>Zeitstempel:</strong> ${dateStr}</div>
+              <div class="rsvp-meta"><strong>E‑Mail:</strong> ${f.email || '–'}</div>
+              <div class="rsvp-meta"><strong>Unverträglichkeiten:</strong> ${f.intolerances || '–'}</div>
+              <div class="rsvp-meta"><strong>Nachricht:</strong> ${f.message || '–'}</div>
+              <div class="chips">${(f.guests||[]).map(g=>`<span class="chip ${g.type==='Kind'?'kid':'adult'}">${g.name} · ${g.type}</span>`).join('')}</div>
+            </div>`;
+          listEl.appendChild(card);
+        });
       }
 
-      // stats
-      const yesFamilies = Object.keys(groups.yes).length;
-      const noFamilies  = Object.keys(groups.no).length;
-      const yesGuests   = Object.values(groups.yes).reduce((sum, arr) => sum + arr.reduce((s, d) => s + (d.guestDetails?.length || 0), 0), 0);
-      const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = String(v); };
-      setTxt('statYesFamilies', yesFamilies);
-      setTxt('statNoFamilies', noFamilies);
-      setTxt('statYesGuests', yesGuests);
+      document.querySelectorAll('[data-rsvp]').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-rsvp]').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        filter = btn.dataset.rsvp;
+        render();
+      }));
+      if (searchEl) searchEl.addEventListener('input', e => { q = e.target.value.trim(); render(); });
+      if (sortEl) sortEl.addEventListener('change', render);
 
-      renderBlock('Zugesagt', groups.yes);
-      renderBlock('Abgesagt', groups.no);
+      const exportBtn = document.getElementById('rsvpExport');
+      if (exportBtn) exportBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        let arr = families.slice();
+        if (filter !== 'all') arr = arr.filter(f => f.attending === filter);
+        if (q) {
+          const lq = q.toLowerCase();
+          arr = arr.filter(f => {
+            const inGuests = (f.guests||[]).some(g => (g.name||'').toLowerCase().includes(lq));
+            return f.fam.toLowerCase().includes(lq) || (f.email||'').toLowerCase().includes(lq) || inGuests;
+          });
+        }
+        const rows = [['Familie','E-Mail','Teilnahme','Gäste','Unverträglichkeiten','Nachricht','Zeit']];
+        arr.forEach(f => rows.push([
+          f.fam,
+          f.email,
+          f.attending==='yes'?'Ja':'Nein',
+          (f.guests||[]).map(g=>`${g.name} (${g.type})`).join('; '),
+          f.intolerances || '',
+          (f.message||'').replace(/\n/g,' '),
+          f.ts ? f.ts.toISOString() : ''
+        ]));
+        const csv = rows.map(r=> r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+        const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href=url; a.download='rsvps.csv'; a.click(); setTimeout(()=>URL.revokeObjectURL(url), 1000);
+      });
 
-      document.getElementById('rsvpTable').style.display = '';
+      render();
     }
 
     // ==========================
@@ -301,8 +340,7 @@
       const imgFileIn = document.getElementById('gImgFile');
       const resetBtn = document.getElementById('giftReset');
 
-      // Sichtbar schalten (CSS hat display:none)
-      section.style.display = 'block';
+      // Anzeige wird über Tabs gesteuert
 
       const FN_BASE = 'https://us-central1-hochzeiteduardjoanne.cloudfunctions.net/sendContactMail';
 

@@ -8,7 +8,7 @@
   <!-- Farbvariablen und Basis‑Styles -->
   <link rel="stylesheet" href="assets/css/variables.css">
   <link rel="stylesheet" href="assets/css/basic.css">
-  <!-- Spezifisches Styling für Admin (entfernt, nicht vorhanden) -->
+  <link rel="stylesheet" href="assets/css/admin.css">
 
   <!-- Header/Footer Include (vanilla) -->
   <script defer src="assets/js/includeTemplate.js"></script>
@@ -36,48 +36,58 @@
   </script>
 
   <style>
-    body { font-family: sans-serif; padding: 2rem; background: var(--color-bg); }
-    #login, #rsvpTable, #giftAdmin { max-width: 1000px; margin: auto; }
-    #login input { width: 100%; padding: 0.5rem; margin-bottom: 1rem; }
-    #login button { padding: 0.5rem 1rem; }
-    table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
-    th, td { border: 1px solid var(--color-border); padding: 0.5rem; text-align: left; }
-    th { background: var(--color-surface); }
+    /* RSVP table visual tweaks */
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--color-border); }
+    thead th { position: sticky; top: 0; background: var(--color-surface); }
     .group-header td { background: var(--color-primary-light); font-weight: bold; }
     .family-header td { background: var(--color-surface); font-style: italic; }
     .info-row td { background: #f9f9f9; font-size: 0.9rem; }
-
-    /* Gifts admin */
-    #giftAdmin { display: none; margin-top: 2rem; }
-    #giftAdmin h2 { margin-top: 3rem; }
-    .gift-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: var(--color-surface); padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    /* Gifts admin small bits */
+    #giftAdmin { display: none; }
+    .gift-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .gift-form .full { grid-column: 1 / -1; }
-    .gift-form label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
-    .gift-form input, .gift-form textarea { width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text); }
-    .gift-form textarea { min-height: 80px; resize: vertical; }
-    .gift-form .actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
-    .gift-form button { padding: 0.5rem 1rem; }
-    .gift-list { margin-top: 1.5rem; }
     .gift-list img { width: 80px; height: 60px; object-fit: contain; background: #fff; border: 1px solid #eee; border-radius: 6px; }
     .status-pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.85rem; }
     .status-ok { background: #e7f7ee; color: #146c43; border: 1px solid #b7e4c7; }
     .status-res { background: #fff3cd; color: #8a6d3b; border: 1px solid #ffe69c; }
-    .danger { color: #b42318; }
   </style>
 </head>
 <body>
   <div id="header"></div>
 
 <!-- Admin-Bereich: Login und RSVP-Übersicht als Tabelle -->
-  <div id="login">
-    <h2>Admin Login</h2>
-    <input id="email"    type="email"    placeholder="E‑Mail">
-    <input id="password" type="password" placeholder="Passwort">
-    <button id="btnLogin">Einloggen</button>
-    <button id="btnLogout" style="display:none;">Logout</button>
+  <div id="login" class="card admin-login">
+    <div class="card-header">Admin Login</div>
+    <div class="card-body">
+      <input id="email"    type="email"    placeholder="E‑Mail">
+      <input id="password" type="password" placeholder="Passwort">
+      <div class="actions" style="justify-content:flex-end; gap: .5rem;">
+        <button id="btnLogin">Einloggen</button>
+      </div>
+    </div>
   </div>
 
-  <table id="rsvpTable" style="display:none;">
+  <!-- Admin Shell with tabs -->
+  <main id="adminShell" class="admin-wrap" style="display:none;">
+    <div class="admin-header">
+      <h1 style="margin:0;">Admin Konsole</h1>
+      <div class="actions"><button id="btnLogout" class="btn-outline">Logout</button></div>
+    </div>
+    <nav class="admin-tabs">
+      <button class="admin-tab active" data-tab="giftAdmin">Geschenke</button>
+      <button class="admin-tab" data-tab="rsvpSection">RSVPs</button>
+    </nav>
+
+    <!-- RSVP Tab -->
+    <section id="rsvpSection" class="admin-section">
+      <div class="stats">
+        <div class="stat"><h4>Familien zugesagt</h4><div id="statYesFamilies" class="value">–</div></div>
+        <div class="stat"><h4>Gäste zugesagt</h4><div id="statYesGuests" class="value">–</div></div>
+        <div class="stat"><h4>Familien abgesagt</h4><div id="statNoFamilies" class="value">–</div></div>
+      </div>
+      <div class="table-wrap">
+        <table id="rsvpTable" style="display:none;">
     <thead>
       <tr>
         <th>Familie</th>
@@ -87,10 +97,20 @@
     </thead>
     <tbody></tbody>
   </table>
+      </div>
+    </section>
 
   <!-- Geschenke verwalten -->
-  <section id="giftAdmin">
+  <section id="giftAdmin" class="admin-section active">
     <h2>Geschenke verwalten</h2>
+    <div class="stats">
+      <div class="stat"><h4>Geschenke gesamt</h4><div id="giftStatTotal" class="value">–</div></div>
+      <div class="stat"><h4>Reserviert</h4><div id="giftStatReserved" class="value">–</div></div>
+      <div class="stat"><h4>Frei</h4><div id="giftStatFree" class="value">–</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header">Geschenk hinzufügen</div>
+      <div class="card-body">
     <form id="giftForm" class="gift-form">
       <div class="full">
         <label for="gName">Name *</label>
@@ -114,8 +134,20 @@
         <button type="button" id="giftReset">Formular leeren</button>
       </div>
     </form>
+      </div>
+    </div>
 
-    <div class="gift-list">
+    <div class="card" style="margin-top: var(--space-lg);">
+      <div class="card-body">
+      <div class="toolbar">
+        <input id="giftSearch" class="search" type="search" placeholder="Suchen (Name, Beschreibung)">
+        <div class="pill-group">
+          <button type="button" class="pill active" data-status="all">Alle</button>
+          <button type="button" class="pill" data-status="free">Frei</button>
+          <button type="button" class="pill" data-status="reserved">Reserviert</button>
+        </div>
+      </div>
+    <div class="gift-list table-wrap">
       <table id="giftTable">
         <thead>
           <tr>
@@ -130,28 +162,30 @@
         <tbody></tbody>
       </table>
     </div>
+      </div>
+    </div>
   </section>
+
+  </main>
 
   <div id="footer"></div>
 
   <script>
     const btnLogin = document.getElementById('btnLogin');
     const btnLogout = document.getElementById('btnLogout');
+    const adminShell = document.getElementById('adminShell');
 
     btnLogin.addEventListener('click', async () => {
       const email = document.getElementById('email').value;
       const pw    = document.getElementById('password').value;
       try {
         await auth.signInWithEmailAndPassword(email, pw);
-        document.getElementById('email').style.display = 'none';
-        document.getElementById('password').style.display = 'none';
-        btnLogin.style.display = 'none';
+        document.getElementById('login').style.display = 'none';
+        adminShell.style.display = '';
         btnLogout.style.display = '';
+        initTabs();
         loadRSVPs();
         initGiftsAdmin();
-        // Sichtbarkeit sicherstellen
-        const ga = document.getElementById('giftAdmin');
-        if (ga) ga.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } catch (err) {
         alert('Login fehlgeschlagen: ' + err.message);
       }
@@ -161,6 +195,17 @@
       try { await auth.signOut(); } catch {}
       location.reload();
     });
+
+    function initTabs() {
+      const tabs = document.querySelectorAll('.admin-tab');
+      tabs.forEach(t => t.addEventListener('click', () => {
+        tabs.forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        const id = t.dataset.tab;
+        document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+      }));
+    }
 
     async function loadRSVPs() {
       const snapshot = await db.collection('rsvps').get();
@@ -227,6 +272,15 @@
         `);
       }
 
+      // stats
+      const yesFamilies = Object.keys(groups.yes).length;
+      const noFamilies  = Object.keys(groups.no).length;
+      const yesGuests   = Object.values(groups.yes).reduce((sum, arr) => sum + arr.reduce((s, d) => s + (d.guestDetails?.length || 0), 0), 0);
+      const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = String(v); };
+      setTxt('statYesFamilies', yesFamilies);
+      setTxt('statNoFamilies', noFamilies);
+      setTxt('statYesGuests', yesGuests);
+
       renderBlock('Zugesagt', groups.yes);
       renderBlock('Abgesagt', groups.no);
 
@@ -252,12 +306,37 @@
 
       const FN_BASE = 'https://us-central1-hochzeiteduardjoanne.cloudfunctions.net/sendContactMail';
 
+      let lastGiftDocs = [];
+      let statusFilter = 'all';
+      let queryText = '';
+
+      function updateGiftStats(docs) {
+        const total = docs.length;
+        const reserved = docs.filter(d => d.data().reserved).length;
+        const free = total - reserved;
+        const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = String(v); };
+        set('giftStatTotal', total);
+        set('giftStatReserved', reserved);
+        set('giftStatFree', free);
+      }
+
       // Realtime Liste
-      db.collection('gifts').orderBy('createdAt', 'desc').onSnapshot(snap => {
+      function reRenderGifts() {
         tbody.innerHTML = '';
-        snap.docs.forEach(doc => {
+        updateGiftStats(lastGiftDocs);
+        const docs = lastGiftDocs.filter(d => {
+          const reserved = !!d.data().reserved;
+          const passesStatus = statusFilter === 'all' || (statusFilter === 'reserved' ? reserved : !reserved);
+          if (!passesStatus) return false;
+          if (!queryText) return true;
+          const x = d.data();
+          const s = `${x.name||''} ${x.description||''}`.toLowerCase();
+          return s.includes(queryText);
+        });
+        docs.forEach(doc => {
           const d = doc.data();
           const tr = document.createElement('tr');
+          tr.dataset.reserved = d.reserved ? 'true' : 'false';
           const imgCell = document.createElement('td');
           const img = document.createElement('img');
           if (d.imgUrl) {
@@ -348,7 +427,22 @@
           tr.appendChild(actCell);
           tbody.appendChild(tr);
         });
+      }
+
+      db.collection('gifts').orderBy('createdAt', 'desc').onSnapshot(snap => {
+        lastGiftDocs = snap.docs;
+        reRenderGifts();
       });
+
+      // Filters
+      const searchEl = document.getElementById('giftSearch');
+      if (searchEl) searchEl.addEventListener('input', (e) => { queryText = e.target.value.trim().toLowerCase(); reRenderGifts(); });
+      document.querySelectorAll('.pill-group .pill').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.pill-group .pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        statusFilter = btn.dataset.status;
+        reRenderGifts();
+      }));
 
       // Submit: Hinzufügen
       function fileToDataUrl(file) {

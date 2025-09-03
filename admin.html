@@ -135,6 +135,10 @@
         <label for="gImg">Bild (URL oder Datei)</label>
         <input id="gImgUrl" type="url" placeholder="https://… (oder leer lassen)">
         <input id="gImgFile" type="file" accept="image/*" style="margin-top: .25rem;">
+        <div id="gImgPreviewWrap" class="img-preview">
+          <img id="gImgPreview" alt="Vorschau">
+          <span class="note">Vorschau</span>
+        </div>
       </div>
       <div class="actions full">
         <button type="submit">Geschenk hinzufügen</button>
@@ -339,6 +343,8 @@
       const linkIn = document.getElementById('gLink');
       const imgUrlIn = document.getElementById('gImgUrl');
       const imgFileIn = document.getElementById('gImgFile');
+      const previewWrap = document.getElementById('gImgPreviewWrap');
+      const previewImg  = document.getElementById('gImgPreview');
       const resetBtn = document.getElementById('giftReset');
 
       // Anzeige wird über Tabs gesteuert
@@ -493,6 +499,27 @@
         });
       }
 
+      async function resolveDisplayUrl(url) {
+        if (!url) return null;
+        try {
+          if (url.startsWith('gs://')) {
+            const confBucket = firebase.app().options.storageBucket;
+            const normalizedGs = url.replace(/^gs:\/\/[^\/]+\//, `gs://${confBucket}/`);
+            const u = await storage.refFromURL(normalizedGs).getDownloadURL();
+            return u;
+          }
+          return url;
+        } catch { return null; }
+      }
+
+      async function showPreviewFrom(url) {
+        const display = await resolveDisplayUrl(url);
+        if (display) {
+          previewImg.src = display;
+          previewWrap.style.display = 'flex';
+        }
+      }
+
       async function autoFetchImageFromLink() {
         const link = linkIn.value.trim();
         if (!link) return;
@@ -510,6 +537,11 @@
           } else {
             imgUrlIn.value = data.imageUrl; // Fallback: direkte URL verwenden
           }
+          // Prefill Name/Beschreibung falls leer
+          if (!nameIn.value.trim() && data.title) nameIn.value = data.title;
+          if (!descIn.value.trim() && data.description) descIn.value = data.description;
+          // Preview zeigen
+          showPreviewFrom(imgUrlIn.value.trim());
         } catch (e) {
           console.warn('Auto-Fetch Bild fehlgeschlagen', e);
         }
@@ -521,6 +553,14 @@
       if (fetchBtn) fetchBtn.addEventListener('click', handleFetchClick);
       linkIn.addEventListener('change', autoFetchImageFromLink);
       linkIn.addEventListener('blur', autoFetchImageFromLink);
+      imgUrlIn.addEventListener('change', () => showPreviewFrom(imgUrlIn.value.trim()));
+      imgFileIn.addEventListener('change', async () => {
+        const f = imgFileIn.files && imgFileIn.files[0];
+        if (!f) return;
+        const dataUrl = await fileToDataUrl(f);
+        previewImg.src = dataUrl;
+        previewWrap.style.display = 'flex';
+      });
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();

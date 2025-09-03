@@ -157,13 +157,26 @@ app.post('/resolveProductImage', async (req, res) => {
     const base = new URL(url);
     const pick = (...arr) => arr.find(v => v && String(v).trim().length);
     const m = (re) => { const r = re.exec(html); return r && r[1] ? r[1].trim() : null; };
-    const decode = (s) => s
-      .replace(/&quot;/g,'"')
-      .replace(/&#34;/g,'"')
-      .replace(/&#39;/g,"'")
-      .replace(/&amp;/g,'&')
-      .replace(/&lt;/g,'<')
-      .replace(/&gt;/g,'>');
+    const decode = (s) => {
+      if (!s) return s;
+      let out = String(s)
+        .replace(/&quot;/g,'"')
+        .replace(/&#34;/g,'"')
+        .replace(/&#39;/g,"'")
+        .replace(/&apos;/g,"'")
+        .replace(/&amp;/g,'&')
+        .replace(/&lt;/g,'<')
+        .replace(/&gt;/g,'>')
+        .replace(/&nbsp;/g,' ');
+      // Numeric entities
+      out = out.replace(/&#x([0-9a-fA-F]+);/g, (_, h) => {
+        try { return String.fromCodePoint(parseInt(h, 16)); } catch { return _; }
+      });
+      out = out.replace(/&#(\d+);/g, (_, d) => {
+        try { return String.fromCodePoint(parseInt(d, 10)); } catch { return _; }
+      });
+      return out;
+    };
 
     // Common OG/Twitter image tags
     const ogImage = m(/<meta[^>]+property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
@@ -251,7 +264,9 @@ app.post('/resolveProductImage', async (req, res) => {
     const abs = new URL(chosen, base).toString();
     const ogTitle = m(/<meta[^>]+property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
                     m(/<title[^>]*>([^<]+)<\/title>/i);
-    return res.json({ imageUrl: abs, title: ogTitle || null });
+    const ogDesc  = m(/<meta[^>]+property=["']og:description["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
+                    m(/<meta[^>]+name=["']description["'][^>]*content=["']([^"']+)["'][^>]*>/i);
+    return res.json({ imageUrl: abs, title: ogTitle ? decode(ogTitle) : null, description: ogDesc ? decode(ogDesc) : null });
   } catch (e) {
     console.error('resolveProductImage error', e?.response?.status, e?.message);
     return res.status(500).json({ error: 'resolve_failed', message: e?.message || String(e), status: e?.response?.status || null });

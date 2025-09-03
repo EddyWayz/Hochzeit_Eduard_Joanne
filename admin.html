@@ -129,6 +129,7 @@
       <div>
         <label for="gLink">Kauflink (optional)</label>
         <input id="gLink" type="url" placeholder="https://…">
+        <button type="button" id="fetchImgBtn" class="btn-outline" style="margin-top:.4rem;">Bild aus Link holen</button>
       </div>
       <div>
         <label for="gImg">Bild (URL oder Datei)</label>
@@ -491,6 +492,35 @@
           fr.readAsDataURL(file);
         });
       }
+
+      async function autoFetchImageFromLink() {
+        const link = linkIn.value.trim();
+        if (!link) return;
+        // nur wenn kein eigenes Bild gewählt/gesetzt ist
+        if (imgFileIn.files?.length || imgUrlIn.value.trim()) return;
+        try {
+          const res = await fetch(`${FN_BASE}/resolveProductImage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: link }) });
+          const data = await res.json().catch(()=>({}));
+          if (!res.ok || !data.imageUrl) return;
+          // Bild in Storage importieren für Stabilität
+          const imp = await fetch(`${FN_BASE}/importImageToStorage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageUrl: data.imageUrl }) });
+          const impData = await imp.json().catch(()=>({}));
+          if (imp.ok && impData.downloadUrl) {
+            imgUrlIn.value = impData.downloadUrl;
+          } else {
+            imgUrlIn.value = data.imageUrl; // Fallback: direkte URL verwenden
+          }
+        } catch (e) {
+          console.warn('Auto-Fetch Bild fehlgeschlagen', e);
+        }
+      }
+
+      const fetchBtn = document.getElementById('fetchImgBtn');
+      function setBtnLoading(b){ if(!fetchBtn) return; fetchBtn.disabled=b; fetchBtn.textContent=b? 'Bild wird geholt…' : 'Bild aus Link holen'; }
+      async function handleFetchClick(){ setBtnLoading(true); await autoFetchImageFromLink(); setBtnLoading(false); if(!imgUrlIn.value.trim()) alert('Kein Bild gefunden. Tipp: m.amazon-Link probieren oder Bild-Adresse direkt einfügen.'); }
+      if (fetchBtn) fetchBtn.addEventListener('click', handleFetchClick);
+      linkIn.addEventListener('change', autoFetchImageFromLink);
+      linkIn.addEventListener('blur', autoFetchImageFromLink);
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();

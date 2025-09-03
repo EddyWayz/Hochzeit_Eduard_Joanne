@@ -129,6 +129,163 @@ app.post('/uploadGiftImage', async (req, res) => {
   }
 });
 
+// Resolve product image (e.g., Amazon) by reading Open Graph/Twitter meta
+app.post('/resolveProductImage', async (req, res) => {
+  try {
+    const { url } = req.body || {};
+    if (!url || !/^https?:\/\//i.test(url)) return res.status(400).json({ error: 'invalid_url' });
+    const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36';
+    async function fetchHtml(u) {
+      return axios.get(u, {
+        timeout: 12000,
+        maxRedirects: 5,
+        headers: {
+          'User-Agent': UA,
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+          'Accept-Language': 'de-DE,de;q=0.9,en;q=0.8',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+        },
+        validateStatus: (s) => s >= 200 && s < 400,
+      });
+    }
+
+    let resp;
+    try { resp = await fetchHtml(url); } catch (e) { resp = null; }
+    let html = String(resp?.data || '');
+    const base = new URL(url);
+    const pick = (...arr) => arr.find(v => v && String(v).trim().length);
+    const m = (re) => { const r = re.exec(html); return r && r[1] ? r[1].trim() : null; };
+    const decode = (s) => s
+      .replace(/&quot;/g,'"')
+      .replace(/&#34;/g,'"')
+      .replace(/&#39;/g,"'")
+      .replace(/&amp;/g,'&')
+      .replace(/&lt;/g,'<')
+      .replace(/&gt;/g,'>');
+
+    // Common OG/Twitter image tags
+    const ogImage = m(/<meta[^>]+property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
+                    m(/<meta[^>]+name=["']twitter:image["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
+                    m(/<link[^>]+rel=["']image_src["'][^>]*href=["']([^"']+)["'][^>]*>/i) ||
+                    m(/<img[^>]+id=["']landingImage["'][^>]*src=["']([^"']+)["'][^>]*>/i);
+
+    // Amazon-specific fallbacks
+    const oldHires = m(/<img[^>]+id=["']landingImage["'][^>]*data-old-hires=["']([^"']+)["'][^>]*>/i);
+    let dynAttr = m(/<img[^>]+id=["']landingImage["'][^>]*data-a-dynamic-image=["']([^"']+)["'][^>]*>/i);
+    let dynUrl = null;
+    if (dynAttr) {
+      try {
+        const parsed = JSON.parse(decode(dynAttr));
+        const keys = Object.keys(parsed);
+        if (keys.length) dynUrl = keys[0];
+      } catch (_) {
+        try {
+          // Sometimes single quotes are used – try to coerce
+          const fixed = decode(dynAttr).replace(/'/g,'"');
+          const parsed = JSON.parse(fixed);
+          const keys = Object.keys(parsed);
+          if (keys.length) dynUrl = keys[0];
+        } catch {}
+      }
+    }
+
+    // Try JSON-inlined fields often present on Amazon pages
+    const hiRes = m(/"hiRes"\s*:\s*"(https?:[^"]+)"/i);
+    const large = m(/"large"\s*:\s*"(https?:[^"]+)"/i);
+    const mainUrl = m(/"mainUrl"\s*:\s*"(https?:[^"]+)"/i);
+    // Direct m.media.amazon link inside HTML (take the first plausible)
+    let mediaMatch = null;
+    try {
+      const re = /https?:\/\/m\.media\.amazon\.com\/images\/I\/[A-Za-z0-9._%\-]+\.(?:jpg|jpeg|png)/ig;
+      const all = [];
+      for (let r; (r = re.exec(html)); ) all.push(r[0]);
+      if (all.length) mediaMatch = all[0];
+    } catch(_) {}
+
+    let chosen = pick(ogImage, oldHires, dynUrl, hiRes, large, mainUrl, mediaMatch);
+
+    // If nothing found or request failed, try mobile domain fallback for Amazon
+    const host = base.hostname;
+    const isAmazon = /(^|\.)amazon\./i.test(host) || /(^|\.)a\.co$/i.test(host);
+    if ((!chosen || !resp) && isAmazon) {
+      try {
+        const mobile = new URL(url);
+        // replace www. with m.
+        if (/^www\./i.test(mobile.hostname)) mobile.hostname = mobile.hostname.replace(/^www\./i, 'm.');
+        else if (!/^m\./i.test(mobile.hostname)) mobile.hostname = 'm.' + mobile.hostname;
+        const mResp = await fetchHtml(mobile.toString());
+        html = String(mResp.data || '');
+        const mOg = m(/<meta[^>]+property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i);
+        const mOld = m(/<img[^>]+data-old-hires=["']([^"']+)["'][^>]*>/i);
+        let mDynAttr = m(/data-a-dynamic-image=["']([^"']+)["']/i);
+        let mDyn = null;
+        if (mDynAttr) {
+          try { const p = JSON.parse(decode(mDynAttr)); const ks = Object.keys(p); if (ks.length) mDyn = ks[0]; } catch {}
+        }
+        // also scan for direct media links again
+        if (!mDyn) {
+          try {
+            const re = /https?:\/\/m\.media\.amazon\.com\/images\/I\/[A-Za-z0-9._%\-]+\.(?:jpg|jpeg|png)/ig;
+            const all = [];
+            for (let r; (r = re.exec(html)); ) all.push(r[0]);
+            if (all.length && !mediaMatch) mediaMatch = all[0];
+          } catch(_) {}
+        }
+        chosen = pick(chosen, mOg, mOld, mDyn, mediaMatch);
+      } catch (_) {}
+    }
+
+    // Last resort: readability proxy (best-effort), then scan for m.media-amazon.com URLs
+    if (!chosen && isAmazon) {
+      try {
+        const proxyUrl = `https://r.jina.ai/http://${base.hostname}${base.pathname}${base.search}`;
+        const proxy = await axios.get(proxyUrl, { timeout: 12000 });
+        const text = String(proxy.data || '');
+        const r = /https?:\/\/m\.media\.amazon\.com\/images\/I\/[A-Za-z0-9._%-]+\.(?:jpg|jpeg|png)/i.exec(text);
+        if (r) chosen = r[0];
+      } catch (_) {}
+    }
+    if (!chosen) return res.status(404).json({ error: 'image_not_found' });
+    const abs = new URL(chosen, base).toString();
+    const ogTitle = m(/<meta[^>]+property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
+                    m(/<title[^>]*>([^<]+)<\/title>/i);
+    return res.json({ imageUrl: abs, title: ogTitle || null });
+  } catch (e) {
+    console.error('resolveProductImage error', e?.response?.status, e?.message);
+    return res.status(500).json({ error: 'resolve_failed', message: e?.message || String(e), status: e?.response?.status || null });
+  }
+});
+
+// Import an external image URL into Firebase Storage and return a download URL
+app.post('/importImageToStorage', async (req, res) => {
+  try {
+    const { imageUrl, filename } = req.body || {};
+    if (!imageUrl || !/^https?:\/\//i.test(imageUrl)) return res.status(400).json({ error: 'invalid_image_url' });
+    const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36';
+    const imgResp = await axios.get(imageUrl, { responseType: 'arraybuffer', timeout: 15000, maxRedirects: 5, headers: { 'User-Agent': UA } });
+    const buffer = Buffer.from(imgResp.data);
+    if (buffer.length > 10 * 1024 * 1024) return res.status(413).json({ error: 'file_too_large' });
+    const contentType = imgResp.headers['content-type'] || 'image/jpeg';
+    const bucket = getStorage().bucket();
+    const bucketName = bucket.name;
+    const urlObj = new URL(imageUrl);
+    const origName = filename || urlObj.pathname.split('/').pop() || 'image';
+    const safeName = String(origName).split('?')[0].replace(/[^a-zA-Z0-9_.-]/g, '_');
+    const objectPath = `gifts/imported/${Date.now()}_${safeName}`;
+    const file = bucket.file(objectPath);
+    const token = crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(16).toString('hex');
+    await file.save(buffer, { metadata: { contentType, metadata: { firebaseStorageDownloadTokens: token } }, resumable: false, validation: false });
+    const gsUrl = `gs://${bucketName}/${objectPath}`;
+    const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(objectPath)}?alt=media&token=${token}`;
+    return res.json({ gsUrl, downloadUrl, path: objectPath });
+  } catch (e) {
+    console.error('importImageToStorage error', e);
+    return res.status(500).json({ error: 'import_failed', message: e?.message || String(e) });
+  }
+});
+
 exports.onGiftReserved = functions.firestore
   .document('gifts/{giftId}')
   .onUpdate(async (change, context) => {

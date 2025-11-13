@@ -1,0 +1,53 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email != null;
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    function isUnder10MB() {
+      return request.resource.size < 10 * 1024 * 1024;
+    }
+
+    // Gift images folder
+    // - Anyone can read (public access for website)
+    // - Only admins can upload
+    // - Images must be under 10MB
+    // - Only image files allowed
+    match /gifts/{allPaths=**} {
+      allow read: if true;
+
+      allow write: if isAdmin()
+                   && isImage()
+                   && isUnder10MB();
+
+      allow delete: if isAdmin();
+    }
+
+    // Imported gift images folder (from external URLs)
+    match /gifts/imported/{allPaths=**} {
+      allow read: if true;
+
+      // Cloud Functions can write here (authenticated as service account)
+      allow write: if isSignedIn();
+
+      allow delete: if isAdmin();
+    }
+
+    // Deny all other paths by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

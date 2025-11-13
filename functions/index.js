@@ -20,7 +20,9 @@ try {
   console.error('Firebase admin initialization error', e);
 }
 
-const webhookUrl = "https://script.google.com/macros/s/AKfycbzQ2Rhg5Sva8EnfShO0tg8mhrl0K5cUSIYlIEJ--ih5IDbGNm2z0WujwYVz0kJOXKrZRg/exec";
+const webhookUrl = process.env.WEBHOOK_URL || "https://script.google.com/macros/s/AKfycbzQ2Rhg5Sva8EnfShO0tg8mhrl0K5cUSIYlIEJ--ih5IDbGNm2z0WujwYVz0kJOXKrZRg/exec";
+const APP_BASE_URL = process.env.APP_BASE_URL || "https://eddywayz.github.io/Hochzeit_Eduard_Joanne";
+const FUNCTIONS_BASE_URL = process.env.FUNCTIONS_BASE_URL || "https://us-central1-hochzeiteduardjoanne.cloudfunctions.net";
 
 app.use(cors);
 // allow larger payload for base64 image uploads
@@ -357,7 +359,7 @@ exports.onGiftReserved = functions.firestore
         }
       }
 
-      const undoUrl = `https://us-central1-hochzeiteduardjoanne.cloudfunctions.net/undoGift?giftId=${giftId}&token=${token}`;
+      const undoUrl = `${FUNCTIONS_BASE_URL}/undoGift?giftId=${giftId}&token=${token}`;
 
       await sendEmail('reservation', {
         to_email: reserverEmail,
@@ -380,7 +382,7 @@ exports.onRsvpSubmitted = functions.firestore
   .onCreate(async (snap, context) => {
     const data = snap.data();
     const rsvpId = context.params.rsvpId;
-    const editUrl = `https://eddywayz.github.io/Hochzeit_Eduard_Joanne/edit-rsvp.html?id=${rsvpId}`;
+    const editUrl = `${APP_BASE_URL}/edit-rsvp.html?id=${rsvpId}`;
 
     await sendEmail('rsvp_confirmation', {
       to_email: data.email,
@@ -416,7 +418,7 @@ exports.onRsvpUpdated = functions.firestore
   .onUpdate(async (change, context) => {
     const data = change.after.data();
     const rsvpId = context.params.rsvpId;
-    const editUrl = `https://eddywayz.github.io/Hochzeit_Eduard_Joanne/edit-rsvp.html?id=${rsvpId}`;
+    const editUrl = `${APP_BASE_URL}/edit-rsvp.html?id=${rsvpId}`;
 
     await sendEmail('rsvp_update_confirmation', {
       to_email: data.email,
@@ -448,7 +450,7 @@ exports.undoGift = functions.https.onRequest(async (req, res) => {
       token: admin.firestore.FieldValue.delete(),
       reservedAt: admin.firestore.FieldValue.delete(),
     });
-    return res.redirect(302, `${process.env.APP_BASE_URL}/gifts.html`);
+    return res.redirect(302, `${APP_BASE_URL}/gifts.html`);
   } catch (err) {
     console.error('Fehler beim Zurücksetzen der Reservierung:', err);
     return res.status(500).send('Ein interner Fehler ist aufgetreten.');

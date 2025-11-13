@@ -147,21 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Lade zuerst die sichtbaren Bilder
         const visibleItems = listItems.slice(0, VISIBLE_BATCH_SIZE);
-        function normalizeStorageDownloadUrl(url) {
-            try {
-                const u = new URL(url);
-                if (u.hostname !== 'firebasestorage.googleapis.com') return url;
-                const parts = u.pathname.split('/'); // ['', 'v0', 'b', '<bucket>', 'o', '<object>']
-                const bIndex = parts.indexOf('b');
-                const confBucket = firebase.app().options.storageBucket;
-                if (bIndex > -1 && parts[bIndex + 1] && confBucket && parts[bIndex + 1] !== confBucket) {
-                    parts[bIndex + 1] = confBucket;
-                    u.pathname = parts.join('/');
-                    return u.toString();
-                }
-            } catch {}
-            return url;
-        }
+        const confBucket = firebase.app().options.storageBucket;
 
         const visiblePromises = visibleItems.map(({ imgEl, data }, index) => {
             if (data.imgUrl) {
@@ -170,11 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     try {
                         let downloadUrl = urlStr;
                         if (urlStr.startsWith('gs://')) {
-                            const confBucket = firebase.app().options.storageBucket;
-                            const normalizedGs = urlStr.replace(/^gs:\/\/[^\/]+\//, `gs://${confBucket}/`);
-                            downloadUrl = await storage.refFromURL(normalizedGs).getDownloadURL();
+                            downloadUrl = await gsUrlToDownloadUrl(urlStr, storage, confBucket);
                         } else {
-                            downloadUrl = normalizeStorageDownloadUrl(urlStr);
+                            downloadUrl = normalizeStorageUrl(urlStr, confBucket);
                         }
                         await loadImage(imgEl, downloadUrl, true);
                     } catch (err) {
@@ -202,11 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         try {
                             let downloadUrl = urlStr;
                             if (urlStr.startsWith('gs://')) {
-                                const confBucket = firebase.app().options.storageBucket;
-                                const normalizedGs = urlStr.replace(/^gs:\/\/[^\/]+\//, `gs://${confBucket}/`);
-                                downloadUrl = await storage.refFromURL(normalizedGs).getDownloadURL();
+                                downloadUrl = await gsUrlToDownloadUrl(urlStr, storage, confBucket);
                             } else {
-                                downloadUrl = normalizeStorageDownloadUrl(urlStr);
+                                downloadUrl = normalizeStorageUrl(urlStr, confBucket);
                             }
                             await loadImage(imgEl, downloadUrl, false);
                         } catch (err) {
@@ -239,38 +221,85 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   
-    // Modal Abbrechen
-    cancelBtn.addEventListener('click', () => {
+    // Modal Close Function
+    function closeModal() {
       modal.style.display = 'none';
       emailIn.value = '';
       currentId = null;
+      form.querySelectorAll('.error-message').forEach(el => el.remove());
+      form.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+    }
+
+    // Modal Abbrechen
+    cancelBtn.addEventListener('click', closeModal);
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeModal();
+      }
+    });
+
+    // Close modal on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
     });
   
     // Formular abschicken
     form.addEventListener('submit', async e => {
       e.preventDefault();
       const email = emailIn.value.trim();
-      if (!currentId || !email) return;
-  
+
+      // Validate email
+      if (!validateEmail(email)) {
+        showFormErrors(form, [{ field: 'reserver-email', message: 'Bitte gib eine gültige E-Mail-Adresse ein' }]);
+        toast.error('Bitte gib eine gültige E-Mail-Adresse ein');
+        return;
+      }
+
+      if (!currentId) {
+        toast.error('Fehler: Kein Geschenk ausgewählt');
+        return;
+      }
+
+      // Clear previous errors
+      form.querySelectorAll('.error-message').forEach(el => el.remove());
+      form.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+
       const submitBtn = form.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
       submitBtn.textContent = 'Reservieren…';
-  
+
       try {
         await db.collection('gifts').doc(currentId).update({
           reserved: true,
-          reserverEmail: email,
+          reserverEmail: email.toLowerCase(),
           reservedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        modal.style.display = 'none';
-        emailIn.value = '';
-        currentId = null;
+
+        toast.success('Geschenk erfolgreich reserviert! Du erhältst eine Bestätigungs-E-Mail.');
+        closeModal();
+
       } catch (err) {
         console.error('Reservierung fehlgeschlagen:', err);
-        alert('Reservierung fehlgeschlagen. Bitte versuche es erneut.');
+
+        let errorMessage = 'Reservierung fehlgeschlagen. Bitte versuche es erneut.';
+
+        if (err.code === 'permission-denied') {
+          errorMessage = 'Zugriff verweigert. Das Geschenk wurde möglicherweise bereits reserviert.';
+        } else if (err.code === 'not-found') {
+          errorMessage = 'Geschenk nicht gefunden.';
+        } else if (err.code === 'unavailable') {
+          errorMessage = 'Der Service ist momentan nicht erreichbar. Bitte versuche es später erneut.';
+        }
+
+        toast.error(errorMessage);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Bestätigen';
+        submitBtn.textContent = originalText;
       }
     });
 });

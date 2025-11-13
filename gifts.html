@@ -27,24 +27,25 @@
   <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Neues Styling für Geschenke -->
   <link rel="stylesheet" href="assets/css/gifts.css">
+  <!-- Toast Notifications -->
+  <link rel="stylesheet" href="assets/css/toast.css">
 
   <!-- Header/Footer Include (vanilla) -->
   <script defer src="assets/js/includeTemplate.js"></script>
 
-  <!-- Firebase‑SDKs (compat mode) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <!-- Configuration -->
+  <script src="config.js"></script>
+
+  <!-- Utilities -->
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/toast.js"></script>
+
+  <!-- Firebase SDKs (Updated to v11) -->
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-storage-compat.js"></script>
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
-      authDomain: "hochzeiteduardjoanne.firebaseapp.com",
-      projectId: "hochzeiteduardjoanne",
-      storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
-      messagingSenderId: "209565556740",
-      appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
-    };
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(CONFIG.firebase);
     const db = firebase.firestore();
     const storage = firebase.storage();
   </script>

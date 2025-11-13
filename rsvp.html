@@ -27,24 +27,26 @@
   <!-- Spezifisches Styling für RSVP -->
   <link rel="stylesheet" href="assets/css/rsvp.css">
 
+  <!-- Toast Notifications -->
+  <link rel="stylesheet" href="assets/css/toast.css">
+
   <!-- Header/Footer Include (vanilla) -->
   <script defer src="assets/js/includeTemplate.js"></script>
 
-  <!-- Firebase‑SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Configuration -->
+  <script src="config.js"></script>
+
+  <!-- Utilities -->
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/toast.js"></script>
+
+  <!-- Firebase SDKs (Updated to v11) -->
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
-      authDomain: "hochzeiteduardjoanne.firebaseapp.com",
-      projectId: "hochzeiteduardjoanne",
-      storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
-      messagingSenderId: "209565556740",
-      appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
-    };
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(CONFIG.firebase);
     const db = firebase.firestore();
   </script>
 </head>
@@ -264,46 +266,99 @@
     // Form Submit Handler
     document.querySelector('.rsvp-form').addEventListener('submit', async e => {
       e.preventDefault();
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Wird gesendet...';
+      const form = e.target;
+      const submitBtn = form.querySelector('button[type="submit"]');
 
-      const guestCount = parseInt(guestsInput.value) || 1;
-      const guestDetails = [];
-      for (let i = 1; i <= guestCount; i++) {
-        const nameField = e.target[`guestName_${i}`];
-        const typeField = e.target[`guestType_${i}`];
-        guestDetails.push({
-          name: nameField.value.trim(),
-          type: typeField.value
-        });
+      // Validate form
+      const validation = validateForm(form, {
+        familyName: {
+          required: true,
+          min: 2,
+          message: 'Bitte gib einen gültigen Familiennamen ein (mindestens 2 Zeichen)'
+        },
+        email: {
+          required: true,
+          email: true
+        },
+        attending: {
+          required: true,
+          message: 'Bitte wähle eine Option aus'
+        }
+      });
+
+      if (!validation.valid) {
+        showFormErrors(form, validation.errors);
+        toast.error('Bitte fülle alle Pflichtfelder korrekt aus');
+        return;
       }
 
-      const data = {
-        familyName:   e.target.familyName.value.trim(),
-        email:        e.target.email.value.trim(),
-        attending:    e.target.attending.value,
-        guests:       guestCount,
-        guestDetails: guestDetails,
-        intolerances: e.target.intolerances.value.trim(),
-        message:      e.target.message.value.trim(),
-        timestamp:    firebase.firestore.FieldValue.serverTimestamp()
-      };
+      // Clear any previous errors
+      form.querySelectorAll('.error-message').forEach(el => el.remove());
+      form.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Wird gesendet...';
 
       try {
+        const guestCount = parseInt(guestsInput.value) || 1;
+        const guestDetails = [];
+
+        // Validate guest names
+        for (let i = 1; i <= guestCount; i++) {
+          const nameField = form[`guestName_${i}`];
+          const typeField = form[`guestType_${i}`];
+
+          if (!nameField.value.trim()) {
+            toast.error(`Bitte gib einen Namen für Gast ${i} ein`);
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            return;
+          }
+
+          guestDetails.push({
+            name: nameField.value.trim(),
+            type: typeField.value
+          });
+        }
+
+        const data = {
+          familyName:   form.familyName.value.trim(),
+          email:        form.email.value.trim().toLowerCase(),
+          attending:    form.attending.value,
+          guests:       guestCount,
+          guestDetails: guestDetails,
+          intolerances: form.intolerances.value.trim(),
+          message:      form.message.value.trim(),
+          timestamp:    firebase.firestore.FieldValue.serverTimestamp()
+        };
+
         await db.collection('rsvps').add(data);
-        alert('Vielen Dank für deine Zusage!');
-        e.target.reset();
-        guestsInput.value = 1;
-        renderGuestFields(1);
-        // Reset disabled states
-        toggleFormFields(false);
+
+        toast.success('Vielen Dank für deine Zusage! Du erhältst in Kürze eine Bestätigungs-E-Mail.');
+
+        // Reset form after short delay
+        setTimeout(() => {
+          form.reset();
+          guestsInput.value = 1;
+          renderGuestFields(1);
+          toggleFormFields(false);
+        }, 1000);
+
       } catch (error) {
         console.error('Fehler beim Absenden:', error);
-        alert('Beim Absenden ist leider ein Fehler aufgetreten. Bitte versuche es später erneut.');
+        let errorMessage = 'Beim Absenden ist leider ein Fehler aufgetreten. Bitte versuche es später erneut.';
+
+        if (error.code === 'permission-denied') {
+          errorMessage = 'Zugriff verweigert. Bitte überprüfe deine Eingaben und versuche es erneut.';
+        } else if (error.code === 'unavailable') {
+          errorMessage = 'Der Service ist momentan nicht erreichbar. Bitte versuche es später erneut.';
+        }
+
+        toast.error(errorMessage);
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Absenden';
+        submitBtn.textContent = originalText;
       }
     });
   </script>

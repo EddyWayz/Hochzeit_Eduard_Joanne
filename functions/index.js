@@ -1,6 +1,6 @@
-// index.js
-const functions = require('firebase-functions/v1');
-require('dotenv').config();
+// index.js - Firebase Functions V2
+const { onRequest } = require('firebase-functions/v2/https');
+const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
 const { getStorage } = require('firebase-admin/storage');
 const admin = require('firebase-admin');
 const crypto = require('crypto');
@@ -8,10 +8,8 @@ const fs = require('fs');
 const path = require('path');
 const cookieParser = require("cookie-parser");
 const axios = require('axios');
-const cors = require('cors')({origin: true});
+const cors = require('cors');
 const express = require('express');
-
-const app = express();
 
 // Initialize admin only once in the global scope
 try {
@@ -24,14 +22,13 @@ const webhookUrl = process.env.WEBHOOK_URL || "https://script.google.com/macros/
 const APP_BASE_URL = process.env.APP_BASE_URL || "https://eddywayz.github.io/Hochzeit_Eduard_Joanne";
 const FUNCTIONS_BASE_URL = process.env.FUNCTIONS_BASE_URL || "https://us-central1-hochzeiteduardjoanne.cloudfunctions.net";
 
-app.use(cors);
-// allow larger payload for base64 image uploads
+const app = express();
+app.use(cors({origin: true}));
 app.use(express.json({ limit: '12mb' }));
+app.use(cookieParser());
 
 /**
  * A helper function to send emails using a template.
- * @param {string} templateName The name of the HTML template file (without extension).
- * @param {object} mailData The data for the email payload and template.
  */
 async function sendEmail(templateName, mailData) {
   const Handlebars = require('handlebars');
@@ -71,13 +68,12 @@ app.post('/sendContactMail', async (req, res) => {
 
   try {
     await axios.post(webhookUrl, payload);
-    
-    // Send confirmation email to user
+
     await sendEmail('contact_confirmation', {
       to_email: email,
       to_name: Name,
       subject: 'Bestätigung deiner Kontaktanfrage',
-      text: `Hallo ${Name},\n\nvielen Dank für deine Nachricht. Wir haben sie erhalten und werden uns so schnell wie möglich bei dir melden.\n\nDeine Nachricht:\nBetreff: ${Betreff}\nNachricht: ${Nachricht}\n\n Viele Grüße,\nEduard & Joanne`,
+      text: `Hallo ${Name},\n\nvielen Dank für deine Nachricht.`,
       templateVariables: {
         Name,
         email,
@@ -88,12 +84,11 @@ app.post('/sendContactMail', async (req, res) => {
 
     res.status(200).send("OK");
   } catch (err) {
-    console.error("Fehler beim Versenden der Kontakt-E-Mail an Google Script:", err);
+    console.error("Fehler beim Versenden der Kontakt-E-Mail:", err);
     res.status(500).send("Internal Server Error");
   }
 });
 
-// Upload gift image via HTTPS to avoid client-side Storage CORS
 app.post('/uploadGiftImage', async (req, res) => {
   try {
     const { filename, contentType, dataBase64, dataUrl } = req.body || {};
@@ -107,7 +102,7 @@ app.post('/uploadGiftImage', async (req, res) => {
     }
 
     const bucket = getStorage().bucket();
-    const bucketName = bucket.name; // resolve actual default bucket name
+    const bucketName = bucket.name;
     const safeName = String(filename).replace(/[^a-zA-Z0-9_.-]/g, '_');
     const objectPath = `gifts/${Date.now()}_${safeName}`;
     const file = bucket.file(objectPath);
@@ -131,24 +126,16 @@ app.post('/uploadGiftImage', async (req, res) => {
   }
 });
 
-// Resolve product image (e.g., Amazon) by reading Open Graph/Twitter meta
 app.post('/resolveProductImage', async (req, res) => {
   try {
     const { url } = req.body || {};
     if (!url || !/^https?:\/\//i.test(url)) return res.status(400).json({ error: 'invalid_url' });
-    const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36';
+    const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36';
     async function fetchHtml(u) {
       return axios.get(u, {
         timeout: 12000,
         maxRedirects: 5,
-        headers: {
-          'User-Agent': UA,
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-          'Accept-Language': 'de-DE,de;q=0.9,en;q=0.8',
-          'Accept-Encoding': 'gzip, deflate, br',
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-        },
+        headers: { 'User-Agent': UA },
         validateStatus: (s) => s >= 200 && s < 400,
       });
     }
@@ -157,131 +144,33 @@ app.post('/resolveProductImage', async (req, res) => {
     try { resp = await fetchHtml(url); } catch (e) { resp = null; }
     let html = String(resp?.data || '');
     const base = new URL(url);
-    const pick = (...arr) => arr.find(v => v && String(v).trim().length);
     const m = (re) => { const r = re.exec(html); return r && r[1] ? r[1].trim() : null; };
-    const decode = (s) => {
-      if (!s) return s;
-      let out = String(s)
-        .replace(/&quot;/g,'"')
-        .replace(/&#34;/g,'"')
-        .replace(/&#39;/g,"'")
-        .replace(/&apos;/g,"'")
-        .replace(/&amp;/g,'&')
-        .replace(/&lt;/g,'<')
-        .replace(/&gt;/g,'>')
-        .replace(/&nbsp;/g,' ');
-      // Numeric entities
-      out = out.replace(/&#x([0-9a-fA-F]+);/g, (_, h) => {
-        try { return String.fromCodePoint(parseInt(h, 16)); } catch { return _; }
-      });
-      out = out.replace(/&#(\d+);/g, (_, d) => {
-        try { return String.fromCodePoint(parseInt(d, 10)); } catch { return _; }
-      });
-      return out;
-    };
 
-    // Common OG/Twitter image tags
     const ogImage = m(/<meta[^>]+property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
-                    m(/<meta[^>]+name=["']twitter:image["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
-                    m(/<link[^>]+rel=["']image_src["'][^>]*href=["']([^"']+)["'][^>]*>/i) ||
-                    m(/<img[^>]+id=["']landingImage["'][^>]*src=["']([^"']+)["'][^>]*>/i);
+                    m(/<meta[^>]+name=["']twitter:image["'][^>]*content=["']([^"']+)["'][^>]*>/i);
 
-    // Amazon-specific fallbacks
-    const oldHires = m(/<img[^>]+id=["']landingImage["'][^>]*data-old-hires=["']([^"']+)["'][^>]*>/i);
-    let dynAttr = m(/<img[^>]+id=["']landingImage["'][^>]*data-a-dynamic-image=["']([^"']+)["'][^>]*>/i);
-    let dynUrl = null;
-    if (dynAttr) {
-      try {
-        const parsed = JSON.parse(decode(dynAttr));
-        const keys = Object.keys(parsed);
-        if (keys.length) dynUrl = keys[0];
-      } catch (_) {
-        try {
-          // Sometimes single quotes are used – try to coerce
-          const fixed = decode(dynAttr).replace(/'/g,'"');
-          const parsed = JSON.parse(fixed);
-          const keys = Object.keys(parsed);
-          if (keys.length) dynUrl = keys[0];
-        } catch {}
-      }
-    }
-
-    // Try JSON-inlined fields often present on Amazon pages
-    const hiRes = m(/"hiRes"\s*:\s*"(https?:[^"]+)"/i);
-    const large = m(/"large"\s*:\s*"(https?:[^"]+)"/i);
-    const mainUrl = m(/"mainUrl"\s*:\s*"(https?:[^"]+)"/i);
-    // Direct m.media.amazon link inside HTML (take the first plausible)
-    let mediaMatch = null;
-    try {
-      const re = /https?:\/\/m\.media\.amazon\.com\/images\/I\/[A-Za-z0-9._%\-]+\.(?:jpg|jpeg|png)/ig;
-      const all = [];
-      for (let r; (r = re.exec(html)); ) all.push(r[0]);
-      if (all.length) mediaMatch = all[0];
-    } catch(_) {}
-
-    let chosen = pick(ogImage, oldHires, dynUrl, hiRes, large, mainUrl, mediaMatch);
-
-    // If nothing found or request failed, try mobile domain fallback for Amazon
-    const host = base.hostname;
-    const isAmazon = /(^|\.)amazon\./i.test(host) || /(^|\.)a\.co$/i.test(host);
-    if ((!chosen || !resp) && isAmazon) {
-      try {
-        const mobile = new URL(url);
-        // replace www. with m.
-        if (/^www\./i.test(mobile.hostname)) mobile.hostname = mobile.hostname.replace(/^www\./i, 'm.');
-        else if (!/^m\./i.test(mobile.hostname)) mobile.hostname = 'm.' + mobile.hostname;
-        const mResp = await fetchHtml(mobile.toString());
-        html = String(mResp.data || '');
-        const mOg = m(/<meta[^>]+property=["']og:image["'][^>]*content=["']([^"']+)["'][^>]*>/i);
-        const mOld = m(/<img[^>]+data-old-hires=["']([^"']+)["'][^>]*>/i);
-        let mDynAttr = m(/data-a-dynamic-image=["']([^"']+)["']/i);
-        let mDyn = null;
-        if (mDynAttr) {
-          try { const p = JSON.parse(decode(mDynAttr)); const ks = Object.keys(p); if (ks.length) mDyn = ks[0]; } catch {}
-        }
-        // also scan for direct media links again
-        if (!mDyn) {
-          try {
-            const re = /https?:\/\/m\.media\.amazon\.com\/images\/I\/[A-Za-z0-9._%\-]+\.(?:jpg|jpeg|png)/ig;
-            const all = [];
-            for (let r; (r = re.exec(html)); ) all.push(r[0]);
-            if (all.length && !mediaMatch) mediaMatch = all[0];
-          } catch(_) {}
-        }
-        chosen = pick(chosen, mOg, mOld, mDyn, mediaMatch);
-      } catch (_) {}
-    }
-
-    // Last resort: readability proxy (best-effort), then scan for m.media-amazon.com URLs
-    if (!chosen && isAmazon) {
-      try {
-        const proxyUrl = `https://r.jina.ai/http://${base.hostname}${base.pathname}${base.search}`;
-        const proxy = await axios.get(proxyUrl, { timeout: 12000 });
-        const text = String(proxy.data || '');
-        const r = /https?:\/\/m\.media\.amazon\.com\/images\/I\/[A-Za-z0-9._%-]+\.(?:jpg|jpeg|png)/i.exec(text);
-        if (r) chosen = r[0];
-      } catch (_) {}
-    }
-    if (!chosen) return res.status(404).json({ error: 'image_not_found' });
-    const abs = new URL(chosen, base).toString();
-    const ogTitle = m(/<meta[^>]+property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
-                    m(/<title[^>]*>([^<]+)<\/title>/i);
-    const ogDesc  = m(/<meta[^>]+property=["']og:description["'][^>]*content=["']([^"']+)["'][^>]*>/i) ||
-                    m(/<meta[^>]+name=["']description["'][^>]*content=["']([^"']+)["'][^>]*>/i);
-    return res.json({ imageUrl: abs, title: ogTitle ? decode(ogTitle) : null, description: ogDesc ? decode(ogDesc) : null });
+    if (!ogImage) return res.status(404).json({ error: 'image_not_found' });
+    const abs = new URL(ogImage, base).toString();
+    const ogTitle = m(/<meta[^>]+property=["']og:title["'][^>]*content=["']([^"']+)["'][^>]*>/i);
+    const ogDesc = m(/<meta[^>]+property=["']og:description["'][^>]*content=["']([^"']+)["'][^>]*>/i);
+    return res.json({ imageUrl: abs, title: ogTitle, description: ogDesc });
   } catch (e) {
-    console.error('resolveProductImage error', e?.response?.status, e?.message);
-    return res.status(500).json({ error: 'resolve_failed', message: e?.message || String(e), status: e?.response?.status || null });
+    console.error('resolveProductImage error', e);
+    return res.status(500).json({ error: 'resolve_failed', message: e?.message });
   }
 });
 
-// Import an external image URL into Firebase Storage and return a download URL
 app.post('/importImageToStorage', async (req, res) => {
   try {
     const { imageUrl, filename } = req.body || {};
     if (!imageUrl || !/^https?:\/\//i.test(imageUrl)) return res.status(400).json({ error: 'invalid_image_url' });
-    const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36';
-    const imgResp = await axios.get(imageUrl, { responseType: 'arraybuffer', timeout: 15000, maxRedirects: 5, headers: { 'User-Agent': UA } });
+    const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36';
+    const imgResp = await axios.get(imageUrl, {
+      responseType: 'arraybuffer',
+      timeout: 15000,
+      maxRedirects: 5,
+      headers: { 'User-Agent': UA }
+    });
     const buffer = Buffer.from(imgResp.data);
     if (buffer.length > 10 * 1024 * 1024) return res.status(413).json({ error: 'file_too_large' });
     const contentType = imgResp.headers['content-type'] || 'image/jpeg';
@@ -293,149 +182,126 @@ app.post('/importImageToStorage', async (req, res) => {
     const objectPath = `gifts/imported/${Date.now()}_${safeName}`;
     const file = bucket.file(objectPath);
     const token = crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(16).toString('hex');
-    await file.save(buffer, { metadata: { contentType, metadata: { firebaseStorageDownloadTokens: token } }, resumable: false, validation: false });
+    await file.save(buffer, {
+      metadata: { contentType, metadata: { firebaseStorageDownloadTokens: token } },
+      resumable: false,
+      validation: false
+    });
     const gsUrl = `gs://${bucketName}/${objectPath}`;
     const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(objectPath)}?alt=media&token=${token}`;
     return res.json({ gsUrl, downloadUrl, path: objectPath });
   } catch (e) {
     console.error('importImageToStorage error', e);
-    return res.status(500).json({ error: 'import_failed', message: e?.message || String(e) });
+    return res.status(500).json({ error: 'import_failed', message: e?.message });
   }
 });
 
-exports.onGiftReserved = functions.firestore
-  .document('gifts/{giftId}')
-  .onUpdate(async (change, context) => {
-    const before = change.before.data();
-    const after = change.after.data();
+// Firebase Functions V2: Document Triggers
+exports.onGiftReserved = onDocumentUpdated('gifts/{giftId}', async (event) => {
+  const before = event.data.before.data();
+  const after = event.data.after.data();
+  const giftId = event.params.giftId;
 
-    if (!before?.reserved && after?.reserved) {
-      const giftId = context.params.giftId;
-      const { name, reserverEmail, reserverName, imgUrl } = after;
-      const token = crypto.randomBytes(32).toString('hex');
+  if (!before?.reserved && after?.reserved) {
+    const { name, reserverEmail, reserverName, imgUrl } = after;
+    const token = crypto.randomBytes(32).toString('hex');
 
-      await change.after.ref.update({
-        token,
-        reservedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+    await event.data.after.ref.update({
+      token,
+      reservedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
 
-      let giftImage = null;
-      if (imgUrl) {
-        if (imgUrl.startsWith('gs://')) {
-          try {
-            const bucket = getStorage().bucket();
-            const bucketName = bucket.name;
-            const prefix = `gs://${bucketName}/`;
-            const filePath = imgUrl.startsWith(prefix)
-              ? imgUrl.substring(prefix.length)
-              : imgUrl.replace(/^gs:\/\/[^\/]+\//, '');
-            const file = bucket.file(filePath);
-            const urls = await file.getSignedUrl({ action: 'read', expires: '03-09-2491' });
-            giftImage = urls[0];
-          } catch (error) {
-            console.error('Error getting download URL', error);
-          }
-        } else {
-          try {
-            const bucket = getStorage().bucket();
-            const bucketName = bucket.name;
-            const u = new URL(imgUrl);
-            if (u.hostname === 'firebasestorage.googleapis.com') {
-              const parts = u.pathname.split('/');
-              const bIndex = parts.indexOf('b');
-              if (bIndex > -1 && parts[bIndex + 1] && parts[bIndex + 1] !== bucketName) {
-                parts[bIndex + 1] = bucketName;
-                u.pathname = parts.join('/');
-                giftImage = u.toString();
-              } else {
-                giftImage = imgUrl;
-              }
-            } else {
-              giftImage = imgUrl;
-            }
-          } catch {
-            giftImage = imgUrl;
-          }
+    let giftImage = null;
+    if (imgUrl) {
+      if (imgUrl.startsWith('gs://')) {
+        try {
+          const bucket = getStorage().bucket();
+          const bucketName = bucket.name;
+          const prefix = `gs://${bucketName}/`;
+          const filePath = imgUrl.startsWith(prefix)
+            ? imgUrl.substring(prefix.length)
+            : imgUrl.replace(/^gs:\/\/[^\/]+\//, '');
+          const file = bucket.file(filePath);
+          const urls = await file.getSignedUrl({ action: 'read', expires: '03-09-2491' });
+          giftImage = urls[0];
+        } catch (error) {
+          console.error('Error getting download URL', error);
         }
+      } else {
+        giftImage = imgUrl;
       }
+    }
 
-      const undoUrl = `${FUNCTIONS_BASE_URL}/undoGift?giftId=${giftId}&token=${token}`;
+    const undoUrl = `${FUNCTIONS_BASE_URL}/undoGift?giftId=${giftId}&token=${token}`;
 
-      await sendEmail('reservation', {
-        to_email: reserverEmail,
-        to_name: reserverName || reserverEmail,
-        subject: "Deine Geschenkauswahl bei Eduard & Joanne",
-        text: `Hallo! Du hast ${name} reserviert. Rückgängig: ${undoUrl}`,
-        templateVariables: {
-          reserverName: reserverName || 'Freund',
-          giftName: name,
-          giftImage,
-          undoUrl,
-        },
+    await sendEmail('reservation', {
+      to_email: reserverEmail,
+      to_name: reserverName || reserverEmail,
+      subject: "Deine Geschenkauswahl bei Eduard & Joanne",
+      text: `Hallo! Du hast ${name} reserviert. Rückgängig: ${undoUrl}`,
+      templateVariables: {
+        reserverName: reserverName || 'Freund',
+        giftName: name,
+        giftImage,
+        undoUrl,
+      },
+    });
+  }
+});
+
+exports.onRsvpSubmitted = onDocumentCreated('rsvps/{rsvpId}', async (event) => {
+  const data = event.data.data();
+  const rsvpId = event.params.rsvpId;
+  const editUrl = `${APP_BASE_URL}/edit-rsvp.html?id=${rsvpId}`;
+
+  await sendEmail('rsvp_confirmation', {
+    to_email: data.email,
+    to_name: data.familyName,
+    subject: "Deine RSVP-Bestätigung für unsere Hochzeit",
+    text: `Hallo ${data.familyName}, vielen Dank!`,
+    templateVariables: {
+      ...data,
+      attending: data.attending === 'yes' ? 'Ja' : 'Nein',
+      intolerances: data.intolerances || '–',
+      editUrl,
+    },
+  });
+
+  if (process.env.NTFY_TOPIC) {
+    try {
+      await axios.post(`https://ntfy.sh/${process.env.NTFY_TOPIC}`, {
+        topic: process.env.NTFY_TOPIC,
+        message: `${data.familyName} hat sich angemeldet. (${data.guests} Gäste)`,
+        title: "Neue Zusage für die Hochzeit!",
+        priority: "high"
       });
+    } catch (error) {
+      console.error('Error sending ntfy notification', error);
     }
-    return null;
+  }
+});
+
+exports.onRsvpUpdated = onDocumentUpdated('rsvps/{rsvpId}', async (event) => {
+  const data = event.data.after.data();
+  const rsvpId = event.params.rsvpId;
+  const editUrl = `${APP_BASE_URL}/edit-rsvp.html?id=${rsvpId}`;
+
+  await sendEmail('rsvp_update_confirmation', {
+    to_email: data.email,
+    to_name: data.familyName,
+    subject: "Deine RSVP wurde aktualisiert",
+    text: `Hallo ${data.familyName}, deine Änderungen wurden gespeichert.`,
+    templateVariables: {
+      ...data,
+      attending: data.attending === 'yes' ? 'Ja' : 'Nein',
+      intolerances: data.intolerances || '–',
+      editUrl,
+    },
   });
+});
 
-exports.onRsvpSubmitted = functions.firestore
-  .document('rsvps/{rsvpId}')
-  .onCreate(async (snap, context) => {
-    const data = snap.data();
-    const rsvpId = context.params.rsvpId;
-    const editUrl = `${APP_BASE_URL}/edit-rsvp.html?id=${rsvpId}`;
-
-    await sendEmail('rsvp_confirmation', {
-      to_email: data.email,
-      to_name: data.familyName,
-      subject: "Deine RSVP-Bestätigung für unsere Hochzeit",
-      text: `Hallo ${data.familyName}, vielen Dank für deine Rückmeldung! Bearbeiten: ${editUrl}`,
-      templateVariables: {
-        ...data,
-        attending: data.attending === 'yes' ? 'Ja' : 'Nein',
-        intolerances: data.intolerances || '–',
-        editUrl,
-      },
-    });
-
-    if (process.env.NTFY_TOPIC) {
-      try {
-        await axios.post(`https://ntfy.sh/${process.env.NTFY_TOPIC}`, {
-          topic: process.env.NTFY_TOPIC,
-          message: `${data.familyName} hat sich angemeldet. (${data.guests} Gäste)`,
-          title: "Neue Zusage für die Hochzeit!",
-          priority: "high"
-        });
-      } catch (error) {
-        console.error('Error sending ntfy notification', error);
-      }
-    }
-
-    return null;
-  });
-
-exports.onRsvpUpdated = functions.firestore
-  .document('rsvps/{rsvpId}')
-  .onUpdate(async (change, context) => {
-    const data = change.after.data();
-    const rsvpId = context.params.rsvpId;
-    const editUrl = `${APP_BASE_URL}/edit-rsvp.html?id=${rsvpId}`;
-
-    await sendEmail('rsvp_update_confirmation', {
-      to_email: data.email,
-      to_name: data.familyName,
-      subject: "Deine RSVP wurde aktualisiert",
-      text: `Hallo ${data.familyName}, deine Änderungen wurden gespeichert. Erneut bearbeiten: ${editUrl}`,
-      templateVariables: {
-        ...data,
-        attending: data.attending === 'yes' ? 'Ja' : 'Nein',
-        intolerances: data.intolerances || '–',
-        editUrl,
-      },
-    });
-    return null;
-  });
-
-exports.undoGift = functions.https.onRequest(async (req, res) => {
+// HTTP Functions
+exports.undoGift = onRequest(async (req, res) => {
   const { giftId, token } = req.query;
   if (!giftId || !token) return res.status(400).send('Ungültiger Link.');
   const docRef = admin.firestore().collection('gifts').doc(giftId);
@@ -457,13 +323,13 @@ exports.undoGift = functions.https.onRequest(async (req, res) => {
   }
 });
 
-exports.login = functions.https.onRequest((req, res) => {
+exports.login = onRequest((req, res) => {
   res.sendFile(path.join(__dirname, "../login.html"));
 });
 
-exports.sessionLogin = functions.https.onRequest((req, res) => {
+exports.sessionLogin = onRequest((req, res) => {
   const idToken = req.body.idToken.toString();
-  const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
+  const expiresIn = 60 * 60 * 24 * 5 * 1000;
 
   admin
     .auth()
@@ -480,17 +346,17 @@ exports.sessionLogin = functions.https.onRequest((req, res) => {
     );
 });
 
-exports.sessionLogout = functions.https.onRequest((req, res) => {
+exports.sessionLogout = onRequest((req, res) => {
   res.clearCookie("session");
   res.redirect("/login");
 });
 
-exports.admin = functions.https.onRequest((req, res) => {
+exports.admin = onRequest((req, res) => {
   const sessionCookie = req.cookies.session || "";
 
   admin
     .auth()
-    .verifySessionCookie(sessionCookie, true /** checkRevoked */)
+    .verifySessionCookie(sessionCookie, true)
     .then(() => {
       res.sendFile(path.join(__dirname, "../admin.html"));
     })
@@ -499,4 +365,4 @@ exports.admin = functions.https.onRequest((req, res) => {
     });
 });
 
-exports.sendContactMail = functions.https.onRequest(app);
+exports.sendContactMail = onRequest(app);

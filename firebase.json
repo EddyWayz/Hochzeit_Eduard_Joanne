@@ -20,6 +20,17 @@
   ],
   "hosting": {
     "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "functions/**",
+      "DEPLOYMENT.md",
+      "README.md",
+      ".firebaserc",
+      "firestore.rules",
+      "storage.rules"
+    ],
     "rewrites": [
       {
         "source": "/admin",

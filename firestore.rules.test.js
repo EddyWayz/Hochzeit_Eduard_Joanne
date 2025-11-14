@@ -16,7 +16,7 @@ let testEnv;
 beforeAll(async () => {
   // Initialize test environment with security rules
   testEnv = await initializeTestEnvironment({
-    projectId: 'hochzeiteduardjoanne-test',
+    projectId: 'demo-test',
     firestore: {
       rules: fs.readFileSync(path.join(__dirname, 'firestore.rules'), 'utf8'),
       host: 'localhost',
@@ -26,12 +26,23 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await testEnv.cleanup();
+  if (testEnv) {
+    await testEnv.cleanup();
+  }
 });
 
 beforeEach(async () => {
-  await testEnv.clearFirestore();
+  if (testEnv) {
+    await testEnv.clearFirestore();
+  }
 });
+
+// Helper function to get admin context with proper auth token
+function getAdminContext() {
+  return testEnv.authenticatedContext('admin-uid', {
+    email: 'admin@example.com'
+  });
+}
 
 describe('RSVP Collection Rules', () => {
   const validRsvpData = {
@@ -147,7 +158,7 @@ describe('RSVP Collection Rules', () => {
 
   describe('Read RSVP', () => {
     test('anyone can read RSVPs', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
       const unauthContext = testEnv.unauthenticatedContext();
 
       // Admin creates RSVP
@@ -203,7 +214,7 @@ describe('RSVP Collection Rules', () => {
 
   describe('Delete RSVP', () => {
     test('unauthenticated users cannot delete RSVPs', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
       const unauthContext = testEnv.unauthenticatedContext();
 
       const docRef = await adminContext.firestore().collection('rsvps').add(validRsvpData);
@@ -214,7 +225,7 @@ describe('RSVP Collection Rules', () => {
     });
 
     test('authenticated admin can delete RSVPs', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
 
       const docRef = await adminContext.firestore().collection('rsvps').add(validRsvpData);
 
@@ -234,7 +245,7 @@ describe('Gifts Collection Rules', () => {
 
   describe('Read Gifts', () => {
     test('anyone can read gifts', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
       const unauthContext = testEnv.unauthenticatedContext();
 
       const docRef = await adminContext.firestore().collection('gifts').add(validGiftData);
@@ -247,7 +258,7 @@ describe('Gifts Collection Rules', () => {
 
   describe('Create Gifts', () => {
     test('only admin can create gifts', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
 
       await assertSucceeds(
         adminContext.firestore().collection('gifts').add(validGiftData)
@@ -263,7 +274,7 @@ describe('Gifts Collection Rules', () => {
     });
 
     test('should reject gift creation with reserved=true', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
       const invalidData = {
         ...validGiftData,
         reserved: true
@@ -277,7 +288,7 @@ describe('Gifts Collection Rules', () => {
 
   describe('Reserve Gifts', () => {
     test('anyone can reserve an unreserved gift', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
       const unauthContext = testEnv.unauthenticatedContext();
 
       const docRef = await adminContext.firestore().collection('gifts').add(validGiftData);
@@ -291,7 +302,7 @@ describe('Gifts Collection Rules', () => {
     });
 
     test('should reject reservation without reserverEmail', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
       const unauthContext = testEnv.unauthenticatedContext();
 
       const docRef = await adminContext.firestore().collection('gifts').add(validGiftData);
@@ -305,7 +316,7 @@ describe('Gifts Collection Rules', () => {
     });
 
     test('should reject reservation with invalid email format', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
       const unauthContext = testEnv.unauthenticatedContext();
 
       const docRef = await adminContext.firestore().collection('gifts').add(validGiftData);
@@ -319,7 +330,7 @@ describe('Gifts Collection Rules', () => {
     });
 
     test('cannot change from reserved to unreserved (unless admin)', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
       const unauthContext = testEnv.unauthenticatedContext();
 
       // Create and reserve gift
@@ -340,7 +351,7 @@ describe('Gifts Collection Rules', () => {
 
   describe('Update Gifts (Admin)', () => {
     test('admin can update any gift field', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
 
       const docRef = await adminContext.firestore().collection('gifts').add(validGiftData);
 
@@ -353,7 +364,7 @@ describe('Gifts Collection Rules', () => {
     });
 
     test('admin can unreserve gifts', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
 
       const docRef = await adminContext.firestore().collection('gifts').add({
         ...validGiftData,
@@ -371,7 +382,7 @@ describe('Gifts Collection Rules', () => {
 
   describe('Delete Gifts', () => {
     test('only admin can delete gifts', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
 
       const docRef = await adminContext.firestore().collection('gifts').add(validGiftData);
 
@@ -381,7 +392,7 @@ describe('Gifts Collection Rules', () => {
     });
 
     test('unauthenticated users cannot delete gifts', async () => {
-      const adminContext = testEnv.authenticatedContext('admin@example.com');
+      const adminContext = getAdminContext();
       const unauthContext = testEnv.unauthenticatedContext();
 
       const docRef = await adminContext.firestore().collection('gifts').add(validGiftData);

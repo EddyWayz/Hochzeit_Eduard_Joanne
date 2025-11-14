@@ -708,7 +708,7 @@ body {
     max-width: 400px;
     text-align: center;
     margin-bottom: var(--space-md);
-    font-size: clamp(2.5rem, 8vw, var(--fs-logo));
+    font-size: var(--fs-logo);
     line-height: 1.2;
   }
 
@@ -721,7 +721,7 @@ body {
   }
 
   .logo-names {
-    font-size: 0.95em;
+    font-size: 0.95rem;
   }
 
   .menu-toggle {
@@ -854,7 +854,7 @@ body {
   
   .navbar .logo {
     width: 95%;
-    font-size: clamp(2.2rem, 7vw, 2.8rem);
+    font-size: var(--fs-logo);
   }
 
   .hero {

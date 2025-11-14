@@ -3,15 +3,6 @@
  * Stylesheet für das RSVP-Bearbeitungsformular.
  * Gleiche Styles wie rsvp.css.
  */
-/* ------------------------------------------------------------------
-   Override globaler Theme-Variablen speziell für den RSVP-Bereich
-   ------------------------------------------------------------------ */
-:root {
-  --color-bg-light: var(--color-surface);
-  --color-border: var(--color-border);
-  --color-text: var(--color-text);
-  --color-primary-dark: var(--color-primary-dark);
-}
 
 /* ------------------------------------------------------------------
    Layout und Container für die RSVP-Sektion

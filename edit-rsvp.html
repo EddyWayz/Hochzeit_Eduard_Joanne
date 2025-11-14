@@ -10,25 +10,26 @@
   <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Spezifisches Styling für RSVP -->
   <link rel="stylesheet" href="assets/css/rsvp.css">
+  <!-- Toast Notifications -->
+  <link rel="stylesheet" href="assets/css/toast.css">
 
   <!-- Header/Footer Include (vanilla) -->
   <script defer src="assets/js/includeTemplate.js"></script>
 
-  <!-- Firebase‑SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Configuration -->
+  <script src="config.js"></script>
+
+  <!-- Utilities -->
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/toast.js"></script>
+
+  <!-- Firebase SDKs (Updated to v11) -->
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBghkLs0tkWZjdMQC9RvDT8DmC5J-uXpEc",
-      authDomain: "hochzeiteduardjoanne.firebaseapp.com",
-      projectId: "hochzeiteduardjoanne",
-      storageBucket: "hochzeiteduardjoanne.firebasestorage.app",
-      messagingSenderId: "209565556740",
-      appId: "1:209565556740:web:1a227bfce08bf5dca2d551"
-    };
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(CONFIG.firebase);
     const db = firebase.firestore();
   </script>
 </head>
@@ -259,9 +260,14 @@
     });
 
     // Daten laden und Formular befüllen
+    if (!rsvpId) {
+      toast.error('Keine RSVP-ID gefunden. Bitte verwende den Link aus deiner E-Mail.');
+      return;
+    }
+
     db.collection('rsvps').doc(rsvpId).get().then(doc => {
       if (!doc.exists) {
-        alert('RSVP nicht gefunden.');
+        toast.error('RSVP nicht gefunden. Bitte überprüfe den Link aus deiner E-Mail.');
         return;
       }
       const data = doc.data();
@@ -271,17 +277,28 @@
       guestsInput.value       = data.guests;
       form.intolerances.value = data.intolerances || '';
       form.message.value      = data.message || '';
-      
+
       // Initial render mit den geladenen Daten
       renderGuestFields(data.guests, data.guestDetails);
-      
+
       // Formularfelder entsprechend der Teilnahme ein-/ausblenden
       const isNotAttending = data.attending === 'no';
       toggleFormFields(isNotAttending);
-      
+
     }).catch(err => {
-      console.error(err);
-      alert('Fehler beim Laden der Daten.');
+      console.error('Fehler beim Laden der RSVP-Daten:', err);
+
+      let errorMessage = 'Fehler beim Laden der Daten. Bitte versuche es später erneut.';
+
+      if (err.code === 'permission-denied') {
+        errorMessage = 'Zugriff verweigert. Bitte überprüfe den Link aus deiner E-Mail.';
+      } else if (err.code === 'not-found') {
+        errorMessage = 'RSVP nicht gefunden. Bitte überprüfe den Link aus deiner E-Mail.';
+      } else if (err.code === 'unavailable') {
+        errorMessage = 'Der Service ist momentan nicht erreichbar. Bitte versuche es später erneut.';
+      }
+
+      toast.error(errorMessage);
     });
 
     // Submit: in Firestore updaten
@@ -314,10 +331,23 @@
 
       try {
         await db.collection('rsvps').doc(rsvpId).update(updated);
-        alert('Deine RSVP wurde erfolgreich aktualisiert!');
+        toast.success('Deine RSVP wurde erfolgreich aktualisiert! ✓');
       } catch (error) {
         console.error('Fehler beim Speichern:', error);
-        alert('Fehler beim Speichern. Bitte versuche es später erneut.');
+
+        let errorMessage = 'Fehler beim Speichern. Bitte versuche es später erneut.';
+
+        if (error.code === 'permission-denied') {
+          errorMessage = 'Zugriff verweigert. Bitte überprüfe deine Eingaben und versuche es erneut.';
+        } else if (error.code === 'not-found') {
+          errorMessage = 'RSVP nicht gefunden. Bitte überprüfe den Link aus deiner E-Mail.';
+        } else if (error.code === 'unavailable') {
+          errorMessage = 'Der Service ist momentan nicht erreichbar. Bitte versuche es später erneut.';
+        } else if (error.code === 'invalid-argument') {
+          errorMessage = 'Ungültige Eingaben. Bitte überprüfe deine Daten.';
+        }
+
+        toast.error(errorMessage);
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Änderungen speichern';

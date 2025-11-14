@@ -4,22 +4,18 @@
  * Enthält Variablenanpassungen, Layout- und Typografie-Regeln
  * sowie spezielle Styles für dynamische Gast-Felder.
  */
-/* ------------------------------------------------------------------
-   Override globaler Theme-Variablen speziell für den RSVP-Bereich
-   ------------------------------------------------------------------ */
-   :root {
-    --color-bg-light: #f9f9f9;
-    --color-border: #dddddd;
-    --color-text: #333333;
-    --color-primary-dark: #b2594e;
-  }
-  
-  /* ============================================
+/* ============================================
      RSVP Stylesheet: Modernes Formular-Layout
      ============================================ */
-  
+
   /* RSVP Section */
   .rsvp-section {
+    /* RSVP-spezifische Variablen-Anpassungen (scoped) */
+    /* Leicht dunklere Border für mehr Kontrast im Formular */
+    --color-border: #dddddd;
+    /* Leicht angepasster Primär-Dark-Ton für RSVP-Buttons */
+    --color-primary-dark: #b2594e;
+
     max-width: var(--max-container-width);
     margin: var(--space-xl) auto;
     padding: var(--space-xl) var(--container-padding);
@@ -326,42 +322,42 @@
   .form-group.disabled button,
   .guest-field.disabled input,
   .guest-field.disabled textarea {
-    background-color: var(--color-bg-light) !important;
+    background-color: var(--color-surface-disabled) !important;
     color: #888 !important;
     border-color: #ccc !important;
     cursor: not-allowed !important;
   }
-  
+
   .form-group.disabled .radio-option,
   .guest-field.disabled .radio-option {
-    background-color: var(--color-bg-light) !important;
+    background-color: var(--color-surface-disabled) !important;
     border-color: #ccc !important;
     color: #888 !important;
     cursor: not-allowed !important;
   }
-  
+
   .form-group.disabled .radio-option:hover,
   .guest-field.disabled .radio-option:hover {
-    background-color: var(--color-bg-light) !important;
+    background-color: var(--color-surface-disabled) !important;
     border-color: #ccc !important;
   }
-  
+
   .form-group.disabled .radio-option span,
   .guest-field.disabled .radio-option span {
     color: #888 !important;
   }
-  
+
   .form-group.disabled .guest-btn,
   .guest-field.disabled .guest-btn {
-    background-color: var(--color-bg-light) !important;
+    background-color: var(--color-surface-disabled) !important;
     border-color: #ccc !important;
     color: #888 !important;
     cursor: not-allowed !important;
   }
-  
+
   .form-group.disabled .guest-btn:hover,
   .guest-field.disabled .guest-btn:hover {
-    background-color: var(--color-bg-light) !important;
+    background-color: var(--color-surface-disabled) !important;
     color: #888 !important;
     transform: none !important;
   }

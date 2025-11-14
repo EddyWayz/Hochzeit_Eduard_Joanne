@@ -254,11 +254,17 @@ exports.onRsvpSubmitted = onDocumentCreated('rsvps/{rsvpId}', async (event) => {
   const rsvpId = event.params.rsvpId;
   const editUrl = `${APP_BASE_URL}/edit-rsvp.html?id=${rsvpId}`;
 
-  await sendEmail('rsvp_confirmation', {
+  const isAccepting = data.attending === 'yes';
+  const templateName = isAccepting ? 'rsvp_confirmation' : 'rsvp_decline';
+  const subject = isAccepting
+    ? "Deine RSVP-Bestätigung für unsere Hochzeit"
+    : "Deine Absage wurde registriert";
+
+  await sendEmail(templateName, {
     to_email: data.email,
     to_name: data.familyName,
-    subject: "Deine RSVP-Bestätigung für unsere Hochzeit",
-    text: `Hallo ${data.familyName}, vielen Dank!`,
+    subject: subject,
+    text: `Hallo ${data.familyName}, vielen Dank für deine Rückmeldung!`,
     templateVariables: {
       ...data,
       attending: data.attending === 'yes' ? 'Ja' : 'Nein',

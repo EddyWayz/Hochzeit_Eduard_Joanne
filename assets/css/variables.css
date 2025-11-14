@@ -43,14 +43,19 @@
 
   /* Neutrale Farben: UI-Elemente, Text, Hintergründe */
   --color-surface: #ffffff;          /* Karten, Modals, Formulare */
+  --color-surface-alt: #fafafa;      /* Alternative Oberfläche (leicht grau) */
+  --color-surface-disabled: #f9f9f9; /* Deaktivierte Formularfelder */
   --color-background: #f5f5f5;       /* Seitenhintergrund */
   --color-border: #e0e0e0;           /* Rahmen, Trennlinien */
   --color-text: #333333;             /* Haupttext */
   --color-text-light: #666666;       /* Sekundärer Text */
+  --color-text-muted: #999999;       /* Sehr heller Text (deaktiviert) */
   --color-heading: #222222;          /* Überschriften */
 
   /* Statusfarben: Feedback, Warnungen, etc. */
   --color-error: #dc3545;            /* Fehlermeldungen */
+  --color-error-dark: #c82333;       /* Fehlermeldungen - Hover */
+  --color-on-error: #ffffff;         /* Text auf Fehlerfarbe */
   --color-success: #28a745;          /* Erfolgsmeldungen */
   --color-warning: #ffc107;          /* Warnungen */
   --color-info: #17a2b8;             /* Informationen */

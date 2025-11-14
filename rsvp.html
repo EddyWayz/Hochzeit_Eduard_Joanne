@@ -44,7 +44,6 @@
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
-
   <script>
     firebase.initializeApp(CONFIG.firebase);
     const db = firebase.firestore();
@@ -62,7 +61,7 @@
       <h2>Zur Zusage</h2>
       <p class="rsvp-intro">Wir freuen uns, wenn du dabei bist! Bitte fülle das Formular aus, um deine Teilnahme zu bestätigen.</p>
       
-      <form class="rsvp-form" action="#" method="post">
+      <form class="rsvp-form">
         <!-- Familienname -->
         <div class="form-group">
           <label for="familyName">Familienname</label>
@@ -140,6 +139,8 @@
   </section>
 
   <script>
+    // Wait for DOM and toast to be ready
+    document.addEventListener('DOMContentLoaded', function() {
     const guestsInput = document.getElementById('guests');
     const detailsContainer = document.getElementById('guest-details');
     const decreaseBtn = document.getElementById('decrease-guests');
@@ -301,41 +302,48 @@
       submitBtn.textContent = 'Wird gesendet...';
 
       try {
+        const attending = form.attending.value;
         const guestCount = parseInt(guestsInput.value) || 1;
         const guestDetails = [];
 
-        // Validate guest names
-        for (let i = 1; i <= guestCount; i++) {
-          const nameField = form[`guestName_${i}`];
-          const typeField = form[`guestType_${i}`];
+        // Validate guest names only if attending
+        if (attending === 'yes') {
+          for (let i = 1; i <= guestCount; i++) {
+            const nameField = form[`guestName_${i}`];
+            const typeField = form[`guestType_${i}`];
 
-          if (!nameField.value.trim()) {
-            toast.error(`Bitte gib einen Namen für Gast ${i} ein`);
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
-            return;
+            if (!nameField || !nameField.value.trim()) {
+              toast.error(`Bitte gib einen Namen für Gast ${i} ein`);
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalText;
+              return;
+            }
+
+            guestDetails.push({
+              name: nameField.value.trim(),
+              type: typeField.value
+            });
           }
-
-          guestDetails.push({
-            name: nameField.value.trim(),
-            type: typeField.value
-          });
         }
 
         const data = {
           familyName:   form.familyName.value.trim(),
           email:        form.email.value.trim().toLowerCase(),
-          attending:    form.attending.value,
-          guests:       guestCount,
-          guestDetails: guestDetails,
-          intolerances: form.intolerances.value.trim(),
+          attending:    attending,
+          guests:       attending === 'yes' ? guestCount : 0,
+          guestDetails: attending === 'yes' ? guestDetails : [],
+          intolerances: attending === 'yes' ? form.intolerances.value.trim() : '',
           message:      form.message.value.trim(),
           timestamp:    firebase.firestore.FieldValue.serverTimestamp()
         };
 
         await db.collection('rsvps').add(data);
 
-        toast.success('Vielen Dank für deine Zusage! Du erhältst in Kürze eine Bestätigungs-E-Mail.');
+        const successMessage = attending === 'yes'
+          ? 'Vielen Dank für deine Zusage! Du erhältst in Kürze eine Bestätigungs-E-Mail.'
+          : 'Vielen Dank für deine Rückmeldung. Schade, dass du nicht dabei sein kannst!';
+
+        toast.success(successMessage);
 
         // Reset form after short delay
         setTimeout(() => {
@@ -361,6 +369,7 @@
         submitBtn.textContent = originalText;
       }
     });
+    }); // End DOMContentLoaded
   </script>
 
   <div id="footer"></div>

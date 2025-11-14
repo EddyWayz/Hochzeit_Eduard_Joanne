@@ -99,8 +99,19 @@ class ToastNotification {
   }
 }
 
-// Create global instance
-const toast = new ToastNotification();
+// Create global instance - wait for DOM to be ready
+let toast;
+
+// Check if DOM is already loaded
+if (document.readyState === 'loading') {
+  // DOM is still loading, wait for it
+  document.addEventListener('DOMContentLoaded', () => {
+    toast = new ToastNotification();
+  });
+} else {
+  // DOM is already loaded (script was loaded after DOMContentLoaded)
+  toast = new ToastNotification();
+}
 
 // Export for modules if needed
 if (typeof module !== 'undefined' && module.exports) {

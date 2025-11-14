@@ -15,7 +15,7 @@ service cloud.firestore {
     // RSVP Collection Rules
     // - Anyone can create (submit) an RSVP
     // - Anyone can read RSVPs (needed for edit functionality)
-    // - Only the document creator can update their own RSVP
+    // - Anyone with the document ID (via edit link) can update all fields
     // - Only admins can delete RSVPs
     match /rsvps/{rsvpId} {
       allow create: if true
@@ -25,14 +25,24 @@ service cloud.firestore {
                     && request.resource.data.email.matches('.*@.*\\..*')
                     && request.resource.data.attending in ['yes', 'no']
                     && request.resource.data.guests is int
-                    && request.resource.data.guests >= 1
-                    && request.resource.data.guests <= 10;
+                    && request.resource.data.guests >= 0
+                    && request.resource.data.guests <= 10
+                    // If attending='yes', guests must be >= 1
+                    && (request.resource.data.attending == 'no' || request.resource.data.guests >= 1);
 
       allow read: if true;
 
-      allow update: if true
-                    && request.resource.data.familyName == resource.data.familyName
-                    && request.resource.data.email == resource.data.email;
+      // Allow update with validation (all fields editable, authenticated by document ID)
+      allow update: if request.resource.data.familyName is string
+                    && request.resource.data.familyName.size() > 0
+                    && request.resource.data.email is string
+                    && request.resource.data.email.matches('.*@.*\\..*')
+                    && request.resource.data.attending in ['yes', 'no']
+                    && request.resource.data.guests is int
+                    && request.resource.data.guests >= 0
+                    && request.resource.data.guests <= 10
+                    // If attending='yes', guests must be >= 1
+                    && (request.resource.data.attending == 'no' || request.resource.data.guests >= 1);
 
       allow delete: if isAdmin();
     }

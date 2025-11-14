@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Environment variables and runtime config
+.env
+.env.local
+.env.*.local
+functions/.runtimeconfig.json
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Claude Code
+.claude/
+
+# Logs
+*.log
+*.log.*
+firebase-debug.log
+firebase-debug.*.log
+
+# Build output
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Firebase
+.firebase/
+.firebaserc.local

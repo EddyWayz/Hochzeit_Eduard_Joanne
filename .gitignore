@@ -36,3 +36,11 @@ build/
 # Firebase
 .firebase/
 .firebaserc.local
+
+# Testing
+coverage/
+*.lcov
+.nyc_output/
+playwright-report/
+test-results/
+functions/coverage/

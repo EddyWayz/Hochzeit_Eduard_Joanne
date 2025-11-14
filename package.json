@@ -1,0 +1,26 @@
+{
+  "name": "hochzeit-eduard-joanne",
+  "version": "1.0.0",
+  "description": "Wedding website for Eduard & Joanne",
+  "private": true,
+  "scripts": {
+    "test:frontend": "jest --config=jest.config.frontend.js",
+    "test:frontend:watch": "jest --config=jest.config.frontend.js --watch",
+    "test:frontend:coverage": "jest --config=jest.config.frontend.js --coverage",
+    "test:functions": "cd functions && npm test",
+    "test:rules": "jest --config=jest.config.rules.js",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test:functions && npm run test:frontend && npm run test:rules",
+    "lint": "echo 'Linting not configured yet'",
+    "validate": "node --check functions/index.js"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^3.2.2",
+    "@playwright/test": "^1.49.1",
+    "jest": "^30.2.0"
+  },
+  "keywords": [
+    "wedding",
+    "firebase"
+  ]
+}

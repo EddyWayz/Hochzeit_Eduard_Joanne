@@ -246,6 +246,20 @@ exports.onGiftReserved = onDocumentUpdated('gifts/{giftId}', async (event) => {
         undoUrl,
       },
     });
+
+    // Admin-Benachrichtigung (anonymisiert - ohne Namen des Gastes)
+    try {
+      const reservedAtTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
+      const adminPayload = {
+        to_email: "eduard.wayz@gmail.com",
+        to_name: "Eduard & Joanne",
+        subject: "Neues Geschenk wurde reserviert",
+        text: `Ein Geschenk wurde reserviert:\n\nGeschenk: ${name}\nReserviert am: ${reservedAtTime}\n\nAdmin-Panel: ${APP_BASE_URL}/admin.html`,
+      };
+      await axios.post(webhookUrl, adminPayload);
+    } catch (error) {
+      console.error('Error sending admin notification', error);
+    }
   }
 });
 
@@ -285,6 +299,19 @@ exports.onRsvpSubmitted = onDocumentCreated('rsvps/{rsvpId}', async (event) => {
       console.error('Error sending ntfy notification', error);
     }
   }
+
+  // Admin-Benachrichtigung
+  try {
+    const adminPayload = {
+      to_email: "eduard.wayz@gmail.com",
+      to_name: "Eduard & Joanne",
+      subject: isAccepting ? "Neue Zusage für die Hochzeit!" : "Neue Absage erhalten",
+      text: `Neue RSVP erhalten:\n\nName: ${data.familyName}\nE-Mail: ${data.email}\nStatus: ${isAccepting ? 'Zusage' : 'Absage'}\nAnzahl Gäste: ${data.guests || '–'}\nUnverträglichkeiten: ${data.intolerances || '–'}\n\nAdmin-Panel: ${APP_BASE_URL}/admin.html`,
+    };
+    await axios.post(webhookUrl, adminPayload);
+  } catch (error) {
+    console.error('Error sending admin notification', error);
+  }
 });
 
 exports.onRsvpUpdated = onDocumentUpdated('rsvps/{rsvpId}', async (event) => {
@@ -304,6 +331,20 @@ exports.onRsvpUpdated = onDocumentUpdated('rsvps/{rsvpId}', async (event) => {
       editUrl,
     },
   });
+
+  // Admin-Benachrichtigung
+  try {
+    const isAccepting = data.attending === 'yes';
+    const adminPayload = {
+      to_email: "eduard.wayz@gmail.com",
+      to_name: "Eduard & Joanne",
+      subject: "RSVP wurde aktualisiert",
+      text: `Ein Gast hat seine RSVP bearbeitet:\n\nName: ${data.familyName}\nE-Mail: ${data.email}\nStatus: ${isAccepting ? 'Zusage' : 'Absage'}\nAnzahl Gäste: ${data.guests || '–'}\nUnverträglichkeiten: ${data.intolerances || '–'}\n\nAdmin-Panel: ${APP_BASE_URL}/admin.html`,
+    };
+    await axios.post(webhookUrl, adminPayload);
+  } catch (error) {
+    console.error('Error sending admin notification', error);
+  }
 });
 
 // HTTP Functions

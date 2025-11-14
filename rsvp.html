@@ -146,15 +146,36 @@
     const decreaseBtn = document.getElementById('decrease-guests');
     const increaseBtn = document.getElementById('increase-guests');
 
-    function renderGuestFields(count) {
+    // Funktion zum Sammeln der aktuellen Gastdaten aus dem Formular
+    function getCurrentGuestData() {
+      const currentCount = parseInt(guestsInput.value);
+      const guestData = [];
+
+      for (let i = 1; i <= currentCount; i++) {
+        const nameField = document.getElementById(`guestName_${i}`);
+        const typeField = document.querySelector(`input[name="guestType_${i}"]:checked`);
+
+        if (nameField) {
+          guestData.push({
+            name: nameField.value || '',
+            type: typeField ? typeField.value : 'Erwachsener'
+          });
+        }
+      }
+
+      return guestData;
+    }
+
+    function renderGuestFields(count, guestDetails = []) {
       detailsContainer.innerHTML = '';
       const isDisabled = document.querySelector('input[name="attending"]:checked')?.value === 'no';
-      
+
       for (let i = 1; i <= count; i++) {
+        const data = guestDetails[i-1] || { name: '', type: 'Erwachsener' };
         const wrapper = document.createElement('div');
         wrapper.classList.add('guest-field');
         if (isDisabled) wrapper.classList.add('disabled');
-        
+
         wrapper.innerHTML = `
           <div class="guest-header">
             <h3>Gast ${i}</h3>
@@ -162,25 +183,25 @@
           <div class="guest-content">
             <div class="form-group">
               <label for="guestName_${i}">Vorname</label>
-              <input type="text" id="guestName_${i}" name="guestName_${i}" 
-                     placeholder="Vorname Gast ${i}" required ${isDisabled ? 'disabled' : ''}>
+              <input type="text" id="guestName_${i}" name="guestName_${i}"
+                     placeholder="Vorname Gast ${i}" value="${data.name}" required ${isDisabled ? 'disabled' : ''}>
             </div>
             <div class="form-group">
               <label>Alterskategorie</label>
               <div class="radio-group">
                 <label class="radio-option">
-                  <input type="radio" name="guestType_${i}" value="Erwachsener" 
-                         checked ${isDisabled ? 'disabled' : ''}>
+                  <input type="radio" name="guestType_${i}" value="Erwachsener"
+                         ${data.type==='Erwachsener'? 'checked':''} ${isDisabled ? 'disabled' : ''}>
                   <span>Erwachsener</span>
                 </label>
                 <label class="radio-option">
-                  <input type="radio" name="guestType_${i}" value="Kind" 
-                         ${isDisabled ? 'disabled' : ''}>
+                  <input type="radio" name="guestType_${i}" value="Kind"
+                         ${data.type==='Kind'? 'checked':''} ${isDisabled ? 'disabled' : ''}>
                   <span>Kind</span>
                 </label>
                 <label class="radio-option">
-                  <input type="radio" name="guestType_${i}" value="Kleinkind" 
-                         ${isDisabled ? 'disabled' : ''}>
+                  <input type="radio" name="guestType_${i}" value="Kleinkind"
+                         ${data.type==='Kleinkind'? 'checked':''} ${isDisabled ? 'disabled' : ''}>
                   <span>Kleinkind</span>
                 </label>
               </div>
@@ -241,9 +262,10 @@
       radio.addEventListener('change', function() {
         const isNotAttending = this.value === 'no';
         toggleFormFields(isNotAttending);
-        
-        // Gast-Felder neu rendern um disabled state zu berücksichtigen
-        renderGuestFields(parseInt(guestsInput.value));
+
+        // Aktuelle Daten sichern und Felder neu rendern
+        const currentData = getCurrentGuestData();
+        renderGuestFields(parseInt(guestsInput.value), currentData);
       });
     });
 
@@ -251,16 +273,20 @@
     decreaseBtn.addEventListener('click', () => {
       const currentValue = parseInt(guestsInput.value);
       if (currentValue > 1) {
+        // Aktuelle Daten sichern bevor wir neu rendern
+        const currentData = getCurrentGuestData();
         guestsInput.value = currentValue - 1;
-        renderGuestFields(currentValue - 1);
+        renderGuestFields(currentValue - 1, currentData);
       }
     });
 
     increaseBtn.addEventListener('click', () => {
       const currentValue = parseInt(guestsInput.value);
       if (currentValue < 5) {
+        // Aktuelle Daten sichern bevor wir neu rendern
+        const currentData = getCurrentGuestData();
         guestsInput.value = currentValue + 1;
-        renderGuestFields(currentValue + 1);
+        renderGuestFields(currentValue + 1, currentData);
       }
     });
 

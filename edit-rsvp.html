@@ -125,12 +125,34 @@
       return new URLSearchParams(window.location.search).get(name);
     }
 
-    const rsvpId = getParam('id');
-    const form = document.getElementById('edit-form');
-    const guestsInput = document.getElementById('guests');
-    const detailsContainer = document.getElementById('guest-details');
-    const decreaseBtn = document.getElementById('decrease-guests');
-    const increaseBtn = document.getElementById('increase-guests');
+    // Wrap in async IIFE to allow return statements
+    (async function() {
+      const rsvpId = getParam('id');
+      const form = document.getElementById('edit-form');
+      const guestsInput = document.getElementById('guests');
+      const detailsContainer = document.getElementById('guest-details');
+      const decreaseBtn = document.getElementById('decrease-guests');
+      const increaseBtn = document.getElementById('increase-guests');
+
+    // Funktion zum Sammeln der aktuellen Gastdaten aus dem Formular
+    function getCurrentGuestData() {
+      const currentCount = parseInt(guestsInput.value);
+      const guestData = [];
+
+      for (let i = 1; i <= currentCount; i++) {
+        const nameField = document.getElementById(`guestName_${i}`);
+        const typeField = document.querySelector(`input[name="guestType_${i}"]:checked`);
+
+        if (nameField) {
+          guestData.push({
+            name: nameField.value || '',
+            type: typeField ? typeField.value : 'Erwachsener'
+          });
+        }
+      }
+
+      return guestData;
+    }
 
     function renderGuestFields(count, guestDetails = []) {
       detailsContainer.innerHTML = '';
@@ -224,16 +246,20 @@
     decreaseBtn.addEventListener('click', () => {
       const currentValue = parseInt(guestsInput.value);
       if (currentValue > 1) {
+        // Aktuelle Daten sichern bevor wir neu rendern
+        const currentData = getCurrentGuestData();
         guestsInput.value = currentValue - 1;
-        renderGuestFields(currentValue - 1);
+        renderGuestFields(currentValue - 1, currentData);
       }
     });
 
     increaseBtn.addEventListener('click', () => {
       const currentValue = parseInt(guestsInput.value);
       if (currentValue < 5) {
+        // Aktuelle Daten sichern bevor wir neu rendern
+        const currentData = getCurrentGuestData();
         guestsInput.value = currentValue + 1;
-        renderGuestFields(currentValue + 1);
+        renderGuestFields(currentValue + 1, currentData);
       }
     });
 
@@ -242,20 +268,10 @@
       radio.addEventListener('change', function() {
         const isNotAttending = this.value === 'no';
         toggleFormFields(isNotAttending);
-        
-        // Gast-Felder neu rendern um disabled state zu berücksichtigen
-        const currentGuestDetails = [];
-        for (let i = 1; i <= parseInt(guestsInput.value); i++) {
-          const nameField = document.querySelector(`#guestName_${i}`);
-          const typeField = document.querySelector(`input[name="guestType_${i}"]:checked`);
-          if (nameField && typeField) {
-            currentGuestDetails.push({
-              name: nameField.value,
-              type: typeField.value
-            });
-          }
-        }
-        renderGuestFields(parseInt(guestsInput.value), currentGuestDetails);
+
+        // Aktuelle Daten sichern und Felder neu rendern
+        const currentData = getCurrentGuestData();
+        renderGuestFields(parseInt(guestsInput.value), currentData);
       });
     });
 
@@ -271,22 +287,36 @@
         return;
       }
       const data = doc.data();
-      form.familyName.value   = data.familyName;
-      form.email.value        = data.email;
-      form.attending.value    = data.attending;
-      guestsInput.value       = data.guests;
+
+      // Basis-Formularfelder setzen
+      form.familyName.value   = data.familyName || '';
+      form.email.value        = data.email || '';
+      guestsInput.value       = data.guests || 1;
       form.intolerances.value = data.intolerances || '';
       form.message.value      = data.message || '';
 
-      // Initial render mit den geladenen Daten
-      renderGuestFields(data.guests, data.guestDetails);
+      // Radio-Button für Teilnahme korrekt setzen (nicht mit .value!)
+      const attendingRadio = document.querySelector(`input[name="attending"][value="${data.attending}"]`);
+      if (attendingRadio) {
+        attendingRadio.checked = true;
+      } else {
+        console.warn('Attending radio button not found for value:', data.attending);
+      }
 
-      // Formularfelder entsprechend der Teilnahme ein-/ausblenden
+      // Erst nach dem Setzen der Radio-Buttons die Felder togglen
       const isNotAttending = data.attending === 'no';
       toggleFormFields(isNotAttending);
 
+      // Danach die Gastfelder mit den geladenen Daten rendern
+      renderGuestFields(data.guests || 1, data.guestDetails || []);
+
     }).catch(err => {
       console.error('Fehler beim Laden der RSVP-Daten:', err);
+      console.error('Error details:', {
+        code: err.code,
+        message: err.message,
+        rsvpId: rsvpId
+      });
 
       let errorMessage = 'Fehler beim Laden der Daten. Bitte versuche es später erneut.';
 
@@ -305,27 +335,56 @@
     form.addEventListener('submit', async e => {
       e.preventDefault();
       const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      // Radio-Button korrekt auslesen (nicht mit .value!)
+      const attendingChecked = document.querySelector('input[name="attending"]:checked');
+      const attending = attendingChecked ? attendingChecked.value : 'yes';
+
+      // Validierung
+      if (!e.target.familyName.value.trim() || e.target.familyName.value.trim().length < 2) {
+        toast.error('Bitte gib einen gültigen Familiennamen ein (mindestens 2 Zeichen)');
+        return;
+      }
+
+      if (!e.target.email.value.trim() || !e.target.email.value.includes('@')) {
+        toast.error('Bitte gib eine gültige E-Mail-Adresse ein');
+        return;
+      }
+
       submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
       submitBtn.textContent = 'Wird gespeichert...';
 
       const guestCount = parseInt(guestsInput.value) || 1;
       const guestDetails = [];
-      for (let i = 1; i <= guestCount; i++) {
-        const nameField = e.target[`guestName_${i}`];
-        const typeField = e.target[`guestType_${i}`];
-        guestDetails.push({
-          name: nameField.value.trim(),
-          type: typeField.value
-        });
+
+      // Validiere Gastnamen nur wenn attending === 'yes'
+      if (attending === 'yes') {
+        for (let i = 1; i <= guestCount; i++) {
+          const nameField = e.target[`guestName_${i}`];
+          const typeField = e.target[`guestType_${i}`];
+
+          if (!nameField || !nameField.value.trim()) {
+            toast.error(`Bitte gib einen Namen für Gast ${i} ein`);
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            return;
+          }
+
+          guestDetails.push({
+            name: nameField.value.trim(),
+            type: typeField.value
+          });
+        }
       }
 
       const updated = {
         familyName:   e.target.familyName.value.trim(),
-        email:        e.target.email.value.trim(),
-        attending:    e.target.attending.value,
-        guests:       guestCount,
-        guestDetails: guestDetails,
-        intolerances: e.target.intolerances.value.trim(),
+        email:        e.target.email.value.trim().toLowerCase(),
+        attending:    attending,
+        guests:       attending === 'yes' ? guestCount : 0,
+        guestDetails: attending === 'yes' ? guestDetails : [],
+        intolerances: attending === 'yes' ? e.target.intolerances.value.trim() : '',
         message:      e.target.message.value.trim()
       };
 
@@ -353,6 +412,7 @@
         submitBtn.textContent = 'Änderungen speichern';
       }
     });
+    })(); // End of async IIFE
   </script>
 
   <div id="footer"></div>

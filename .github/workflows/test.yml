@@ -33,12 +33,6 @@ jobs:
           cd functions
           npm test
 
-      - name: Generate coverage report
-        if: always()
-        run: |
-          cd functions
-          npm test -- --coverage || true
-
   # Job 2: Firestore Rules Tests
   test-firestore-rules:
     name: Test Firestore Rules
@@ -54,8 +48,7 @@ jobs:
           node-version: '22'
 
       - name: Install root dependencies
-        run: |
-          npm install --save-dev @firebase/rules-unit-testing jest
+        run: npm install
 
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
@@ -104,9 +97,7 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
-        run: |
-          npm install --save-dev jest @testing-library/dom @testing-library/jest-dom jest-environment-jsdom
-          cd functions && npm ci && cd ..
+        run: npm install
 
       - name: Run frontend tests
         run: npm run test:frontend

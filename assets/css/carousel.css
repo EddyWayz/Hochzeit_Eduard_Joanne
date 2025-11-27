@@ -1,0 +1,96 @@
+/* Carousel Styles */
+.carousel {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: var(--space-lg) auto;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+    aspect-ratio: 16 / 9;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    height: 100%;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+    position: relative;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Placeholder styling when no image */
+.carousel-slide.placeholder {
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-secondary-light));
+    color: var(--color-on-primary);
+    font-family: var(--font-heading);
+    font-size: var(--fs-xl);
+    text-align: center;
+    padding: var(--space-md);
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(4px);
+    border: none;
+    color: var(--color-primary);
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.3s;
+    z-index: 10;
+}
+
+.carousel-btn:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.carousel-btn.prev {
+    left: 10px;
+}
+
+.carousel-btn.next {
+    right: 10px;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    border: none;
+    padding: 0;
+}
+
+.carousel-dot.active {
+    background: var(--color-primary);
+    transform: scale(1.2);
+}

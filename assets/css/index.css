@@ -67,3 +67,22 @@
     gap: var(--space-sm);
     background: var(--color-surface);
 }
+
+/* Map Container */
+.map-container {
+    margin: var(--space-xl) 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border);
+}
+
+.map-container h3 {
+    text-align: center;
+    margin: var(--space-md) 0;
+}
+
+.map-container iframe {
+    display: block;
+    width: 100%;
+}

@@ -29,6 +29,7 @@
   <!-- Spezifisches Styling für Index -->
   <link rel="stylesheet" href="assets/css/index.css">
   <link rel="stylesheet" href="assets/css/animations.css">
+  <link rel="stylesheet" href="assets/css/carousel.css">
 
   <!-- Performance hints -->
   <link rel="preload" as="image" href="img/backgroundImage.png">
@@ -38,6 +39,7 @@
   <script defer src="assets/js/animations.js"></script>
   <script defer src="assets/js/countdown.js"></script>
   <script defer src="assets/js/calendar.js"></script>
+  <script defer src="assets/js/carousel.js"></script>
 
   <!-- Structured data (JSON-LD) -->
   <script type="application/ld+json">
@@ -117,6 +119,28 @@
         großen Schritt gewagt und mich gefragt. Natürlich habe ich sofort "Ja" gesagt!</p>
       <p>Jetzt freuen wir uns darauf, diesen besonderen Tag mit unseren liebsten Freunden und unserer Familie zu teilen.
       </p>
+
+      <!-- Photo Gallery Carousel -->
+      <div class="carousel animate-on-scroll">
+        <div class="carousel-track">
+          <div class="carousel-slide placeholder">
+            <span>Unser erstes Date</span>
+          </div>
+          <div class="carousel-slide placeholder">
+            <span>Paris 2022</span>
+          </div>
+          <div class="carousel-slide placeholder">
+            <span>Der Antrag</span>
+          </div>
+        </div>
+        <button class="carousel-btn prev" aria-label="Vorheriges Bild">❮</button>
+        <button class="carousel-btn next" aria-label="Nächstes Bild">❯</button>
+        <div class="carousel-dots">
+          <button class="carousel-dot active" aria-label="Bild 1"></button>
+          <button class="carousel-dot" aria-label="Bild 2"></button>
+          <button class="carousel-dot" aria-label="Bild 3"></button>
+        </div>
+      </div>
     </section>
 
     <!-- Event-Details -->
@@ -145,6 +169,14 @@
           <p>Das Abendessen wird ein 4-Gänge-Menü sein, gefolgt von einer Party mit Live-Musik und DJ. Für
             Übernachtungsgäste haben wir ein spezielles Zimmerkontingent reserviert.</p>
         </div>
+      </div>
+
+      <div id="map" class="map-container animate-on-scroll">
+        <h3>Anfahrt</h3>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2427.726588267468!2d13.40003331580753!3d52.51703697981354!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a84e1f9014ffeb%3A0x400c46b35a6e0!2sSchlo%C3%9Fplatz%201%2C%2010178%20Berlin!5e0!3m2!1sde!2sde!4v1620000000000!5m2!1sde!2sde"
+          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
 
       <div class="calendar-actions animate-on-scroll">

@@ -5,6 +5,61 @@
      – Farben, Typografie, Spacing, Breakpoints, etc.
    ============================================ */
 
+/* assets/css/gifts.css */
+
+.money-gift-card {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  text-align: center;
+}
+
+.iban-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+  flex-wrap: wrap;
+  background: var(--color-surface);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  display: inline-flex;
+}
+
+.iban-code {
+  font-family: monospace;
+  font-size: var(--fs-md);
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.btn-copy {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-copy:hover {
+  background: var(--color-background);
+  border-color: var(--color-primary);
+}
+
+.btn-copy.success {
+  background-color: var(--color-success);
+  color: white;
+  border-color: var(--color-success);
+}
+
 
 /* --------------------------------------------
    Safe Area + Modal Overlay
@@ -19,8 +74,10 @@
   height: calc(100% - var(--safe-top) - var(--safe-bottom));
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;       /* vertikal zentrieren */
-  justify-content: center;   /* horizontal zentrieren */
+  align-items: center;
+  /* vertikal zentrieren */
+  justify-content: center;
+  /* horizontal zentrieren */
   z-index: var(--z-index-modal);
   backdrop-filter: blur(4px);
 }
@@ -79,9 +136,11 @@
    ============================================ */
 .gift-list {
   max-width: var(--max-container-width);
-  margin: 0 auto;         /* zentriert den Container */
+  margin: 0 auto;
+  /* zentriert den Container */
   padding: var(--space-md);
-  box-sizing: border-box; /* wichtig, damit Padding nicht nach außen schiebt */
+  box-sizing: border-box;
+  /* wichtig, damit Padding nicht nach außen schiebt */
   display: grid;
   gap: var(--space-md);
   margin-top: var(--space-lg);
@@ -148,6 +207,7 @@
   justify-content: center;
   gap: var(--space-lg);
 }
+
 #gifts li {
   background-color: var(--color-surface);
   border: var(--border-width) solid var(--color-border);
@@ -159,27 +219,33 @@
   justify-content: space-between;
   transition: transform var(--transition-medium) var(--transition-timing);
 }
+
 #gifts li:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-soft);
 }
+
 #gifts li div {
   margin-bottom: var(--space-md);
   font-family: var(--font-text);
   font-size: var(--fs-md);
   color: var(--color-text);
 }
+
 #gifts li a {
   color: var(--color-primary);
   text-decoration: none;
   font-weight: var(--fw-normal);
   transition: color var(--transition-medium) var(--transition-timing);
 }
+
 #gifts li a:hover {
   color: var(--color-primary-dark);
 }
+
 #gifts li button {
-  margin: 0 auto;   /* Button mittig ausrichten */
+  margin: 0 auto;
+  /* Button mittig ausrichten */
   font-family: var(--font-text);
 }
 
@@ -212,9 +278,10 @@
   .gift-img-container {
     position: relative;
     width: 100%;
-    padding-bottom: 75%; /* 4:3 ratio = 75% */
+    padding-bottom: 75%;
+    /* 4:3 ratio = 75% */
   }
-  
+
   .gift-img {
     position: absolute;
     top: 0;

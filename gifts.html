@@ -1,13 +1,15 @@
 <!-- geschenke.html -->
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Geschenkeliste – Hochzeit Eduard & Joanne</title>
+  <title>Geschenkeliste – Hochzeit Eduard & Joanne</title>
 
   <!-- SEO -->
-  <meta name="description" content="Unsere Hochzeitsgeschenkeliste: stöbere, reserviere und hilf uns, Wünsche zu erfüllen.">
+  <meta name="description"
+    content="Unsere Hochzeitsgeschenkeliste: stöbere, reserviere und hilf uns, Wünsche zu erfüllen.">
   <meta name="theme-color" content="#d26b58">
 
   <!-- Social Sharing -->
@@ -27,11 +29,14 @@
   <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Neues Styling für Geschenke -->
   <link rel="stylesheet" href="assets/css/gifts.css">
+  <link rel="stylesheet" href="assets/css/animations.css">
   <!-- Toast Notifications -->
   <link rel="stylesheet" href="assets/css/toast.css">
 
   <!-- Header/Footer Include (vanilla) -->
   <script defer src="assets/js/includeTemplate.js"></script>
+  <script defer src="assets/js/animations.js"></script>
+  <script defer src="assets/js/clipboard.js"></script>
 
   <!-- Configuration -->
   <script src="config.js"></script>
@@ -50,6 +55,7 @@
     const storage = firebase.storage();
   </script>
 </head>
+
 <body>
   <!-- Accessibility: Skip link for keyboard users -->
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -57,8 +63,24 @@
   <div id="header"></div>
 
   <!-- Geschenk-Liste: Dynamisch geladene Geschenke mit Reservierungsmodal -->
-  <section id="main" role="main" class="gift-list">
+  <section id="main" role="main" class="gift-list animate-on-scroll">
     <h2>Unsere Geschenkeliste</h2>
+
+    <!-- Geldgeschenk Info -->
+    <div class="money-gift-card">
+      <h3>Geldgeschenke</h3>
+      <p>Da wir schon einen kompletten Hausstand haben, freuen wir uns am meisten über einen Beitrag zu unseren
+        Flitterwochen.</p>
+      <div class="iban-container">
+        <span class="iban-label">IBAN:</span>
+        <code class="iban-code">DE12 3456 7890 1234 5678 90</code>
+        <button class="btn-copy" onclick="copyToClipboard('DE12 3456 7890 1234 5678 90', this)"
+          aria-label="IBAN kopieren">
+          <span class="icon">📋</span> Kopieren
+        </button>
+      </div>
+    </div>
+
     <ul id="gifts"></ul>
   </section>
 
@@ -80,7 +102,8 @@
   <noscript>
     <div class="noscript-warning">Bitte aktivieren Sie JavaScript, um Navigation und Inhalte vollständig zu sehen.</div>
   </noscript>
-  
+
   <script src="assets/js/gifts.js"></script>
 </body>
+
 </html>

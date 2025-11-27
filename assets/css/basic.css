@@ -549,7 +549,7 @@ button:active {
   min-height: 60vh;
   background: linear-gradient(var(--overlay-color),
       var(--overlay-color)),
-    var(--hero-bg-image) center/cover no-repeat;
+    var(--hero-bg-image) center/cover no-repeat fixed;
   display: flex;
   flex-direction: column;
   justify-content: center;

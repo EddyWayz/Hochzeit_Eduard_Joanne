@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kontakt – Hochzeit Eduard & Joanne</title>
-  
+
   <!-- SEO -->
   <meta name="description" content="Kontakt zum Brautpaar und Team: Stelle Fragen oder sende uns eine Nachricht.">
   <meta name="theme-color" content="#d26b58">
@@ -25,10 +26,13 @@
   <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Spezifisches Styling für Kontakt-Seite -->
   <link rel="stylesheet" href="assets/css/contact.css">
-  
+  <link rel="stylesheet" href="assets/css/animations.css">
+
   <!-- Header/Footer Include (vanilla) -->
   <script defer src="assets/js/includeTemplate.js"></script>
+  <script defer src="assets/js/animations.js"></script>
 </head>
+
 <body>
   <!-- Accessibility: Skip link for keyboard users -->
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -36,7 +40,7 @@
   <!-- Header-Include -->
   <div id="header"></div>
 
-<!-- Kontakt-Seite: Kontaktinformationen und Formular -->
+  <!-- Kontakt-Seite: Kontaktinformationen und Formular -->
   <!-- Hero-Sektion -->
   <section class="hero">
     <h1>Kontakt</h1>
@@ -44,8 +48,18 @@
   </section>
 
   <main id="main" class="content">
+    <!-- Map Section -->
+    <section class="map-section animate-on-scroll" style="margin-bottom: var(--space-xl);">
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2427.726588267468!2d13.40003331580753!3d52.51703697981354!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a84e1f9014ffeb%3A0x400c46b35a6e0!2sSchlo%C3%9Fplatz%201%2C%2010178%20Berlin!5e0!3m2!1sde!2sde!4v1620000000000!5m2!1sde!2sde"
+          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </section>
+
     <!-- Kontakt-Inhalte -->
-    <section class="content card">
+    <section class="content card animate-on-scroll">
       <!-- Kontaktinformationen -->
       <div class="contact-details">
         <h2>Kontaktinformationen</h2>
@@ -59,12 +73,14 @@
         <div class="contact-card">
           <h3>Trauzeugen</h3>
           <p><strong>Max Mustermann (Trauzeuge)</strong><br>
-          <a href="mailto:eduard.wayz@gmail.com">eduard.wayz@gmail.com</a><br>
-          Tel: +49 30 987654321</p>
-          
+            <a href="mailto:eduard.wayz@gmail.com">eduard.wayz@gmail.com</a><br>
+            Tel: +49 30 987654321
+          </p>
+
           <p><strong>Anna Schmidt (Trauzeugin)</strong><br>
-          <a href="mailto:eduard.wayz@gmail.com">eduard.wayz@gmail.com</a><br>
-          Tel: +49 30 456789123</p>
+            <a href="mailto:eduard.wayz@gmail.com">eduard.wayz@gmail.com</a><br>
+            Tel: +49 30 456789123
+          </p>
         </div>
 
         <div class="contact-card">
@@ -86,10 +102,10 @@
             <label for="name">Name</label>
             <input type="text" id="name" name="Name" placeholder="Dein Name" required>
           </div>
-          
+
           <div class="form-group">
             <label for="emailInput">E‑Mail</label>
-                        <input type="email" id="emailInput" name="E-Mail" placeholder="deine@mail.de" required>
+            <input type="email" id="emailInput" name="E-Mail" placeholder="deine@mail.de" required>
           </div>
 
           <div class="form-group">
@@ -104,7 +120,7 @@
               <option value="sonstiges">Sonstiges</option>
             </select>
           </div>
-          
+
           <div class="form-group">
             <label for="message">Nachricht</label>
             <textarea id="message" name="Nachricht" rows="5" placeholder="Deine Nachricht..." required></textarea>
@@ -135,7 +151,7 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       submitButton.classList.add('loading');
       submitButton.disabled = true;
 
@@ -167,4 +183,5 @@
     });
   </script>
 </body>
+
 </html>

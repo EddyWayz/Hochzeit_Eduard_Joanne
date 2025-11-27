@@ -11,10 +11,12 @@
 }
 
 /* Global Reset */
-html, body {
+html,
+body {
   padding: 0;
   margin: 0;
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -57,7 +59,8 @@ body {
 .noscript-warning {
   margin: var(--space-md) var(--container-padding);
   padding: var(--space-sm) var(--space-md);
-  background: #fff3cd; /* warning background */
+  background: #fff3cd;
+  /* warning background */
   color: #664d03;
   border: 1px solid #ffecb5;
   border-radius: var(--radius-md);
@@ -82,8 +85,12 @@ main {
   align-items: center;
   padding: var(--space-md) var(--container-padding);
   padding-top: calc(var(--space-md) + var(--safe-top));
-  background-color: var(--color-surface);
-  box-shadow: var(--shadow-md);
+  padding-top: calc(var(--space-md) + var(--safe-top));
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
   transition: all var(--transition-medium) var(--transition-timing);
   width: 100%;
   box-sizing: border-box;
@@ -155,7 +162,8 @@ p {
 }
 
 /* Standard List Styles */
-ul, ol {
+ul,
+ol {
   list-style: none;
   padding: 0;
   margin: 0 0 var(--space-md) 0;
@@ -185,7 +193,9 @@ a:hover {
 }
 
 /* Standard Form Styles */
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: var(--font-text);
   font-size: var(--fs-md);
   color: var(--color-text);
@@ -197,7 +207,9 @@ input, textarea, select {
   box-sizing: border-box;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px var(--color-primary-light);
@@ -326,9 +338,14 @@ button:active {
   width: 100%;
   margin: var(--space-xl) auto;
   padding: var(--space-xl) var(--container-padding);
-  background-color: var(--color-surface);
+  margin: var(--space-xl) auto;
+  padding: var(--space-xl) var(--container-padding);
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--glass-shadow);
   transition: transform var(--transition-medium) var(--transition-timing);
   box-sizing: border-box;
 }
@@ -370,7 +387,7 @@ button:active {
   padding: var(--space-md);
   box-shadow: var(--shadow-soft);
   transition: transform var(--transition-medium) var(--transition-timing),
-              box-shadow var(--transition-medium) var(--transition-timing);
+    box-shadow var(--transition-medium) var(--transition-timing);
 }
 
 .timeline .event:hover {
@@ -379,7 +396,7 @@ button:active {
 }
 
 /* Additional info list on home: match cards */
-.additional-info { 
+.additional-info {
   margin-top: var(--space-lg);
 }
 
@@ -404,7 +421,7 @@ button:active {
   align-items: center;
   gap: var(--space-sm);
   transition: transform var(--transition-medium) var(--transition-timing),
-              box-shadow var(--transition-medium) var(--transition-timing);
+    box-shadow var(--transition-medium) var(--transition-timing);
 }
 
 .additional-info li::before {
@@ -436,7 +453,8 @@ button:active {
   transition: color var(--transition-medium) var(--transition-timing);
 }
 
-.logo-wayz, .logo-names {
+.logo-wayz,
+.logo-names {
   display: inline;
   white-space: nowrap;
 }
@@ -454,7 +472,8 @@ button:active {
   list-style: none;
   display: flex;
   gap: clamp(0.75rem, 2.5vw, var(--space-xl));
-  flex-wrap: nowrap; /* einzeilig halten */
+  flex-wrap: nowrap;
+  /* einzeilig halten */
   -webkit-overflow-scrolling: touch;
 }
 
@@ -472,7 +491,8 @@ button:active {
 /* Erlaubt gezieltes Umbruchverhalten für "Save your spot" */
 .nav-links a.nav-stack {
   white-space: normal;
-  max-width: 7.5ch; /* zwingt Zeilenumbruch in 2–3 Zeilen */
+  max-width: 7.5ch;
+  /* zwingt Zeilenumbruch in 2–3 Zeilen */
   text-align: center;
 }
 
@@ -497,9 +517,13 @@ button:active {
 }
 
 /* Section Headings */
-.story h2, .details h2, .schedule h2,
-.rsvp-section h2, .gift-list h2,
-.contact-section h2, .impressum-section h2 {
+.story h2,
+.details h2,
+.schedule h2,
+.rsvp-section h2,
+.gift-list h2,
+.contact-section h2,
+.impressum-section h2 {
   text-align: center;
   margin-bottom: var(--space-lg);
 }
@@ -523,11 +547,9 @@ button:active {
   position: relative;
   width: 100%;
   min-height: 60vh;
-  background: linear-gradient(
-    var(--overlay-color),
-    var(--overlay-color)
-  ),
-  var(--hero-bg-image) center/cover no-repeat;
+  background: linear-gradient(var(--overlay-color),
+      var(--overlay-color)),
+    var(--hero-bg-image) center/cover no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -745,7 +767,8 @@ body {
   }
 
   .nav-menu.open {
-    max-height: none; /* nur so hoch wie der Inhalt */
+    max-height: none;
+    /* nur so hoch wie der Inhalt */
   }
 
   .nav-links {
@@ -772,7 +795,7 @@ body {
   .nav-links a::before {
     content: none;
   }
-  
+
   .hero {
     min-height: 50vh;
     padding: var(--space-lg) var(--space-md);
@@ -817,7 +840,10 @@ body {
 
 /* Ab ~1024px auf Burger-Navigation umstellen (nur Nav) */
 @media (max-width: 1024px) {
-  .menu-toggle { display: block; }
+  .menu-toggle {
+    display: block;
+  }
+
   .nav-menu {
     position: absolute;
     top: var(--percent-full);
@@ -832,12 +858,37 @@ body {
     touch-action: manipulation;
     box-sizing: border-box;
   }
-  .nav-menu.open { max-height: none; }
-  .nav-links { flex-direction: column; gap: var(--space-sm); width: 100%; padding: 0; margin: 0; justify-content: flex-start; align-items: stretch; }
-  .nav-links a { display: block; width: 100%; padding: var(--space-sm); text-align: center; }
+
+  .nav-menu.open {
+    max-height: none;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: var(--space-sm);
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+
+  .nav-links a {
+    display: block;
+    width: 100%;
+    padding: var(--space-sm);
+    text-align: center;
+  }
+
   /* In der Burger-Navigation soll 'Save your spot' nicht schmal sein */
-  .nav-links a.nav-stack { max-width: none; margin: 0; }
-  .nav-links a::before { content: none; }
+  .nav-links a.nav-stack {
+    max-width: none;
+    margin: 0;
+  }
+
+  .nav-links a::before {
+    content: none;
+  }
 }
 
 @media (max-width: 480px) {
@@ -847,11 +898,11 @@ body {
     --space-md: 1rem;
   }
 
-  
+
   .navbar {
     padding: var(--space-md) var(--space-lg);
   }
-  
+
   .navbar .logo {
     width: 95%;
     font-size: var(--fs-logo);

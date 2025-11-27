@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Startseite – Hochzeit Eduard & Joanne</title>
 
   <!-- SEO -->
-  <meta name="description" content="Wir heiraten am 15. Juni 2025 in Berlin. Alle Infos zu Ablauf, Anfahrt, Geschenken und RSVP.">
+  <meta name="description"
+    content="Wir heiraten am 15. Juni 2025 in Berlin. Alle Infos zu Ablauf, Anfahrt, Geschenken und RSVP.">
   <meta name="theme-color" content="#d26b58">
 
   <!-- Social Sharing -->
@@ -26,12 +28,16 @@
   <link rel="stylesheet" href="assets/css/basic.css">
   <!-- Spezifisches Styling für Index -->
   <link rel="stylesheet" href="assets/css/index.css">
+  <link rel="stylesheet" href="assets/css/animations.css">
 
   <!-- Performance hints -->
   <link rel="preload" as="image" href="img/backgroundImage.png">
 
   <!-- Header/Footer Include (vanilla) -->
   <script defer src="assets/js/includeTemplate.js"></script>
+  <script defer src="assets/js/animations.js"></script>
+  <script defer src="assets/js/countdown.js"></script>
+  <script defer src="assets/js/calendar.js"></script>
 
   <!-- Structured data (JSON-LD) -->
   <script type="application/ld+json">
@@ -61,6 +67,7 @@
   </script>
 
 </head>
+
 <body>
   <!-- Accessibility: Skip link for keyboard users -->
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
@@ -70,48 +77,85 @@
   <!-- Startseite: Hero, Story und Event-Details -->
   <!-- Hero-Sektion -->
   <section class="hero">
-    <h1>Wir sagen „Ja“</h1>
+    <h1 class="animate-on-scroll">Wir sagen „Ja“</h1>
     <!-- Hinweis: frühere Anzeige 'Version 1.20' entfernt -->
-    <p><time datetime="2025-06-15">15. Juni 2025</time> · Berlin</p>
-    <a href="rsvp.html" class="btn" aria-label="Zur Zusage – RSVP">Zur Zusage</a>
+    <p class="animate-on-scroll animate-stagger-1"><time datetime="2025-06-15">15. Juni 2025</time> · Berlin</p>
+
+    <div id="countdown" class="countdown animate-on-scroll animate-stagger-2">
+      <div class="countdown-item">
+        <span id="days" class="countdown-number">00</span>
+        <span class="countdown-label">Tage</span>
+      </div>
+      <div class="countdown-item">
+        <span id="hours" class="countdown-number">00</span>
+        <span class="countdown-label">Std</span>
+      </div>
+      <div class="countdown-item">
+        <span id="minutes" class="countdown-number">00</span>
+        <span class="countdown-label">Min</span>
+      </div>
+      <div class="countdown-item">
+        <span id="seconds" class="countdown-number">00</span>
+        <span class="countdown-label">Sek</span>
+      </div>
+    </div>
+
+    <a href="rsvp.html" class="btn animate-on-scroll animate-stagger-3" aria-label="Zur Zusage – RSVP">Zur Zusage</a>
   </section>
 
   <main id="main" class="content">
     <!-- Story -->
-    <section class="story">
+    <section class="story animate-on-scroll">
       <h2>Unsere Geschichte</h2>
-      <p>Alles begann an einem sonnigen Herbsttag im Oktober 2020, als wir uns zufällig in einem kleinen Café in Berlin-Mitte trafen. Was als ein zufälliges Gespräch über die besten Kaffeesorten begann, entwickelte sich schnell zu einer tiefen Verbindung.</p>
-      <p>Über die Jahre haben wir gemeinsam viele Abenteuer erlebt: Von spontanen Wochenendtrips nach Paris und Rom, bis hin zu gemütlichen Abenden mit Freunden in unserem Lieblingsitaliener. Jeder Moment hat uns näher zusammengebracht und unsere Liebe wachsen lassen.</p>
-      <p>Am 15. Dezember 2024, während eines romantischen Abendessens in unserem Lieblingsrestaurant, hat Eduard den großen Schritt gewagt und mich gefragt. Natürlich habe ich sofort "Ja" gesagt!</p>
-      <p>Jetzt freuen wir uns darauf, diesen besonderen Tag mit unseren liebsten Freunden und unserer Familie zu teilen.</p>
+      <p>Alles begann an einem sonnigen Herbsttag im Oktober 2020, als wir uns zufällig in einem kleinen Café in
+        Berlin-Mitte trafen. Was als ein zufälliges Gespräch über die besten Kaffeesorten begann, entwickelte sich
+        schnell zu einer tiefen Verbindung.</p>
+      <p>Über die Jahre haben wir gemeinsam viele Abenteuer erlebt: Von spontanen Wochenendtrips nach Paris und Rom, bis
+        hin zu gemütlichen Abenden mit Freunden in unserem Lieblingsitaliener. Jeder Moment hat uns näher
+        zusammengebracht und unsere Liebe wachsen lassen.</p>
+      <p>Am 15. Dezember 2024, während eines romantischen Abendessens in unserem Lieblingsrestaurant, hat Eduard den
+        großen Schritt gewagt und mich gefragt. Natürlich habe ich sofort "Ja" gesagt!</p>
+      <p>Jetzt freuen wir uns darauf, diesen besonderen Tag mit unseren liebsten Freunden und unserer Familie zu teilen.
+      </p>
     </section>
 
     <!-- Event-Details -->
-    <section class="details">
+    <section class="details animate-on-scroll">
       <h2>Der Ablauf</h2>
       <div class="timeline">
         <div class="event">
           <h3><time datetime="2025-06-15T14:00">14:00 Uhr</time> – Trauung</h3>
           <address>Schlosskirche Berlin<br>
-          Schlossplatz 1, 10178 Berlin</address>
+            Schlossplatz 1, 10178 Berlin</address>
           <p>Die Trauung findet in der historischen Schlosskirche statt. Bitte seien Sie 30 Minuten vorher da.</p>
         </div>
-        
+
         <div class="event">
           <h3><time datetime="2025-06-15T15:30">15:30 Uhr</time> – Sektempfang</h3>
           <address>Schlossgarten<br>
-          Lustgarten, 10178 Berlin</address>
-          <p>Nach der Trauung laden wir Sie zu einem Sektempfang im wunderschönen Schlossgarten ein. Bei gutem Wetter können wir die Terrasse nutzen.</p>
+            Lustgarten, 10178 Berlin</address>
+          <p>Nach der Trauung laden wir Sie zu einem Sektempfang im wunderschönen Schlossgarten ein. Bei gutem Wetter
+            können wir die Terrasse nutzen.</p>
         </div>
-        
+
         <div class="event">
           <h3><time datetime="2025-06-15T18:00">18:00 Uhr</time> – Dinner &amp; Party</h3>
           <address>Festsaal im Hotel Adlon<br>
-          Unter den Linden 77, 10117 Berlin</address>
-          <p>Das Abendessen wird ein 4-Gänge-Menü sein, gefolgt von einer Party mit Live-Musik und DJ. Für Übernachtungsgäste haben wir ein spezielles Zimmerkontingent reserviert.</p>
+            Unter den Linden 77, 10117 Berlin</address>
+          <p>Das Abendessen wird ein 4-Gänge-Menü sein, gefolgt von einer Party mit Live-Musik und DJ. Für
+            Übernachtungsgäste haben wir ein spezielles Zimmerkontingent reserviert.</p>
         </div>
       </div>
-      
+
+      <div class="calendar-actions animate-on-scroll">
+        <button onclick="addToGoogleCalendar()" class="btn btn-outline btn-calendar">
+          <span class="icon">📅</span> Google Kalender
+        </button>
+        <button onclick="downloadICS()" class="btn btn-outline btn-calendar">
+          <span class="icon">🗓️</span> Outlook / Apple (.ics)
+        </button>
+      </div>
+
       <div class="additional-info">
         <h3>Wichtige Informationen</h3>
         <ul>
@@ -128,4 +172,5 @@
     <div class="noscript-warning">Bitte aktivieren Sie JavaScript, um Navigation und Inhalte vollständig zu sehen.</div>
   </noscript>
 </body>
+
 </html>

@@ -64,6 +64,12 @@
   --color-link: var(--color-primary);        /* Links */
   --color-on-surface: var(--color-text);     /* Text auf Oberflächen */
   --color-nav-text: #555555;                 /* Navigationstext */
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-blur: 16px;
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
 
   /* ------------------------------------------------------------------
      Typografie
